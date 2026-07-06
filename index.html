@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Театр Теней Алинитии</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>🌑 Театр Теней Алинитии</h1>
+            <div class="subtitle">Царство Ноктикулы · Pathfinder 2E</div>
+            <div id="status-bar">
+                <div id="tags-display"></div>
+                <button id="reset-btn">⟲ Начать заново</button>
+            </div>
+        </header>
+        
+        <main id="story-text"></main>
+        
+        <div id="choices"></div>
+        
+        <aside id="inventory">
+            <h3>📦 Инвентарь</h3>
+            <ul id="items-list"></ul>
+            <div id="empty-inv">Пусто</div>
+        </aside>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
