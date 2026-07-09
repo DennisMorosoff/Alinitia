@@ -129,10 +129,21 @@ function hasTags(requiredTags) {
 }
 
 function hasRequirement(requirement) {
+    return getRequirementState(requirement).has;
+}
+
+function getRequirementState(requirement) {
     const normalizedRequirement = normalizeTagName(requirement);
-    return gameState.tags.includes(normalizedRequirement)
-        || gameState.inventory.includes(requirement)
+    const hasTag = gameState.tags.includes(normalizedRequirement);
+    const hasInventoryItem = gameState.inventory.includes(requirement)
         || gameState.inventory.includes(normalizedRequirement);
+
+    return {
+        name: requirement,
+        normalizedName: normalizedRequirement,
+        has: hasTag || hasInventoryItem,
+        source: hasTag ? 'тайны' : hasInventoryItem ? 'инвентаря' : null
+    };
 }
 
 function addTag(tag) {
@@ -180,11 +191,7 @@ function formatDebugList(items) {
 }
 
 function evaluateRequirements(requirements = []) {
-    return requirements.map(requirement => ({
-        name: requirement,
-        normalizedName: normalizeTagName(requirement),
-        has: hasRequirement(requirement)
-    }));
+    return requirements.map(getRequirementState);
 }
 
 function evaluateChoice(choice) {
@@ -220,8 +227,9 @@ function renderConditionDebug(results, mode) {
         const normalized = result.normalizedName !== result.name
             ? ` → <code>${escapeHtml(result.normalizedName)}</code>`
             : '';
+        const source = result.has ? ` (${result.source})` : '';
 
-        return `<span class="${passed ? 'debug-true' : 'debug-false'}">${escapeHtml(label)}: <code>${escapeHtml(result.name)}</code>${normalized} = ${passed}</span>`;
+        return `<span class="${passed ? 'debug-true' : 'debug-false'}">${escapeHtml(label)}: <code>${escapeHtml(result.name)}</code>${normalized} = ${passed}${source}</span>`;
     });
 
     return lines.join('<br>');
