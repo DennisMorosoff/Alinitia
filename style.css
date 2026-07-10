@@ -130,6 +130,32 @@ h1 {
     color: #ba55d3;
 }
 
+.paragraph-image {
+    margin: 0 0 22px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.24);
+    border: 1px solid rgba(186, 85, 211, 0.28);
+    border-radius: 10px;
+    box-shadow: 0 0 18px rgba(75, 0, 130, 0.22);
+}
+
+.paragraph-image img {
+    display: block;
+    width: 100%;
+    max-height: 520px;
+    object-fit: contain;
+    border-radius: 7px;
+}
+
+.paragraph-image figcaption {
+    margin-top: 8px;
+    color: #a998b8;
+    font-size: 0.9em;
+    font-style: italic;
+    line-height: 1.45;
+    text-align: center;
+}
+
 #choices {
     display: flex;
     flex-direction: column;
@@ -299,13 +325,58 @@ h1 {
     padding-left: 0;
 }
 
-#items-list li {
+#items-list li,
+#quests-list li {
     padding: 6px 0;
     color: #ba55d3;
     border-bottom: 1px dashed rgba(186, 85, 211, 0.2);
 }
 
-#empty-inv {
+#quests-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.quest {
+    position: relative;
+    padding-right: 110px;
+}
+
+.quest strong {
+    display: block;
+    color: #e6d5ff;
+}
+
+.quest p {
+    margin-top: 4px;
+    color: #a998b8;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+.quest-state {
+    position: absolute;
+    top: 8px;
+    right: 0;
+    color: #ffd27a;
+    border: 1px solid rgba(255, 210, 122, 0.35);
+    border-radius: 12px;
+    padding: 2px 9px;
+    font-size: 0.75em;
+}
+
+.quest-выполнен .quest-state {
+    color: #8ee6a8;
+    border-color: rgba(142, 230, 168, 0.35);
+}
+
+.quest-провален .quest-state {
+    color: #ff9f9f;
+    border-color: rgba(255, 159, 159, 0.35);
+}
+
+#empty-inv,
+#empty-quests {
     color: #6a5a7a;
     font-style: italic;
 }
@@ -314,4 +385,5 @@ h1 {
     #game-container { padding: 20px; }
     h1 { font-size: 1.6em; }
     #story-text { font-size: 1em; padding: 15px; }
+    .paragraph-image { padding: 6px; }
 }

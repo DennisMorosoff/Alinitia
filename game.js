@@ -296,6 +296,35 @@ function renderParagraphText(text, className = '') {
     return text.split('\n\n').map(p => `<p${classAttr}>${p}</p>`).join('');
 }
 
+function normalizeParagraphImages(para) {
+    const rawImages = [
+        ...(para.image ? [para.image] : []),
+        ...(Array.isArray(para.images) ? para.images : [])
+    ];
+
+    return rawImages
+        .map(image => typeof image === 'string' ? { src: image } : image)
+        .filter(image => image && typeof image.src === 'string' && image.src.trim())
+        .map(image => ({
+            src: image.src.trim(),
+            alt: typeof image.alt === 'string' ? image.alt : '',
+            caption: typeof image.caption === 'string' ? image.caption : ''
+        }))
+        .filter(image => !/^\s*javascript:/i.test(image.src));
+}
+
+function renderParagraphImages(para) {
+    const images = normalizeParagraphImages(para);
+    if (images.length === 0) return '';
+
+    return images.map(image => `
+        <figure class="paragraph-image">
+            <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" loading="lazy">
+            ${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ''}
+        </figure>
+    `).join('');
+}
+
 function formatDebugList(items) {
     if (!items || items.length === 0) return 'нет';
     return items.map(item => `<code>${escapeHtml(item)}</code>`).join(', ');
@@ -437,6 +466,10 @@ function renderParagraphDebug(id, para) {
     if (para.setQuest) {
         rows.push(`setQuest on enter: ${formatDebugList((Array.isArray(para.setQuest) ? para.setQuest : [para.setQuest]).map(update => `${getQuestTitle(update.id)} → ${update.state}`))}`);
     }
+    const images = normalizeParagraphImages(para);
+    if (images.length > 0) {
+        rows.push(`images: ${formatDebugList(images.map(image => image.src))}`);
+    }
     if (para.conditionalText) {
         rows.push(`conditionalText: <span class="${conditionalTextState ? 'debug-true' : 'debug-false'}">${conditionalTextState}</span>`);
         rows.push(`conditional requires: ${formatDebugList(para.conditionalText.requires || [])}`);
@@ -473,6 +506,7 @@ function displayParagraph(id) {
         textHtml += renderParagraphDebug(id, para);
     }
 
+    textHtml += renderParagraphImages(para);
     textHtml += renderParagraphText(para.text);
 
     if (para.conditionalText && hasTags(para.conditionalText.requires)) {
