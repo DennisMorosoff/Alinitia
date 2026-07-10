@@ -3,12 +3,15 @@ let gameState = {
     currentParagraph: '001',
     tags: [],
     inventory: [],
+    quests: {},
     visited: [],
     flags: {}
 };
 
 // База параграфов — будет загружена из data.json
 let paragraphs = {};
+let questDefinitions = {};
+const questStates = ['не выдан', 'выдан', 'выполнен', 'провален'];
 
 const isDebugMode = document.body.dataset.mode === 'debug'
     || new URLSearchParams(window.location.search).has('debug');
@@ -87,12 +90,38 @@ function migrateSavedTags() {
     return changed;
 }
 
+function ensureGameStateShape() {
+    if (!Array.isArray(gameState.tags)) gameState.tags = [];
+    if (!Array.isArray(gameState.inventory)) gameState.inventory = [];
+    if (!gameState.quests || typeof gameState.quests !== 'object' || Array.isArray(gameState.quests)) {
+        gameState.quests = {};
+    }
+    if (!Array.isArray(gameState.visited)) gameState.visited = [];
+    if (!gameState.flags || typeof gameState.flags !== 'object' || Array.isArray(gameState.flags)) {
+        gameState.flags = {};
+    }
+}
+
+function migrateLucenciaDealTagToQuest() {
+    const legacyTag = 'Я заключил сделку с Люценцией';
+    if (!gameState.tags.includes(legacyTag)) return false;
+
+    setQuest({
+        id: 'lucencia-malvedra-heart',
+        state: 'выдан',
+        silent: true
+    });
+    gameState.tags = gameState.tags.filter(tag => tag !== legacyTag);
+    return true;
+}
+
 // ============ ЗАГРУЗКА ДАННЫХ ============
 async function loadGameData() {
     try {
         const response = await fetch('data.json', { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         paragraphs = await response.json();
+        questDefinitions = paragraphs._quests || {};
         console.log(`✅ Загружено ${Object.keys(paragraphs).length} параграфов`);
         
         loadGame();
@@ -111,10 +140,15 @@ function loadGame() {
     if (saved) {
         try {
             gameState = JSON.parse(saved);
-            if (migrateSavedTags()) saveGame();
+            ensureGameStateShape();
+            const tagsChanged = migrateSavedTags();
+            const questsChanged = migrateLucenciaDealTagToQuest();
+            if (tagsChanged || questsChanged) saveGame();
         } catch(e) {
             resetGame(true);
         }
+    } else {
+        ensureGameStateShape();
     }
 }
 
@@ -146,12 +180,89 @@ function getRequirementState(requirement) {
     };
 }
 
+function getQuestRequirementState(requirement) {
+    const id = typeof requirement === 'string' ? requirement : requirement.id;
+    const requiredState = typeof requirement === 'string' ? null : requirement.state;
+    const currentState = getQuestState(id);
+    const has = requiredState
+        ? currentState === requiredState
+        : currentState !== 'не выдан';
+
+    return {
+        id,
+        title: getQuestTitle(id),
+        state: currentState,
+        requiredState,
+        has
+    };
+}
+
 function addTag(tag) {
     tag = normalizeTagName(tag);
     if (!gameState.tags.includes(tag)) {
         gameState.tags.push(tag);
         showNotification(`✨ Получен тег: ${tag}`);
     }
+}
+
+// ============ КВЕСТЫ ============
+function getQuestDefinition(id) {
+    return questDefinitions[id] || {};
+}
+
+function getQuestTitle(id) {
+    const quest = gameState.quests[id] || {};
+    const definition = getQuestDefinition(id);
+    return quest.title || definition.title || id;
+}
+
+function getQuestDescription(id) {
+    const quest = gameState.quests[id] || {};
+    const definition = getQuestDefinition(id);
+    return quest.description || definition.description || '';
+}
+
+function getQuestState(id) {
+    const quest = gameState.quests[id];
+    if (quest && quest.state) return quest.state;
+    return getQuestDefinition(id).initialState || 'не выдан';
+}
+
+function setQuest(update) {
+    if (!update || !update.id || !update.state) return false;
+    if (!questStates.includes(update.state)) {
+        console.warn(`Неизвестное состояние квеста: ${update.state}`);
+        return false;
+    }
+
+    const currentState = getQuestState(update.id);
+    if (update.fromStates && !update.fromStates.includes(currentState)) {
+        return false;
+    }
+
+    const title = update.title || getQuestTitle(update.id);
+    const description = update.description || getQuestDescription(update.id);
+
+    gameState.quests[update.id] = {
+        title,
+        description,
+        state: update.state
+    };
+
+    if (currentState !== update.state && !update.silent) {
+        showNotification(`📜 Квест: ${title} — ${update.state}`);
+    }
+
+    return currentState !== update.state;
+}
+
+function applyQuestUpdates(updates) {
+    if (!updates) return false;
+
+    const normalizedUpdates = Array.isArray(updates) ? updates : [updates];
+    return normalizedUpdates
+        .map(update => setQuest(update))
+        .some(Boolean);
 }
 
 // ============ УВЕДОМЛЕНИЯ ============
@@ -194,16 +305,29 @@ function evaluateRequirements(requirements = []) {
     return requirements.map(getRequirementState);
 }
 
+function evaluateQuestRequirements(requirements = []) {
+    return requirements.map(getQuestRequirementState);
+}
+
 function evaluateChoice(choice) {
     const required = evaluateRequirements(choice.requires || []);
     const forbidden = evaluateRequirements(choice.requiresNot || []);
+    const requiredQuests = evaluateQuestRequirements(choice.requiresQuest || []);
+    const forbiddenQuests = evaluateQuestRequirements(choice.requiresQuestNot || []);
     const missingRequired = required.filter(result => !result.has);
     const presentForbidden = forbidden.filter(result => result.has);
+    const missingRequiredQuests = requiredQuests.filter(result => !result.has);
+    const presentForbiddenQuests = forbiddenQuests.filter(result => result.has);
 
     return {
         required,
         forbidden,
-        isAvailable: missingRequired.length === 0 && presentForbidden.length === 0
+        requiredQuests,
+        forbiddenQuests,
+        isAvailable: missingRequired.length === 0
+            && presentForbidden.length === 0
+            && missingRequiredQuests.length === 0
+            && presentForbiddenQuests.length === 0
     };
 }
 
@@ -235,6 +359,20 @@ function renderConditionDebug(results, mode) {
     return lines.join('<br>');
 }
 
+function renderQuestConditionDebug(results, mode) {
+    if (results.length === 0) return '';
+
+    const label = mode === 'required' ? 'requiresQuest' : 'requiresQuestNot';
+    const lines = results.map(result => {
+        const passed = mode === 'required' ? result.has : !result.has;
+        const expected = result.requiredState ? ` = ${escapeHtml(result.requiredState)}` : '';
+
+        return `<span class="${passed ? 'debug-true' : 'debug-false'}">${escapeHtml(label)}: <code>${escapeHtml(result.title)}</code>${expected}, сейчас: ${escapeHtml(result.state)} = ${passed}</span>`;
+    });
+
+    return lines.join('<br>');
+}
+
 function renderChoiceDebug(choice, index, evaluation) {
     const targetExists = Boolean(paragraphs[choice.target]);
     const details = [
@@ -246,7 +384,9 @@ function renderChoiceDebug(choice, index, evaluation) {
 
     const conditionLines = [
         renderConditionDebug(evaluation.required, 'required'),
-        renderConditionDebug(evaluation.forbidden, 'forbidden')
+        renderConditionDebug(evaluation.forbidden, 'forbidden'),
+        renderQuestConditionDebug(evaluation.requiredQuests, 'required'),
+        renderQuestConditionDebug(evaluation.forbiddenQuests, 'forbidden')
     ].filter(Boolean);
 
     if (choice.addTags) {
@@ -254,6 +394,12 @@ function renderChoiceDebug(choice, index, evaluation) {
     }
     if (choice.addItem) {
         details.push(`addItem: <code>${escapeHtml(choice.addItem)}</code>`);
+    }
+    if (choice.removeItem) {
+        details.push(`removeItem: ${formatDebugList(Array.isArray(choice.removeItem) ? choice.removeItem : [choice.removeItem])}`);
+    }
+    if (choice.setQuest) {
+        details.push(`setQuest: ${formatDebugList((Array.isArray(choice.setQuest) ? choice.setQuest : [choice.setQuest]).map(update => `${getQuestTitle(update.id)} → ${update.state}`))}`);
     }
     if (choice.skillCheck) {
         details.push(`skillCheck: <code>${escapeHtml(choice.skillCheck.skill)}</code> DC ${escapeHtml(choice.skillCheck.dc)}, failTarget: <code>${escapeHtml(choice.skillCheck.failTarget)}</code>`);
@@ -288,11 +434,17 @@ function renderParagraphDebug(id, para) {
     if (para.addTags) {
         rows.push(`addTags on enter: ${formatDebugList(para.addTags.map(normalizeTagName))}`);
     }
+    if (para.setQuest) {
+        rows.push(`setQuest on enter: ${formatDebugList((Array.isArray(para.setQuest) ? para.setQuest : [para.setQuest]).map(update => `${getQuestTitle(update.id)} → ${update.state}`))}`);
+    }
     if (para.conditionalText) {
         rows.push(`conditionalText: <span class="${conditionalTextState ? 'debug-true' : 'debug-false'}">${conditionalTextState}</span>`);
         rows.push(`conditional requires: ${formatDebugList(para.conditionalText.requires || [])}`);
         if (para.conditionalText.addTags) {
             rows.push(`conditional addTags: ${formatDebugList(para.conditionalText.addTags.map(normalizeTagName))}`);
+        }
+        if (para.conditionalText.setQuest) {
+            rows.push(`conditional setQuest: ${formatDebugList((Array.isArray(para.conditionalText.setQuest) ? para.conditionalText.setQuest : [para.conditionalText.setQuest]).map(update => `${getQuestTitle(update.id)} → ${update.state}`))}`);
         }
     }
     if (para.devNote) {
@@ -314,6 +466,7 @@ function displayParagraph(id) {
     if (!gameState.visited.includes(id)) gameState.visited.push(id);
 
     if (para.addTags) para.addTags.forEach(tag => addTag(tag));
+    if (para.setQuest) applyQuestUpdates(para.setQuest);
 
     let textHtml = '';
     if (isDebugMode) {
@@ -326,6 +479,9 @@ function displayParagraph(id) {
         textHtml += renderParagraphText(para.conditionalText.text, isDebugMode ? 'debug-conditional-visible' : '');
         if (para.conditionalText.addTags) {
             para.conditionalText.addTags.forEach(tag => addTag(tag));
+        }
+        if (para.conditionalText.setQuest) {
+            applyQuestUpdates(para.conditionalText.setQuest);
         }
     } else if (isDebugMode && para.conditionalText) {
         const conditionDetails = renderConditionDebug(evaluateRequirements(para.conditionalText.requires || []), 'required');
@@ -363,10 +519,20 @@ function displayParagraph(id) {
 
         btn.onclick = () => {
             if (choice.addTags) choice.addTags.forEach(tag => addTag(tag));
+            if (choice.removeItem) {
+                const itemsToRemove = Array.isArray(choice.removeItem) ? choice.removeItem : [choice.removeItem];
+                itemsToRemove.forEach(item => {
+                    if (gameState.inventory.includes(item)) {
+                        gameState.inventory = gameState.inventory.filter(inventoryItem => inventoryItem !== item);
+                        showNotification(`📦 Потеряно: ${item}`);
+                    }
+                });
+            }
             if (choice.addItem && !gameState.inventory.includes(choice.addItem)) {
                 gameState.inventory.push(choice.addItem);
                 showNotification(`📦 Получено: ${choice.addItem}`);
             }
+            if (choice.setQuest) applyQuestUpdates(choice.setQuest);
             displayParagraph(choice.target);
             saveGame();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -377,6 +543,7 @@ function displayParagraph(id) {
 
     updateTagsDisplay();
     updateInventoryDisplay();
+    updateQuestDisplay();
     saveGame();
 }
 
@@ -410,6 +577,48 @@ function updateInventoryDisplay() {
             list.appendChild(li);
         });
     }
+}
+
+function updateQuestDisplay() {
+    const list = document.getElementById('quests-list');
+    const empty = document.getElementById('empty-quests');
+    if (!list || !empty) return;
+
+    const visibleQuests = Object.entries(gameState.quests)
+        .filter(([, quest]) => quest.state !== 'не выдан');
+
+    list.innerHTML = '';
+    if (visibleQuests.length === 0) {
+        empty.style.display = 'block';
+        return;
+    }
+
+    empty.style.display = 'none';
+    visibleQuests.forEach(([id, quest]) => {
+        const li = document.createElement('li');
+        li.className = `quest quest-${quest.state.replace(/\s+/g, '-')}`;
+
+        const title = document.createElement('strong');
+        title.textContent = quest.title || getQuestTitle(id);
+
+        const state = document.createElement('span');
+        state.className = 'quest-state';
+        state.textContent = quest.state;
+
+        const description = document.createElement('p');
+        description.textContent = quest.description || getQuestDescription(id);
+
+        li.appendChild(title);
+        li.appendChild(state);
+        if (description.textContent) li.appendChild(description);
+        list.appendChild(li);
+    });
+}
+
+function updateAllDisplays() {
+    updateTagsDisplay();
+    updateInventoryDisplay();
+    updateQuestDisplay();
 }
 
 function setupInventoryTabs() {
@@ -446,6 +655,7 @@ function resetGame(silent = false) {
             currentParagraph: '001',
             tags: [],
             inventory: [],
+            quests: {},
             visited: [],
             flags: {}
         };
