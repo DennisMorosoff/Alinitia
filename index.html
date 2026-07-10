@@ -23,12 +23,18 @@
         <aside id="inventory">
             <div class="inventory-tabs" role="tablist" aria-label="Инвентарь и открытые тайны">
                 <button class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="items-tab" data-tab="items-tab">📦 Инвентарь</button>
+                <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="quests-tab" data-tab="quests-tab">📜 Квесты</button>
                 <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="secrets-tab" data-tab="secrets-tab">🔮 Тайны</button>
             </div>
 
             <section id="items-tab" class="tab-panel active" role="tabpanel">
                 <ul id="items-list"></ul>
                 <div id="empty-inv">Пусто</div>
+            </section>
+
+            <section id="quests-tab" class="tab-panel" role="tabpanel" hidden>
+                <ul id="quests-list"></ul>
+                <div id="empty-quests">Нет выданных квестов</div>
             </section>
 
             <section id="secrets-tab" class="tab-panel" role="tabpanel" hidden>
