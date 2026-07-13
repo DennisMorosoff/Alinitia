@@ -205,6 +205,32 @@ function addTag(tag) {
     }
 }
 
+function resolveSkillCheck(choice) {
+    if (!choice.skillCheck) {
+        return { target: choice.target, success: true };
+    }
+
+    const check = choice.skillCheck;
+    const rawModifier = window.prompt(
+        `Проверка: ${check.skill} DC ${check.dc}\nВведите модификатор навыка:`,
+        '0'
+    );
+    const modifier = Number.parseInt(rawModifier || '0', 10);
+    const safeModifier = Number.isNaN(modifier) ? 0 : modifier;
+    const roll = Math.floor(Math.random() * 20) + 1;
+    const total = roll + safeModifier;
+    const isSuccess = total >= check.dc;
+
+    showNotification(
+        `🎲 ${check.skill}: d20 ${roll} ${safeModifier >= 0 ? '+' : ''}${safeModifier} = ${total} против DC ${check.dc}`
+    );
+
+    return {
+        target: isSuccess ? choice.target : (check.failTarget || choice.target),
+        success: isSuccess
+    };
+}
+
 // ============ КВЕСТЫ ============
 function getQuestDefinition(id) {
     return questDefinitions[id] || {};
@@ -338,11 +364,45 @@ function evaluateQuestRequirements(requirements = []) {
     return requirements.map(getQuestRequirementState);
 }
 
+function evaluateAtLeastRequirement(requirement) {
+    if (!requirement || !Array.isArray(requirement.requirements)) return null;
+
+    const results = evaluateRequirements(requirement.requirements);
+    const count = Number.parseInt(requirement.count, 10);
+    const requiredCount = Number.isNaN(count) ? requirement.requirements.length : count;
+    const matchedCount = results.filter(result => result.has).length;
+
+    return {
+        count: requiredCount,
+        matchedCount,
+        results,
+        has: matchedCount >= requiredCount
+    };
+}
+
+function evaluateAtMostRequirement(requirement) {
+    if (!requirement || !Array.isArray(requirement.requirements)) return null;
+
+    const results = evaluateRequirements(requirement.requirements);
+    const count = Number.parseInt(requirement.count, 10);
+    const allowedCount = Number.isNaN(count) ? 0 : count;
+    const matchedCount = results.filter(result => result.has).length;
+
+    return {
+        count: allowedCount,
+        matchedCount,
+        results,
+        has: matchedCount <= allowedCount
+    };
+}
+
 function evaluateChoice(choice) {
     const required = evaluateRequirements(choice.requires || []);
     const forbidden = evaluateRequirements(choice.requiresNot || []);
     const requiredQuests = evaluateQuestRequirements(choice.requiresQuest || []);
     const forbiddenQuests = evaluateQuestRequirements(choice.requiresQuestNot || []);
+    const requiredAtLeast = evaluateAtLeastRequirement(choice.requiresAtLeast);
+    const requiredAtMost = evaluateAtMostRequirement(choice.requiresAtMost);
     const missingRequired = required.filter(result => !result.has);
     const presentForbidden = forbidden.filter(result => result.has);
     const missingRequiredQuests = requiredQuests.filter(result => !result.has);
@@ -353,10 +413,14 @@ function evaluateChoice(choice) {
         forbidden,
         requiredQuests,
         forbiddenQuests,
+        requiredAtLeast,
+        requiredAtMost,
         isAvailable: missingRequired.length === 0
             && presentForbidden.length === 0
             && missingRequiredQuests.length === 0
             && presentForbiddenQuests.length === 0
+            && (!requiredAtLeast || requiredAtLeast.has)
+            && (!requiredAtMost || requiredAtMost.has)
     };
 }
 
@@ -402,6 +466,26 @@ function renderQuestConditionDebug(results, mode) {
     return lines.join('<br>');
 }
 
+function renderAtLeastConditionDebug(result) {
+    if (!result) return '';
+
+    const items = result.results
+        .map(item => `${item.has ? '✓' : '✗'} ${escapeHtml(item.name)}`)
+        .join(', ');
+
+    return `<span class="${result.has ? 'debug-true' : 'debug-false'}">requiresAtLeast: ${result.matchedCount}/${result.count} (${items})</span>`;
+}
+
+function renderAtMostConditionDebug(result) {
+    if (!result) return '';
+
+    const items = result.results
+        .map(item => `${item.has ? '✓' : '✗'} ${escapeHtml(item.name)}`)
+        .join(', ');
+
+    return `<span class="${result.has ? 'debug-true' : 'debug-false'}">requiresAtMost: ${result.matchedCount}/${result.count} (${items})</span>`;
+}
+
 function renderChoiceDebug(choice, index, evaluation) {
     const targetExists = Boolean(paragraphs[choice.target]);
     const details = [
@@ -415,7 +499,9 @@ function renderChoiceDebug(choice, index, evaluation) {
         renderConditionDebug(evaluation.required, 'required'),
         renderConditionDebug(evaluation.forbidden, 'forbidden'),
         renderQuestConditionDebug(evaluation.requiredQuests, 'required'),
-        renderQuestConditionDebug(evaluation.forbiddenQuests, 'forbidden')
+        renderQuestConditionDebug(evaluation.forbiddenQuests, 'forbidden'),
+        renderAtLeastConditionDebug(evaluation.requiredAtLeast),
+        renderAtMostConditionDebug(evaluation.requiredAtMost)
     ].filter(Boolean);
 
     if (choice.addTags) {
@@ -552,8 +638,9 @@ function displayParagraph(id) {
         }
 
         btn.onclick = () => {
-            if (choice.addTags) choice.addTags.forEach(tag => addTag(tag));
-            if (choice.removeItem) {
+            const checkResult = resolveSkillCheck(choice);
+            if (checkResult.success && choice.addTags) choice.addTags.forEach(tag => addTag(tag));
+            if (checkResult.success && choice.removeItem) {
                 const itemsToRemove = Array.isArray(choice.removeItem) ? choice.removeItem : [choice.removeItem];
                 itemsToRemove.forEach(item => {
                     if (gameState.inventory.includes(item)) {
@@ -562,12 +649,12 @@ function displayParagraph(id) {
                     }
                 });
             }
-            if (choice.addItem && !gameState.inventory.includes(choice.addItem)) {
+            if (checkResult.success && choice.addItem && !gameState.inventory.includes(choice.addItem)) {
                 gameState.inventory.push(choice.addItem);
                 showNotification(`📦 Получено: ${choice.addItem}`);
             }
-            if (choice.setQuest) applyQuestUpdates(choice.setQuest);
-            displayParagraph(choice.target);
+            if (checkResult.success && choice.setQuest) applyQuestUpdates(choice.setQuest);
+            displayParagraph(checkResult.target);
             saveGame();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
