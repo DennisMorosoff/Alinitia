@@ -27,3 +27,4 @@ alwaysApply: false
 
 - После изменения `data.json` запусти `node -e "JSON.parse(require('fs').readFileSync('data.json','utf8'))"`.
 - После изменения `game.js` запусти `node --check game.js`.
+- После изменения квестов, тегов, NPC или сюжетных параграфов обнови `Сценарный документ Алинитии.md` в той же правке (см. правило `scenario-document-sync.mdc`).
