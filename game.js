@@ -17,6 +17,7 @@ function createInitialGameState() {
 
 // Персонажи загружаются из неизменённых экспортов Pathbuilder 2e в characters.json.
 let characterBuilds = {};
+let inventoryTranslations = {};
 const legacyCharacterIds = {
     loui: 'loui-xiv'
 };
@@ -37,7 +38,7 @@ function applyCharacterSelection(characterId) {
     }
 
     gameState.characterId = character.id;
-    gameState.inventory = PathbuilderAdapter.extractInventory(character);
+    gameState.inventory = PathbuilderAdapter.extractInventory(character, inventoryTranslations);
     showNotification(`🎭 Выбран персонаж: ${character.name}`);
     return true;
 }
@@ -161,6 +162,14 @@ function ensureGameStateShape() {
     return changed;
 }
 
+function migrateInventoryTranslations() {
+    const translated = gameState.inventory
+        .map(item => PathbuilderAdapter.translateInventoryItem(item, inventoryTranslations));
+    const changed = translated.some((item, index) => item !== gameState.inventory[index]);
+    if (changed) gameState.inventory = translated;
+    return changed;
+}
+
 function migrateLucenciaDealTagToQuest() {
     const legacyTag = 'Я заключил сделку с Люценцией';
     if (!gameState.tags.includes(legacyTag)) return false;
@@ -186,19 +195,23 @@ function hydrateCharacterSelectionParagraph() {
 
 async function loadGameData() {
     try {
-        const [storyResponse, charactersResponse] = await Promise.all([
+        const [storyResponse, charactersResponse, translationsResponse] = await Promise.all([
             fetch('data.json', { cache: 'no-store' }),
-            fetch('characters.json', { cache: 'no-store' })
+            fetch('characters.json', { cache: 'no-store' }),
+            fetch('inventory-translations.json', { cache: 'no-store' })
         ]);
         if (!storyResponse.ok) throw new Error(`data.json: HTTP ${storyResponse.status}`);
         if (!charactersResponse.ok) throw new Error(`characters.json: HTTP ${charactersResponse.status}`);
+        if (!translationsResponse.ok) throw new Error(`inventory-translations.json: HTTP ${translationsResponse.status}`);
 
-        const [storyData, characterExports] = await Promise.all([
+        const [storyData, characterExports, translationData] = await Promise.all([
             storyResponse.json(),
-            charactersResponse.json()
+            charactersResponse.json(),
+            translationsResponse.json()
         ]);
         paragraphs = storyData;
         characterBuilds = PathbuilderAdapter.normalizeExports(characterExports);
+        inventoryTranslations = translationData;
         questDefinitions = paragraphs._quests || {};
         hydrateCharacterSelectionParagraph();
         console.log(`✅ Загружено ${Object.keys(paragraphs).length} параграфов и ${Object.keys(characterBuilds).length} персонажей`);
@@ -209,7 +222,7 @@ async function loadGameData() {
         console.error('❌ Ошибка загрузки данных игры:', error);
         document.getElementById('story-text').innerHTML =
             `<p style="color:#ff6b6b">⚠️ Не удалось загрузить данные игры: ${escapeHtml(error.message)}.<br>
-            Проверьте data.json и characters.json и запускайте игру через Live Server.</p>`;
+            Проверьте JSON-файлы данных и запускайте игру через Live Server.</p>`;
     }
 }
 
@@ -220,9 +233,10 @@ function loadGame() {
         try {
             gameState = JSON.parse(saved);
             const shapeChanged = ensureGameStateShape();
+            const inventoryChanged = migrateInventoryTranslations();
             const tagsChanged = migrateSavedTags();
             const questsChanged = migrateLucenciaDealTagToQuest();
-            if (shapeChanged || tagsChanged || questsChanged) saveGame();
+            if (shapeChanged || inventoryChanged || tagsChanged || questsChanged) saveGame();
         } catch(e) {
             resetGame(true);
         }

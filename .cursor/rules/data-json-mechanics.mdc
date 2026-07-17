@@ -48,6 +48,7 @@ alwaysApply: false
 - Для добавления героя вставь экспорт в массив; не добавляй ручной выбор в `data.json` и не меняй `game.js`.
 - Стартовый `000` задаёт только `characterSelectionTarget`; выборы генерируются по всем экспортам.
 - `pathbuilder-adapter.js` рассчитывает навыки из `abilities`/`proficiencies`, берёт атаки из `weapons[].attack` и собирает инвентарь из `equipment`, `weapons`, `armor`, `pets`, `familiars`.
+- Переводы названий стартового инвентаря хранятся отдельно в `inventory-translations.json`; экспорт Pathbuilder не редактируй.
 - Имя персонажа должно быть уникальным: из `build.name` автоматически создаётся ID сохранения.
 - Полный перезапуск задаётся выбором `resetGame: true` и возвращает на `000`.
 

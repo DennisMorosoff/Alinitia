@@ -126,7 +126,14 @@
         };
     }
 
-    function extractInventory(character) {
+    function translateInventoryItem(item, translations = {}) {
+        const match = String(item).match(/^(Спутник: |Фамильяр: )?(.*?)( ×\d+)?$/);
+        if (!match) return item;
+        const [, prefix = '', name, quantity = ''] = match;
+        return `${prefix}${translations[name] || name}${quantity}`;
+    }
+
+    function extractInventory(character, translations = {}) {
         const totals = new Map();
         const addEntry = (entry, prefix = '') => {
             const parsed = readInventoryEntry(entry);
@@ -141,7 +148,10 @@
         (character.pets || []).forEach(entry => addEntry(entry, 'Спутник: '));
         (character.familiars || []).forEach(entry => addEntry(entry, 'Фамильяр: '));
 
-        return [...totals].map(([name, quantity]) => quantity > 1 ? `${name} ×${quantity}` : name);
+        return [...totals].map(([name, quantity]) => {
+            const item = quantity > 1 ? `${name} ×${quantity}` : name;
+            return translateInventoryItem(item, translations);
+        });
     }
 
     function normalizeExports(data) {
@@ -182,6 +192,7 @@
         getProficiencyModifier,
         makeCharacterId,
         normalizeExports,
-        resolveSkillCheck
+        resolveSkillCheck,
+        translateInventoryItem
     };
 }));
