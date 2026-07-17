@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debug · Театр Теней Алинитии</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body data-mode="debug">
     <div id="game-container">
@@ -16,8 +16,23 @@
                 <button id="reset-btn">⟲ Сбросить debug</button>
             </div>
         </header>
-        
-        <main id="story-text"></main>
+
+        <aside id="progress-panel" aria-label="Прогресс аудиенции"></aside>
+
+        <section id="debug-tools" aria-label="Инструменты отладки">
+            <form id="debug-goto-form">
+                <label for="debug-goto-id">Параграф</label>
+                <input id="debug-goto-id" type="text" placeholder="Например, 035">
+                <button type="submit">Перейти</button>
+            </form>
+            <label for="debug-gold">Золото</label>
+            <input id="debug-gold" type="number" min="0" step="1">
+            <button id="debug-validate" type="button">Проверить граф</button>
+            <output id="debug-output" aria-live="polite"></output>
+            <div id="debug-state-lists"></div>
+        </section>
+
+        <main id="story-text" tabindex="-1"></main>
         
         <div id="choices"></div>
         
@@ -44,6 +59,22 @@
         </aside>
     </div>
 
-    <script src="game.js"></script>
+    <div id="notification-region" class="notification-region" aria-live="polite" aria-atomic="true"></div>
+
+    <dialog id="skill-check-dialog" aria-labelledby="skill-check-title" aria-describedby="skill-check-details">
+        <form id="skill-check-form" method="dialog">
+            <h2 id="skill-check-title">Проверка навыка</h2>
+            <p id="skill-check-details"></p>
+            <label for="skill-modifier">Модификатор навыка</label>
+            <input id="skill-modifier" name="modifier" type="number" inputmode="numeric" value="0" required>
+            <output id="skill-check-result" aria-live="assertive"></output>
+            <div class="dialog-actions">
+                <button id="skill-check-cancel" type="button">Отменить действие</button>
+                <button id="skill-check-submit" type="submit">Бросить d20</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="game.js?v=3"></script>
 </body>
 </html>

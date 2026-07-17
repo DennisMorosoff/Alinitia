@@ -54,6 +54,48 @@ h1 {
     flex-wrap: wrap;
 }
 
+#progress-panel {
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin: -15px 0 24px;
+    padding: 12px;
+    background: rgba(20, 8, 42, 0.96);
+    border: 1px solid rgba(186, 85, 211, 0.45);
+    border-radius: 9px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.38);
+    backdrop-filter: blur(8px);
+}
+
+#progress-panel div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 5px 8px;
+    text-align: center;
+}
+
+#progress-panel strong {
+    color: #a998b8;
+    font-size: 0.72rem;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+#progress-panel span {
+    color: #f0e4ff;
+    font-size: 0.92rem;
+}
+
+#progress-panel .progress-quests {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(186, 85, 211, 0.22);
+}
+
 #tags-display {
     display: flex;
     gap: 8px;
@@ -111,6 +153,11 @@ h1 {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     border-left: 3px solid rgba(186, 85, 211, 0.5);
+}
+
+#story-text:focus {
+    outline: 2px solid rgba(216, 150, 255, 0.7);
+    outline-offset: 4px;
 }
 
 #story-text p {
@@ -185,16 +232,111 @@ h1 {
 }
 
 .choice-btn:disabled {
-    opacity: 0.35;
+    opacity: 0.58;
     cursor: not-allowed;
     filter: grayscale(0.7);
 }
 
-.choice-btn.locked::after {
-    content: " 🔒 (требуются условия)";
-    font-size: 0.85em;
-    color: #ff9999;
+.choice-lock-reason {
+    display: block;
+    margin-top: 6px;
+    color: #ffb3b3;
+    font-size: 0.82em;
     font-style: italic;
+}
+
+.notification-region {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(380px, calc(100vw - 36px));
+    pointer-events: none;
+}
+
+.notification {
+    padding: 13px 18px;
+    color: white;
+    background: linear-gradient(135deg, #4b0082, #8a2be2);
+    border: 1px solid rgba(216, 150, 255, 0.55);
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.65);
+    animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+}
+
+.notification-warning {
+    color: #ffe5c2;
+    background: linear-gradient(135deg, #5f2418, #8b3d24);
+    border-color: rgba(255, 190, 120, 0.65);
+}
+
+#skill-check-dialog {
+    width: min(480px, calc(100vw - 32px));
+    margin: auto;
+    padding: 0;
+    color: #e0d5f0;
+    background: #180a31;
+    border: 1px solid #ba55d3;
+    border-radius: 12px;
+    box-shadow: 0 0 45px rgba(138, 43, 226, 0.7);
+}
+
+#skill-check-dialog::backdrop {
+    background: rgba(5, 0, 12, 0.78);
+}
+
+#skill-check-form {
+    display: grid;
+    gap: 14px;
+    padding: 24px;
+}
+
+#skill-check-form h2 {
+    color: #d896ff;
+}
+
+#skill-check-form label {
+    color: #c9bad8;
+}
+
+#skill-modifier,
+#debug-tools input,
+#debug-tools select {
+    width: 100%;
+    padding: 9px 11px;
+    color: #f0e4ff;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(186, 85, 211, 0.55);
+    border-radius: 5px;
+    font: inherit;
+}
+
+#skill-check-result {
+    min-height: 3.2em;
+    padding: 10px;
+    color: #ffd27a;
+    background: rgba(255, 210, 122, 0.07);
+    border-radius: 5px;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.dialog-actions button,
+#debug-tools button {
+    padding: 9px 14px;
+    color: #f0e4ff;
+    background: rgba(75, 0, 130, 0.55);
+    border: 1px solid rgba(186, 85, 211, 0.55);
+    border-radius: 5px;
+    cursor: pointer;
+    font: inherit;
 }
 
 .debug-mode #game-container {
@@ -277,6 +419,82 @@ h1 {
 
 .debug-unavailable-choice:hover {
     border-color: rgba(210, 190, 230, 0.45);
+}
+
+#debug-tools {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(120px, 1fr) auto;
+    gap: 10px;
+    align-items: end;
+    margin-bottom: 24px;
+    padding: 14px;
+    color: #c9bad8;
+    background: rgba(255, 210, 120, 0.06);
+    border: 1px dashed rgba(255, 210, 120, 0.32);
+    border-radius: 8px;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 0.82rem;
+}
+
+#debug-goto-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px;
+}
+
+#debug-goto-form label {
+    grid-column: 1 / -1;
+}
+
+#debug-output,
+#debug-state-lists {
+    grid-column: 1 / -1;
+}
+
+#debug-output {
+    display: block;
+    max-height: 130px;
+    overflow: auto;
+    color: #ffd27a;
+}
+
+#debug-state-lists {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+#debug-state-lists details {
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.18);
+    border-radius: 5px;
+}
+
+#debug-state-lists summary {
+    cursor: pointer;
+}
+
+.debug-toggle-list,
+#debug-state-lists details {
+    max-height: 260px;
+    overflow: auto;
+}
+
+.debug-toggle-list label,
+#debug-state-lists details > label {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.debug-toggle-list input {
+    width: auto;
+}
+
+#debug-state-lists select {
+    margin-left: auto;
+    width: auto;
 }
 
 #inventory {
@@ -382,8 +600,51 @@ h1 {
 }
 
 @media (max-width: 600px) {
+    body { padding: 8px; }
     #game-container { padding: 20px; }
     h1 { font-size: 1.6em; }
     #story-text { font-size: 1em; padding: 15px; }
     .paragraph-image { padding: 6px; }
+    #progress-panel {
+        top: 4px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: -8px;
+        padding: 8px;
+    }
+    #status-bar { justify-content: center; }
+    .inventory-tabs { overflow-x: auto; }
+    .tab-btn { min-width: 120px; padding: 12px 10px; }
+    .quest { padding-right: 0; }
+    .quest-state {
+        position: static;
+        display: inline-block;
+        margin-top: 5px;
+    }
+    .notification-region {
+        top: auto;
+        right: 8px;
+        bottom: 8px;
+        width: calc(100vw - 16px);
+    }
+    .dialog-actions { flex-direction: column-reverse; }
+    .dialog-actions button { width: 100%; }
+    #debug-tools { grid-template-columns: 1fr; }
+    #debug-output,
+    #debug-state-lists { grid-column: 1; }
+    #debug-state-lists { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .choice-btn:hover:not(:disabled) {
+        transform: none;
+    }
 }

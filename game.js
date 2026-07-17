@@ -1,12 +1,19 @@
 // ============ СОСТОЯНИЕ ИГРЫ ============
-let gameState = {
-    currentParagraph: '001',
-    tags: [],
-    inventory: [],
-    quests: {},
-    visited: [],
-    flags: {}
-};
+const STARTING_GOLD = 2000;
+
+function createInitialGameState() {
+    return {
+        currentParagraph: '001',
+        tags: [],
+        inventory: [],
+        quests: {},
+        visited: [],
+        flags: {},
+        gold: STARTING_GOLD
+    };
+}
+
+let gameState = createInitialGameState();
 
 // База параграфов — будет загружена из data.json
 let paragraphs = {};
@@ -91,6 +98,7 @@ function migrateSavedTags() {
 }
 
 function ensureGameStateShape() {
+    let changed = false;
     if (!Array.isArray(gameState.tags)) gameState.tags = [];
     if (!Array.isArray(gameState.inventory)) gameState.inventory = [];
     if (!gameState.quests || typeof gameState.quests !== 'object' || Array.isArray(gameState.quests)) {
@@ -100,6 +108,12 @@ function ensureGameStateShape() {
     if (!gameState.flags || typeof gameState.flags !== 'object' || Array.isArray(gameState.flags)) {
         gameState.flags = {};
     }
+    if (!Number.isFinite(gameState.gold) || gameState.gold < 0) {
+        gameState.gold = STARTING_GOLD;
+        changed = true;
+    }
+    gameState.gold = Math.floor(gameState.gold);
+    return changed;
 }
 
 function migrateLucenciaDealTagToQuest() {
@@ -140,10 +154,10 @@ function loadGame() {
     if (saved) {
         try {
             gameState = JSON.parse(saved);
-            ensureGameStateShape();
+            const shapeChanged = ensureGameStateShape();
             const tagsChanged = migrateSavedTags();
             const questsChanged = migrateLucenciaDealTagToQuest();
-            if (tagsChanged || questsChanged) saveGame();
+            if (shapeChanged || tagsChanged || questsChanged) saveGame();
         } catch(e) {
             resetGame(true);
         }
@@ -205,30 +219,100 @@ function addTag(tag) {
     }
 }
 
+function getCheckDegree(roll, total, dc) {
+    let degree = total >= dc + 10
+        ? 3
+        : total >= dc
+            ? 2
+            : total <= dc - 10
+                ? 0
+                : 1;
+    if (roll === 20) degree = Math.min(3, degree + 1);
+    if (roll === 1) degree = Math.max(0, degree - 1);
+    return degree;
+}
+
 function resolveSkillCheck(choice) {
     if (!choice.skillCheck) {
-        return { target: choice.target, success: true };
+        return Promise.resolve({ target: choice.target, success: true, degree: 2 });
     }
 
     const check = choice.skillCheck;
-    const rawModifier = window.prompt(
-        `Проверка: ${check.skill} DC ${check.dc}\nВведите модификатор навыка:`,
-        '0'
-    );
-    const modifier = Number.parseInt(rawModifier || '0', 10);
-    const safeModifier = Number.isNaN(modifier) ? 0 : modifier;
-    const roll = Math.floor(Math.random() * 20) + 1;
-    const total = roll + safeModifier;
-    const isSuccess = total >= check.dc;
+    const dialog = document.getElementById('skill-check-dialog');
+    const form = document.getElementById('skill-check-form');
+    const title = document.getElementById('skill-check-title');
+    const details = document.getElementById('skill-check-details');
+    const modifierInput = document.getElementById('skill-modifier');
+    const result = document.getElementById('skill-check-result');
+    const submit = document.getElementById('skill-check-submit');
+    const cancel = document.getElementById('skill-check-cancel');
 
-    showNotification(
-        `🎲 ${check.skill}: d20 ${roll} ${safeModifier >= 0 ? '+' : ''}${safeModifier} = ${total} против DC ${check.dc}`
-    );
+    return new Promise(resolve => {
+        let rolledResult = null;
+        let settled = false;
 
-    return {
-        target: isSuccess ? choice.target : (check.failTarget || choice.target),
-        success: isSuccess
-    };
+        title.textContent = `Проверка: ${check.skill}`;
+        details.textContent = `Сложность DC ${check.dc}`;
+        modifierInput.value = '0';
+        modifierInput.disabled = false;
+        result.textContent = '';
+        submit.textContent = 'Бросить d20';
+        cancel.hidden = false;
+
+        const finish = value => {
+            if (settled) return;
+            settled = true;
+            form.removeEventListener('submit', onSubmit);
+            cancel.removeEventListener('click', onCancel);
+            dialog.removeEventListener('cancel', onDialogCancel);
+            if (dialog.open) dialog.close();
+            resolve(value);
+        };
+
+        const onCancel = () => finish(null);
+        const onDialogCancel = event => {
+            event.preventDefault();
+            if (!rolledResult) finish(null);
+        };
+        const onSubmit = event => {
+            event.preventDefault();
+            if (rolledResult) {
+                finish(rolledResult);
+                return;
+            }
+
+            const parsedModifier = Number.parseInt(modifierInput.value, 10);
+            const modifier = Number.isNaN(parsedModifier) ? 0 : parsedModifier;
+            const roll = Math.floor(Math.random() * 20) + 1;
+            const total = roll + modifier;
+            const degree = getCheckDegree(roll, total, check.dc);
+            const degreeLabels = ['критический провал', 'провал', 'успех', 'критический успех'];
+            const targets = [
+                check.criticalFailureTarget || check.failTarget || choice.target,
+                check.failTarget || choice.target,
+                choice.target,
+                check.criticalSuccessTarget || choice.target
+            ];
+
+            rolledResult = {
+                target: targets[degree],
+                success: degree >= 2,
+                degree
+            };
+            result.textContent = `d20: ${roll}; модификатор: ${modifier >= 0 ? '+' : ''}${modifier}; итог: ${total} против DC ${check.dc}. Результат: ${degreeLabels[degree]}.`;
+            modifierInput.disabled = true;
+            submit.textContent = 'Продолжить';
+            cancel.hidden = true;
+            submit.focus();
+        };
+
+        form.addEventListener('submit', onSubmit);
+        cancel.addEventListener('click', onCancel);
+        dialog.addEventListener('cancel', onDialogCancel);
+        dialog.showModal();
+        modifierInput.focus();
+        modifierInput.select();
+    });
 }
 
 // ============ КВЕСТЫ ============
@@ -265,6 +349,15 @@ function setQuest(update) {
     if (update.fromStates && !update.fromStates.includes(currentState)) {
         return false;
     }
+    const terminalStates = ['выполнен', 'провален'];
+    if (terminalStates.includes(currentState)
+        && update.state !== currentState
+        && !update.allowTerminalOverride) {
+        const warning = `Заблокировано понижение квеста «${getQuestTitle(update.id)}»: ${currentState} → ${update.state}`;
+        console.warn(warning);
+        if (isDebugMode) showNotification(`⚠️ ${warning}`, 'warning');
+        return false;
+    }
 
     const title = update.title || getQuestTitle(update.id);
     const description = update.description || getQuestDescription(update.id);
@@ -292,18 +385,13 @@ function applyQuestUpdates(updates) {
 }
 
 // ============ УВЕДОМЛЕНИЯ ============
-function showNotification(text) {
+function showNotification(text, type = 'info') {
     const notif = document.createElement('div');
+    notif.className = `notification notification-${type}`;
+    notif.setAttribute('role', type === 'warning' ? 'alert' : 'status');
     notif.textContent = text;
-    notif.style.cssText = `
-        position: fixed; top: 20px; right: 20px;
-        background: linear-gradient(135deg, #4b0082, #8a2be2);
-        color: white; padding: 15px 25px; border-radius: 8px;
-        box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
-        z-index: 1000; animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
-        font-family: inherit;
-    `;
-    document.body.appendChild(notif);
+    const region = document.getElementById('notification-region') || document.body;
+    region.appendChild(notif);
     setTimeout(() => notif.remove(), 3000);
 }
 
@@ -320,6 +408,15 @@ function escapeHtml(value) {
 function renderParagraphText(text, className = '') {
     const classAttr = className ? ` class="${className}"` : '';
     return text.split('\n\n').map(p => `<p${classAttr}>${p}</p>`).join('');
+}
+
+function conditionalTextMatches(block) {
+    const hasAll = hasTags(block.requires || []);
+    const hasAny = !block.requiresAny
+        || block.requiresAny.length === 0
+        || block.requiresAny.some(hasRequirement);
+    const hasNoForbidden = !(block.requiresNot || []).some(hasRequirement);
+    return hasAll && hasAny && hasNoForbidden;
 }
 
 function normalizeParagraphImages(para) {
@@ -403,6 +500,9 @@ function evaluateChoice(choice) {
     const forbiddenQuests = evaluateQuestRequirements(choice.requiresQuestNot || []);
     const requiredAtLeast = evaluateAtLeastRequirement(choice.requiresAtLeast);
     const requiredAtMost = evaluateAtMostRequirement(choice.requiresAtMost);
+    const requiredGold = Number.isFinite(Number(choice.requiresGold))
+        ? Math.max(0, Math.floor(Number(choice.requiresGold)))
+        : 0;
     const missingRequired = required.filter(result => !result.has);
     const presentForbidden = forbidden.filter(result => result.has);
     const missingRequiredQuests = requiredQuests.filter(result => !result.has);
@@ -415,19 +515,56 @@ function evaluateChoice(choice) {
         forbiddenQuests,
         requiredAtLeast,
         requiredAtMost,
+        missingRequired,
+        presentForbidden,
+        missingRequiredQuests,
+        presentForbiddenQuests,
         isAvailable: missingRequired.length === 0
             && presentForbidden.length === 0
             && missingRequiredQuests.length === 0
             && presentForbiddenQuests.length === 0
             && (!requiredAtLeast || requiredAtLeast.has)
             && (!requiredAtMost || requiredAtMost.has)
+            && gameState.gold >= requiredGold,
+        requiredGold,
+        missingGold: Math.max(0, requiredGold - gameState.gold)
     };
+}
+
+function getChoiceLockReason(evaluation, choice) {
+    if (choice.lockReason) return choice.lockReason;
+    const reasons = [];
+    const missing = evaluation.required.filter(item => !item.has).map(item => item.name);
+    if (missing.length) reasons.push(`нужно: ${missing.join(', ')}`);
+    if (evaluation.missingGold > 0) {
+        reasons.push(`не хватает ${evaluation.missingGold} зм (нужно ${evaluation.requiredGold})`);
+    }
+    if (evaluation.missingRequiredQuests.length) {
+        reasons.push(evaluation.missingRequiredQuests
+            .map(item => `квест «${item.title}»: ${item.requiredState || 'активен'}`)
+            .join(', '));
+    }
+    if (evaluation.requiredAtLeast && !evaluation.requiredAtLeast.has) {
+        const missingAtLeast = evaluation.requiredAtLeast.results
+            .filter(item => !item.has)
+            .map(item => item.name);
+        reasons.push(`выполнено ${evaluation.requiredAtLeast.matchedCount} из нужных ${evaluation.requiredAtLeast.count}; отсутствуют: ${missingAtLeast.join(', ')}`);
+    }
+    if (evaluation.presentForbidden?.length || evaluation.presentForbiddenQuests?.length) {
+        reasons.push('этот исход уже закрыт сделанным выбором');
+    }
+    return reasons.join('; ') || 'условия пока не выполнены';
 }
 
 function findIncomingChoices(targetId) {
     return Object.entries(paragraphs).flatMap(([paragraphId, paragraph]) =>
         (paragraph.choices || [])
-            .filter(choice => choice.target === targetId)
+            .filter(choice => [
+                choice.target,
+                choice.skillCheck?.failTarget,
+                choice.skillCheck?.criticalSuccessTarget,
+                choice.skillCheck?.criticalFailureTarget
+            ].includes(targetId))
             .map(choice => ({
                 paragraphId,
                 text: choice.text
@@ -487,7 +624,7 @@ function renderAtMostConditionDebug(result) {
 }
 
 function renderChoiceDebug(choice, index, evaluation) {
-    const targetExists = Boolean(paragraphs[choice.target]);
+    const targetExists = choice.resetGame || Boolean(paragraphs[choice.target]);
     const details = [
         `#${index + 1}`,
         `target: <code>${escapeHtml(choice.target)}</code>`,
@@ -513,11 +650,20 @@ function renderChoiceDebug(choice, index, evaluation) {
     if (choice.removeItem) {
         details.push(`removeItem: ${formatDebugList(Array.isArray(choice.removeItem) ? choice.removeItem : [choice.removeItem])}`);
     }
+    if (choice.removeTags) {
+        details.push(`removeTags: ${formatDebugList(Array.isArray(choice.removeTags) ? choice.removeTags : [choice.removeTags])}`);
+    }
     if (choice.setQuest) {
         details.push(`setQuest: ${formatDebugList((Array.isArray(choice.setQuest) ? choice.setQuest : [choice.setQuest]).map(update => `${getQuestTitle(update.id)} → ${update.state}`))}`);
     }
     if (choice.skillCheck) {
         details.push(`skillCheck: <code>${escapeHtml(choice.skillCheck.skill)}</code> DC ${escapeHtml(choice.skillCheck.dc)}, failTarget: <code>${escapeHtml(choice.skillCheck.failTarget)}</code>`);
+    }
+    if (choice.requiresGold) {
+        details.push(`requiresGold: ${escapeHtml(choice.requiresGold)} · removeGold: ${escapeHtml(choice.removeGold || 0)}`);
+    }
+    if (choice.resetGame) {
+        details.push('action: <code>resetGame</code>');
     }
     if (choice.devNote) {
         details.push(`devNote: ${escapeHtml(choice.devNote)}`);
@@ -613,22 +759,48 @@ function displayParagraph(id) {
             </section>
         `;
     }
+    (para.conditionalTexts || []).forEach(block => {
+        const visible = conditionalTextMatches(block);
+        if (visible) {
+            textHtml += renderParagraphText(block.text, isDebugMode ? 'debug-conditional-visible' : '');
+            if (block.addTags) block.addTags.forEach(addTag);
+            if (block.setQuest) applyQuestUpdates(block.setQuest);
+        } else if (isDebugMode) {
+            textHtml += `
+                <section class="debug-hidden-block">
+                    <div class="debug-hidden-title">Скрытый условный фрагмент · visible: <span class="debug-false">false</span></div>
+                    ${renderParagraphText(block.text)}
+                </section>
+            `;
+        }
+    });
 
     document.getElementById('story-text').innerHTML = textHtml;
 
     const choicesDiv = document.getElementById('choices');
     choicesDiv.innerHTML = '';
     
-    para.choices.forEach((choice, index) => {
+    (para.choices || []).forEach((choice, index) => {
         const evaluation = evaluateChoice(choice);
+        const showLocked = choice.showWhenLocked === true;
 
-        if (!isDebugMode && !evaluation.isAvailable) {
+        if (!isDebugMode && !evaluation.isAvailable && !showLocked) {
             return;
         }
 
         const btn = document.createElement('button');
-        btn.className = `choice-btn${isDebugMode && !evaluation.isAvailable ? ' debug-unavailable-choice' : ''}`;
+        btn.className = `choice-btn${isDebugMode && !evaluation.isAvailable ? ' debug-unavailable-choice' : ''}${!evaluation.isAvailable ? ' locked' : ''}`;
         btn.textContent = choice.text;
+        btn.disabled = !evaluation.isAvailable && !isDebugMode;
+        if (!evaluation.isAvailable) {
+            const reason = getChoiceLockReason(evaluation, choice);
+            btn.setAttribute('aria-describedby', `choice-lock-${index}`);
+            const explanation = document.createElement('span');
+            explanation.id = `choice-lock-${index}`;
+            explanation.className = 'choice-lock-reason';
+            explanation.textContent = `Недоступно: ${reason}`;
+            btn.appendChild(explanation);
+        }
 
         if (isDebugMode) {
             btn.insertAdjacentHTML('beforeend', renderChoiceDebug(choice, index, evaluation));
@@ -637,9 +809,35 @@ function displayParagraph(id) {
                 : 'Скрытый в обычной игре переход: доступен для просмотра в debug';
         }
 
-        btn.onclick = () => {
-            const checkResult = resolveSkillCheck(choice);
+        btn.onclick = async () => {
+            if (!evaluateChoice(choice).isAvailable && !isDebugMode) return;
+            if (choice.resetGame) {
+                resetGame();
+                return;
+            }
+
+            const checkResult = await resolveSkillCheck(choice);
+            if (!checkResult) return;
             if (checkResult.success && choice.addTags) choice.addTags.forEach(tag => addTag(tag));
+            if (checkResult.success && choice.removeTags) {
+                const tagsToRemove = Array.isArray(choice.removeTags) ? choice.removeTags : [choice.removeTags];
+                gameState.tags = gameState.tags.filter(tag => !tagsToRemove.map(normalizeTagName).includes(tag));
+                tagsToRemove.forEach(tag => showNotification(`🕯️ Утрачена метка: ${normalizeTagName(tag)}`));
+            }
+            if (checkResult.success && choice.addGold) {
+                gameState.gold += Math.max(0, Math.floor(Number(choice.addGold) || 0));
+                showNotification(`💰 Получено золото: ${choice.addGold} зм`);
+            }
+            if (checkResult.success && choice.removeGold) {
+                const amount = Math.max(0, Math.floor(Number(choice.removeGold) || 0));
+                if (gameState.gold < amount) {
+                    showNotification(`Недостаточно золота: нужно ${amount} зм`, 'warning');
+                    updateAllDisplays();
+                    return;
+                }
+                gameState.gold -= amount;
+                showNotification(`💰 Потрачено: ${amount} зм`);
+            }
             if (checkResult.success && choice.removeItem) {
                 const itemsToRemove = Array.isArray(choice.removeItem) ? choice.removeItem : [choice.removeItem];
                 itemsToRemove.forEach(item => {
@@ -655,8 +853,8 @@ function displayParagraph(id) {
             }
             if (checkResult.success && choice.setQuest) applyQuestUpdates(choice.setQuest);
             displayParagraph(checkResult.target);
-            saveGame();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
         };
 
         choicesDiv.appendChild(btn);
@@ -665,7 +863,10 @@ function displayParagraph(id) {
     updateTagsDisplay();
     updateInventoryDisplay();
     updateQuestDisplay();
+    updateProgressDisplay();
     saveGame();
+    const story = document.getElementById('story-text');
+    story.focus({ preventScroll: true });
 }
 
 // ============ UI ОБНОВЛЕНИЯ ============
@@ -736,10 +937,44 @@ function updateQuestDisplay() {
     });
 }
 
+function updateProgressDisplay() {
+    const panel = document.getElementById('progress-panel');
+    if (!panel) return;
+    const meritTags = [
+        'У меня есть жетон Печать Заслуги',
+        'У меня есть наряд для аудиенции',
+        'У меня есть жетон Знак Порога',
+        'У меня есть жетон Осколок Признания',
+        'У меня есть приглашение-дар'
+    ];
+    const guaranteeTags = [
+        'Я получил поручительство культа',
+        'Я получил поручительство повстанцев',
+        'Я получил поручительство Люценции',
+        'Я получил поручительство Сарэля'
+    ];
+    const merits = meritTags.filter(hasRequirement).length;
+    const hasGuarantee = guaranteeTags.some(hasRequirement);
+    const activeQuests = Object.values(gameState.quests)
+        .filter(quest => quest.state === 'выдан')
+        .map(quest => quest.title);
+
+    panel.innerHTML = `
+        <div><strong>Жетоны</strong><span>${merits}/5</span></div>
+        <div><strong>Поручительство</strong><span>${hasGuarantee ? 'есть' : 'нет'}</span></div>
+        <div><strong>Ночь</strong><span>${hasRequirement('Я прошёл ночь перед аудиенцией') ? 'пройдена' : 'впереди'}</span></div>
+        <div><strong>Золото</strong><span>${gameState.gold} зм</span></div>
+        <div class="progress-quests"><strong>Активные квесты</strong><span>${activeQuests.length ? activeQuests.map(escapeHtml).join(', ') : 'нет'}</span></div>
+    `;
+    const debugGold = document.getElementById('debug-gold');
+    if (debugGold && document.activeElement !== debugGold) debugGold.value = gameState.gold;
+}
+
 function updateAllDisplays() {
     updateTagsDisplay();
     updateInventoryDisplay();
     updateQuestDisplay();
+    updateProgressDisplay();
 }
 
 function setupInventoryTabs() {
@@ -747,6 +982,7 @@ function setupInventoryTabs() {
     const tabPanels = document.querySelectorAll('.tab-panel');
 
     tabButtons.forEach(button => {
+        button.tabIndex = button.classList.contains('active') ? 0 : -1;
         button.addEventListener('click', () => {
             const targetId = button.dataset.tab;
 
@@ -754,6 +990,7 @@ function setupInventoryTabs() {
                 const isActive = tab === button;
                 tab.classList.toggle('active', isActive);
                 tab.setAttribute('aria-selected', String(isActive));
+                tab.tabIndex = isActive ? 0 : -1;
             });
 
             tabPanels.forEach(panel => {
@@ -761,6 +998,19 @@ function setupInventoryTabs() {
                 panel.classList.toggle('active', isActive);
                 panel.hidden = !isActive;
             });
+        });
+        button.addEventListener('keydown', event => {
+            if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+            event.preventDefault();
+            const buttons = [...tabButtons];
+            const currentIndex = buttons.indexOf(button);
+            const nextIndex = event.key === 'Home'
+                ? 0
+                : event.key === 'End'
+                    ? buttons.length - 1
+                    : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+            buttons[nextIndex].focus();
+            buttons[nextIndex].click();
         });
     });
 }
@@ -772,16 +1022,136 @@ function resetGame(silent = false) {
 
     if (silent || confirm(message)) {
         localStorage.removeItem(storageKey);
-        gameState = {
-            currentParagraph: '001',
-            tags: [],
-            inventory: [],
-            quests: {},
-            visited: [],
-            flags: {}
-        };
+        gameState = createInitialGameState();
         displayParagraph('001');
     }
+}
+
+function getDataValues(field) {
+    const values = new Set();
+    Object.values(paragraphs).forEach(para => {
+        if (!para || typeof para !== 'object') return;
+        [para, para.conditionalText, ...(para.choices || [])].filter(Boolean).forEach(source => {
+            const raw = source[field];
+            if (Array.isArray(raw)) raw.forEach(value => values.add(normalizeTagName(value)));
+            if (typeof raw === 'string') values.add(normalizeTagName(raw));
+        });
+    });
+    return [...values].sort((a, b) => a.localeCompare(b, 'ru'));
+}
+
+function validateGraph() {
+    const ids = new Set(Object.keys(paragraphs).filter(id => id !== '_quests'));
+    const targets = [];
+    Object.entries(paragraphs).forEach(([source, para]) => {
+        if (source === '_quests' || !para?.choices) return;
+        para.choices.forEach(choice => {
+            [
+                ['target', choice.target],
+                ['failTarget', choice.skillCheck?.failTarget],
+                ['criticalSuccessTarget', choice.skillCheck?.criticalSuccessTarget],
+                ['criticalFailureTarget', choice.skillCheck?.criticalFailureTarget]
+            ].forEach(([field, target]) => {
+                if (target) targets.push({ source, field, target });
+            });
+        });
+    });
+    const broken = targets.filter(link => !ids.has(link.target));
+    const reachable = new Set(['001']);
+    let changed = true;
+    while (changed) {
+        changed = false;
+        targets.forEach(link => {
+            if (reachable.has(link.source) && ids.has(link.target) && !reachable.has(link.target)) {
+                reachable.add(link.target);
+                changed = true;
+            }
+        });
+    }
+    const orphaned = [...ids].filter(id => !reachable.has(id));
+    return { broken, orphaned };
+}
+
+function setupDebugTools() {
+    if (!isDebugMode) return;
+    const gotoForm = document.getElementById('debug-goto-form');
+    const gotoInput = document.getElementById('debug-goto-id');
+    const validateButton = document.getElementById('debug-validate');
+    const output = document.getElementById('debug-output');
+    const goldInput = document.getElementById('debug-gold');
+    const stateLists = document.getElementById('debug-state-lists');
+
+    gotoForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const id = gotoInput.value.trim();
+        if (!paragraphs[id]) {
+            output.textContent = `Параграф ${id} не существует.`;
+            return;
+        }
+        displayParagraph(id);
+    });
+    validateButton.addEventListener('click', () => {
+        const { broken, orphaned } = validateGraph();
+        output.textContent = `Битые ссылки: ${broken.length ? broken.map(link => `${link.source}.${link.field}→${link.target}`).join(', ') : 'нет'}. Осиротевшие узлы: ${orphaned.length ? orphaned.join(', ') : 'нет'}.`;
+    });
+    goldInput.value = gameState.gold;
+    goldInput.addEventListener('change', () => {
+        gameState.gold = Math.max(0, Math.floor(Number(goldInput.value) || 0));
+        saveGame();
+        updateProgressDisplay();
+    });
+
+    const renderToggleGroup = (title, values, stateKey) => {
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = `${title} (${values.length})`;
+        details.appendChild(summary);
+        const list = document.createElement('div');
+        list.className = 'debug-toggle-list';
+        values.forEach(value => {
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = gameState[stateKey].includes(value);
+            checkbox.addEventListener('change', () => {
+                gameState[stateKey] = checkbox.checked
+                    ? [...new Set([...gameState[stateKey], value])]
+                    : gameState[stateKey].filter(item => item !== value);
+                saveGame();
+                updateAllDisplays();
+            });
+            label.append(checkbox, document.createTextNode(value));
+            list.appendChild(label);
+        });
+        details.appendChild(list);
+        return details;
+    };
+    stateLists.appendChild(renderToggleGroup('Теги', getDataValues('addTags'), 'tags'));
+    stateLists.appendChild(renderToggleGroup('Предметы', getDataValues('addItem'), 'inventory'));
+
+    const questDetails = document.createElement('details');
+    const questSummary = document.createElement('summary');
+    questSummary.textContent = `Квесты (${Object.keys(questDefinitions).length})`;
+    questDetails.appendChild(questSummary);
+    Object.keys(questDefinitions).forEach(id => {
+        const label = document.createElement('label');
+        label.textContent = getQuestTitle(id);
+        const select = document.createElement('select');
+        questStates.forEach(state => select.add(new Option(state, state)));
+        select.value = getQuestState(id);
+        select.addEventListener('change', () => {
+            const previous = getQuestState(id);
+            if (['выполнен', 'провален'].includes(previous) && select.value !== previous) {
+                showNotification(`⚠️ Debug-понижение квеста: ${previous} → ${select.value}`, 'warning');
+            }
+            setQuest({ id, state: select.value, allowTerminalOverride: true });
+            saveGame();
+            updateAllDisplays();
+        });
+        label.appendChild(select);
+        questDetails.appendChild(label);
+    });
+    stateLists.appendChild(questDetails);
 }
 
 // ============ CSS АНИМАЦИИ ============
@@ -798,4 +1168,4 @@ if (isDebugMode) {
 }
 document.getElementById('reset-btn').onclick = () => resetGame();
 setupInventoryTabs();
-loadGameData();
+loadGameData().then(setupDebugTools);
