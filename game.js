@@ -888,6 +888,10 @@ function updateTagsDisplay() {
 function updateInventoryDisplay() {
     const list = document.getElementById('items-list');
     const empty = document.getElementById('empty-inv');
+    const goldDisplay = document.getElementById('gold-display');
+    if (goldDisplay) {
+        goldDisplay.textContent = `Казна партии: ${gameState.gold} зм`;
+    }
     list.innerHTML = '';
     if (gameState.inventory.length === 0) {
         empty.style.display = 'block';

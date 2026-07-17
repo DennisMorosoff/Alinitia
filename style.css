@@ -538,6 +538,15 @@ h1 {
     padding: 20px;
 }
 
+.gold-display {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 210, 122, 0.25);
+    color: #ffd27a;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
 #items-list {
     list-style: none;
     padding-left: 0;
