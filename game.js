@@ -1,9 +1,11 @@
 // ============ СОСТОЯНИЕ ИГРЫ ============
 const STARTING_GOLD = 2000;
+const STARTING_PARAGRAPH = '000';
 
 function createInitialGameState() {
     return {
-        currentParagraph: '001',
+        currentParagraph: STARTING_PARAGRAPH,
+        characterId: null,
         tags: [],
         inventory: [],
         quests: {},
@@ -11,6 +13,37 @@ function createInitialGameState() {
         flags: {},
         gold: STARTING_GOLD
     };
+}
+
+// Персонажи загружаются из неизменённых экспортов Pathbuilder 2e в characters.json.
+let characterBuilds = {};
+const legacyCharacterIds = {
+    loui: 'loui-xiv'
+};
+
+function getSelectedCharacter() {
+    return characterBuilds[gameState.characterId] || null;
+}
+
+function resolveCharacterSkillCheck(skillText) {
+    return PathbuilderAdapter.resolveSkillCheck(getSelectedCharacter(), skillText);
+}
+
+function applyCharacterSelection(characterId) {
+    const character = characterBuilds[characterId];
+    if (!character) {
+        console.warn(`Неизвестный персонаж: ${characterId}`);
+        return false;
+    }
+
+    gameState.characterId = character.id;
+    gameState.inventory = PathbuilderAdapter.extractInventory(character);
+    showNotification(`🎭 Выбран персонаж: ${character.name}`);
+    return true;
+}
+
+function formatModifier(modifier) {
+    return `${modifier >= 0 ? '+' : ''}${modifier}`;
 }
 
 let gameState = createInitialGameState();
@@ -108,6 +141,18 @@ function ensureGameStateShape() {
     if (!gameState.flags || typeof gameState.flags !== 'object' || Array.isArray(gameState.flags)) {
         gameState.flags = {};
     }
+    if (legacyCharacterIds[gameState.characterId] && characterBuilds[legacyCharacterIds[gameState.characterId]]) {
+        gameState.characterId = legacyCharacterIds[gameState.characterId];
+        changed = true;
+    }
+    if (gameState.characterId != null && !characterBuilds[gameState.characterId]) {
+        gameState.characterId = null;
+        changed = true;
+    }
+    if (!('characterId' in gameState)) {
+        gameState.characterId = null;
+        changed = true;
+    }
     if (!Number.isFinite(gameState.gold) || gameState.gold < 0) {
         gameState.gold = STARTING_GOLD;
         changed = true;
@@ -130,21 +175,41 @@ function migrateLucenciaDealTagToQuest() {
 }
 
 // ============ ЗАГРУЗКА ДАННЫХ ============
+function hydrateCharacterSelectionParagraph() {
+    const paragraph = paragraphs[STARTING_PARAGRAPH];
+    if (!paragraph?.characterSelectionTarget) {
+        throw new Error(`Параграф ${STARTING_PARAGRAPH} не содержит characterSelectionTarget`);
+    }
+    paragraph.choices = Object.values(characterBuilds)
+        .map(character => PathbuilderAdapter.createChoice(character, paragraph.characterSelectionTarget));
+}
+
 async function loadGameData() {
     try {
-        const response = await fetch('data.json', { cache: 'no-store' });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        paragraphs = await response.json();
+        const [storyResponse, charactersResponse] = await Promise.all([
+            fetch('data.json', { cache: 'no-store' }),
+            fetch('characters.json', { cache: 'no-store' })
+        ]);
+        if (!storyResponse.ok) throw new Error(`data.json: HTTP ${storyResponse.status}`);
+        if (!charactersResponse.ok) throw new Error(`characters.json: HTTP ${charactersResponse.status}`);
+
+        const [storyData, characterExports] = await Promise.all([
+            storyResponse.json(),
+            charactersResponse.json()
+        ]);
+        paragraphs = storyData;
+        characterBuilds = PathbuilderAdapter.normalizeExports(characterExports);
         questDefinitions = paragraphs._quests || {};
-        console.log(`✅ Загружено ${Object.keys(paragraphs).length} параграфов`);
-        
+        hydrateCharacterSelectionParagraph();
+        console.log(`✅ Загружено ${Object.keys(paragraphs).length} параграфов и ${Object.keys(characterBuilds).length} персонажей`);
+
         loadGame();
         displayParagraph(gameState.currentParagraph);
     } catch (error) {
-        console.error("❌ Ошибка загрузки data.json:", error);
-        document.getElementById('story-text').innerHTML = 
-            `<p style="color:#ff6b6b">⚠️ Ошибка: не удалось загрузить data.json.<br>
-            Убедитесь, что файл существует и вы открыли игру через Live Server (не двойным кликом!).</p>`;
+        console.error('❌ Ошибка загрузки данных игры:', error);
+        document.getElementById('story-text').innerHTML =
+            `<p style="color:#ff6b6b">⚠️ Не удалось загрузить данные игры: ${escapeHtml(error.message)}.<br>
+            Проверьте data.json и characters.json и запускайте игру через Live Server.</p>`;
     }
 }
 
@@ -243,17 +308,36 @@ function resolveSkillCheck(choice) {
     const title = document.getElementById('skill-check-title');
     const details = document.getElementById('skill-check-details');
     const modifierInput = document.getElementById('skill-modifier');
+    const modifierLabel = document.querySelector('label[for="skill-modifier"]');
     const result = document.getElementById('skill-check-result');
     const submit = document.getElementById('skill-check-submit');
     const cancel = document.getElementById('skill-check-cancel');
+    const character = getSelectedCharacter();
+    const resolvedSkill = resolveCharacterSkillCheck(check.skill);
+    const hasCharacterModifier = Boolean(character && resolvedSkill);
 
     return new Promise(resolve => {
         let rolledResult = null;
         let settled = false;
 
         title.textContent = `Проверка: ${check.skill}`;
-        details.textContent = `Сложность DC ${check.dc}`;
-        modifierInput.value = '0';
+        if (hasCharacterModifier) {
+            details.textContent = `${character.name} · ${resolvedSkill.skill} ${formatModifier(resolvedSkill.modifier)} · DC ${check.dc}`;
+            modifierInput.value = String(resolvedSkill.modifier);
+            modifierInput.readOnly = !isDebugMode;
+            if (modifierLabel) {
+                modifierLabel.textContent = isDebugMode
+                    ? `Модификатор (${character.name}, можно изменить в debug)`
+                    : `Модификатор персонажа (${character.name})`;
+            }
+        } else {
+            details.textContent = character
+                ? `Сложность DC ${check.dc}. Для «${check.skill}» нет автомодификатора — введите вручную.`
+                : `Сложность DC ${check.dc}. Персонаж не выбран — введите модификатор вручную.`;
+            modifierInput.value = '0';
+            modifierInput.readOnly = false;
+            if (modifierLabel) modifierLabel.textContent = 'Модификатор навыка';
+        }
         modifierInput.disabled = false;
         result.textContent = '';
         submit.textContent = 'Бросить d20';
@@ -299,7 +383,10 @@ function resolveSkillCheck(choice) {
                 success: degree >= 2,
                 degree
             };
-            result.textContent = `d20: ${roll}; модификатор: ${modifier >= 0 ? '+' : ''}${modifier}; итог: ${total} против DC ${check.dc}. Результат: ${degreeLabels[degree]}.`;
+            const skillNote = hasCharacterModifier && resolvedSkill.skill !== check.skill
+                ? ` (${resolvedSkill.skill})`
+                : '';
+            result.textContent = `d20: ${roll}; модификатор: ${formatModifier(modifier)}${skillNote}; итог: ${total} против DC ${check.dc}. Результат: ${degreeLabels[degree]}.`;
             modifierInput.disabled = true;
             submit.textContent = 'Продолжить';
             cancel.hidden = true;
@@ -310,8 +397,12 @@ function resolveSkillCheck(choice) {
         cancel.addEventListener('click', onCancel);
         dialog.addEventListener('cancel', onDialogCancel);
         dialog.showModal();
-        modifierInput.focus();
-        modifierInput.select();
+        if (hasCharacterModifier && !isDebugMode) {
+            submit.focus();
+        } else {
+            modifierInput.focus();
+            modifierInput.select();
+        }
     });
 }
 
@@ -647,6 +738,10 @@ function renderChoiceDebug(choice, index, evaluation) {
     if (choice.addItem) {
         details.push(`addItem: <code>${escapeHtml(choice.addItem)}</code>`);
     }
+    if (choice.selectCharacter) {
+        const character = characterBuilds[choice.selectCharacter];
+        details.push(`selectCharacter: <code>${escapeHtml(character ? character.name : choice.selectCharacter)}</code>`);
+    }
     if (choice.removeItem) {
         details.push(`removeItem: ${formatDebugList(Array.isArray(choice.removeItem) ? choice.removeItem : [choice.removeItem])}`);
     }
@@ -818,6 +913,9 @@ function displayParagraph(id) {
 
             const checkResult = await resolveSkillCheck(choice);
             if (!checkResult) return;
+            if (checkResult.success && choice.selectCharacter) {
+                applyCharacterSelection(choice.selectCharacter);
+            }
             if (checkResult.success && choice.addTags) choice.addTags.forEach(tag => addTag(tag));
             if (checkResult.success && choice.removeTags) {
                 const tagsToRemove = Array.isArray(choice.removeTags) ? choice.removeTags : [choice.removeTags];
@@ -889,6 +987,13 @@ function updateInventoryDisplay() {
     const list = document.getElementById('items-list');
     const empty = document.getElementById('empty-inv');
     const goldDisplay = document.getElementById('gold-display');
+    const characterDisplay = document.getElementById('character-display');
+    const character = getSelectedCharacter();
+    if (characterDisplay) {
+        characterDisplay.textContent = character
+            ? `${character.name} · ${character.ancestry}, ${character.class}, ур. ${character.level}`
+            : 'Персонаж не выбран';
+    }
     if (goldDisplay) {
         goldDisplay.textContent = `Казна партии: ${gameState.gold} зм`;
     }
@@ -959,11 +1064,13 @@ function updateProgressDisplay() {
     ];
     const merits = meritTags.filter(hasRequirement).length;
     const hasGuarantee = guaranteeTags.some(hasRequirement);
+    const character = getSelectedCharacter();
     const activeQuests = Object.values(gameState.quests)
         .filter(quest => quest.state === 'выдан')
         .map(quest => quest.title);
 
     panel.innerHTML = `
+        <div><strong>Персонаж</strong><span>${character ? escapeHtml(character.name) : 'не выбран'}</span></div>
         <div><strong>Жетоны</strong><span>${merits}/5</span></div>
         <div><strong>Поручительство</strong><span>${hasGuarantee ? 'есть' : 'нет'}</span></div>
         <div><strong>Ночь</strong><span>${hasRequirement('Я прошёл ночь перед аудиенцией') ? 'пройдена' : 'впереди'}</span></div>
@@ -972,6 +1079,10 @@ function updateProgressDisplay() {
     `;
     const debugGold = document.getElementById('debug-gold');
     if (debugGold && document.activeElement !== debugGold) debugGold.value = gameState.gold;
+    const debugCharacter = document.getElementById('debug-character');
+    if (debugCharacter && document.activeElement !== debugCharacter) {
+        debugCharacter.value = gameState.characterId || '';
+    }
 }
 
 function updateAllDisplays() {
@@ -1027,7 +1138,7 @@ function resetGame(silent = false) {
     if (silent || confirm(message)) {
         localStorage.removeItem(storageKey);
         gameState = createInitialGameState();
-        displayParagraph('001');
+        displayParagraph(STARTING_PARAGRAPH);
     }
 }
 
@@ -1061,7 +1172,7 @@ function validateGraph() {
         });
     });
     const broken = targets.filter(link => !ids.has(link.target));
-    const reachable = new Set(['001']);
+    const reachable = new Set([STARTING_PARAGRAPH]);
     let changed = true;
     while (changed) {
         changed = false;
@@ -1083,6 +1194,7 @@ function setupDebugTools() {
     const validateButton = document.getElementById('debug-validate');
     const output = document.getElementById('debug-output');
     const goldInput = document.getElementById('debug-gold');
+    const characterSelect = document.getElementById('debug-character');
     const stateLists = document.getElementById('debug-state-lists');
 
     gotoForm.addEventListener('submit', event => {
@@ -1098,6 +1210,23 @@ function setupDebugTools() {
         const { broken, orphaned } = validateGraph();
         output.textContent = `Битые ссылки: ${broken.length ? broken.map(link => `${link.source}.${link.field}→${link.target}`).join(', ') : 'нет'}. Осиротевшие узлы: ${orphaned.length ? orphaned.join(', ') : 'нет'}.`;
     });
+    if (characterSelect) {
+        Object.values(characterBuilds).forEach(character => {
+            characterSelect.add(new Option(`${character.name} (${character.class})`, character.id));
+        });
+        characterSelect.value = gameState.characterId || '';
+        characterSelect.addEventListener('change', () => {
+            if (!characterSelect.value) {
+                gameState.characterId = null;
+                saveGame();
+                updateAllDisplays();
+                return;
+            }
+            applyCharacterSelection(characterSelect.value);
+            saveGame();
+            updateAllDisplays();
+        });
+    }
     goldInput.value = gameState.gold;
     goldInput.addEventListener('change', () => {
         gameState.gold = Math.max(0, Math.floor(Number(goldInput.value) || 0));

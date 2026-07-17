@@ -1,0 +1,149 @@
+[
+  {
+    "success": true,
+    "build": {
+      "name": "Harsk",
+      "class": "Ranger",
+      "dualClass": null,
+      "level": 9,
+      "ancestry": "Dwarf",
+      "heritage": "Strong-Blooded Dwarf",
+      "background": "Scout",
+      "keyability": "dex",
+      "abilities": {
+        "str": 16,
+        "dex": 19,
+        "con": 16,
+        "int": 10,
+        "wis": 14,
+        "cha": 10
+      },
+      "proficiencies": {
+        "perception": 6,
+        "fortitude": 4,
+        "reflex": 6,
+        "will": 4,
+        "castingArcane": 2,
+        "castingDivine": 0,
+        "castingOccult": 0,
+        "castingPrimal": 2,
+        "acrobatics": 2,
+        "arcana": 0,
+        "athletics": 2,
+        "crafting": 2,
+        "deception": 0,
+        "diplomacy": 0,
+        "intimidation": 2,
+        "medicine": 0,
+        "nature": 2,
+        "occultism": 0,
+        "performance": 0,
+        "religion": 0,
+        "society": 0,
+        "stealth": 6,
+        "survival": 4,
+        "thievery": 0
+      },
+      "mods": {},
+      "equipment": [],
+      "weapons": [
+        { "name": "Heavy Crossbow", "display": "Heavy Crossbow", "qty": 1, "attack": 17 },
+        { "name": "Dwarven War Axe", "display": "Dwarven War Axe", "qty": 1, "attack": 16 },
+        { "name": "Alchemical Crossbow", "display": "Alchemical Crossbow", "qty": 1, "attack": 17 },
+        { "name": "Mace", "display": "Mace", "qty": 1, "attack": 16 }
+      ],
+      "armor": [
+        { "name": "Studded Leather Armor", "display": "Studded Leather", "qty": 1, "worn": true },
+        { "name": "Studded Leather Armor", "display": "Studded Leather", "qty": 1, "worn": false }
+      ],
+      "spellCasters": [
+        {
+          "name": "Stonewalker",
+          "magicTradition": "arcane",
+          "ability": "cha",
+          "proficiency": 2,
+          "innate": true
+        }
+      ],
+      "pets": [
+        { "type": "Animal Companion", "name": "Young Badger", "animal": "Badger" }
+      ],
+      "familiars": []
+    }
+  },
+  {
+    "success": true,
+    "build": {
+      "name": "Loui XIV",
+      "class": "Magus",
+      "dualClass": null,
+      "level": 9,
+      "ancestry": "Kitsune",
+      "heritage": "Empty Sky Kitsune",
+      "background": "Scholar (Arcana)",
+      "keyability": "dex",
+      "abilities": {
+        "str": 12,
+        "dex": 19,
+        "con": 14,
+        "int": 16,
+        "wis": 12,
+        "cha": 12
+      },
+      "proficiencies": {
+        "perception": 4,
+        "fortitude": 4,
+        "reflex": 4,
+        "will": 6,
+        "castingArcane": 4,
+        "castingDivine": 2,
+        "castingOccult": 0,
+        "castingPrimal": 0,
+        "acrobatics": 4,
+        "arcana": 2,
+        "athletics": 2,
+        "crafting": 0,
+        "deception": 2,
+        "diplomacy": 4,
+        "intimidation": 0,
+        "medicine": 0,
+        "nature": 2,
+        "occultism": 2,
+        "performance": 0,
+        "religion": 2,
+        "society": 2,
+        "stealth": 2,
+        "survival": 0,
+        "thievery": 6
+      },
+      "mods": {},
+      "equipment": [],
+      "weapons": [
+        { "name": "Rapier", "display": "Rapier", "qty": 1, "attack": 17 },
+        { "name": "Club", "display": "Club", "qty": 1, "attack": 14 },
+        { "name": "Light Mace", "display": "Light Mace", "qty": 1, "attack": 17 }
+      ],
+      "armor": [
+        { "name": "Leather Armor", "display": "+1 Leather", "qty": 1, "worn": true }
+      ],
+      "spellCasters": [
+        {
+          "name": "Magus",
+          "magicTradition": "arcane",
+          "ability": "int",
+          "proficiency": 4,
+          "innate": false
+        },
+        {
+          "name": "Kitsune Spell Familiarity",
+          "magicTradition": "divine",
+          "ability": "cha",
+          "proficiency": 2,
+          "innate": true
+        }
+      ],
+      "pets": [],
+      "familiars": []
+    }
+  }
+]
