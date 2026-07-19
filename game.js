@@ -8,11 +8,56 @@ function createInitialGameState() {
         characterId: null,
         tags: [],
         inventory: [],
+        partyInventory: [],
         quests: {},
         visited: [],
         flags: {},
         gold: STARTING_GOLD
     };
+}
+
+function normalizePartyItem(entry) {
+    if (typeof entry === 'string') {
+        const name = entry.trim();
+        return name ? { name } : null;
+    }
+    if (!entry || typeof entry !== 'object') return null;
+    const name = String(entry.name || '').trim();
+    if (!name) return null;
+    const description = String(entry.description || '').trim();
+    return description ? { name, description } : { name };
+}
+
+function getPartyItemName(entry) {
+    return normalizePartyItem(entry)?.name || '';
+}
+
+function findPartyItemIndex(name) {
+    const target = String(name || '').trim();
+    if (!target) return -1;
+    return gameState.partyInventory.findIndex(item => getPartyItemName(item) === target);
+}
+
+function hasPartyItem(name) {
+    return findPartyItemIndex(name) !== -1;
+}
+
+function addPartyItem(entry) {
+    const item = normalizePartyItem(entry);
+    if (!item) return false;
+    if (hasPartyItem(item.name)) return false;
+    gameState.partyInventory.push(item);
+    showNotification(`📜 В общую добычу: ${item.name}`);
+    return true;
+}
+
+function removePartyItem(name) {
+    const index = findPartyItemIndex(name);
+    if (index === -1) return false;
+    const removed = gameState.partyInventory[index];
+    gameState.partyInventory.splice(index, 1);
+    showNotification(`📜 Утрачено из общей добычи: ${getPartyItemName(removed)}`);
+    return true;
 }
 
 // Персонажи загружаются из неизменённых экспортов Pathbuilder 2e в characters.json.
@@ -135,6 +180,25 @@ function ensureGameStateShape() {
     let changed = false;
     if (!Array.isArray(gameState.tags)) gameState.tags = [];
     if (!Array.isArray(gameState.inventory)) gameState.inventory = [];
+    if (!Array.isArray(gameState.partyInventory)) {
+        gameState.partyInventory = [];
+        changed = true;
+    } else {
+        const normalizedParty = gameState.partyInventory
+            .map(normalizePartyItem)
+            .filter(Boolean);
+        const partyChanged = normalizedParty.length !== gameState.partyInventory.length
+            || normalizedParty.some((item, index) => {
+                const prev = gameState.partyInventory[index];
+                return !prev
+                    || item.name !== prev.name
+                    || (item.description || '') !== (prev.description || '');
+            });
+        if (partyChanged) {
+            gameState.partyInventory = normalizedParty;
+            changed = true;
+        }
+    }
     if (!gameState.quests || typeof gameState.quests !== 'object' || Array.isArray(gameState.quests)) {
         gameState.quests = {};
     }
@@ -264,12 +328,19 @@ function getRequirementState(requirement) {
     const hasTag = gameState.tags.includes(normalizedRequirement);
     const hasInventoryItem = gameState.inventory.includes(requirement)
         || gameState.inventory.includes(normalizedRequirement);
+    const hasPartyInventoryItem = hasPartyItem(requirement) || hasPartyItem(normalizedRequirement);
 
     return {
         name: requirement,
         normalizedName: normalizedRequirement,
-        has: hasTag || hasInventoryItem,
-        source: hasTag ? 'тайны' : hasInventoryItem ? 'инвентаря' : null
+        has: hasTag || hasInventoryItem || hasPartyInventoryItem,
+        source: hasTag
+            ? 'тайны'
+            : hasInventoryItem
+                ? 'личного инвентаря'
+                : hasPartyInventoryItem
+                    ? 'общей добычи'
+                    : null
     };
 }
 
@@ -752,12 +823,25 @@ function renderChoiceDebug(choice, index, evaluation) {
     if (choice.addItem) {
         details.push(`addItem: <code>${escapeHtml(choice.addItem)}</code>`);
     }
+    if (choice.addPartyItem) {
+        const partyItems = Array.isArray(choice.addPartyItem) ? choice.addPartyItem : [choice.addPartyItem];
+        details.push(`addPartyItem: ${formatDebugList(partyItems.map(item => {
+            const normalized = normalizePartyItem(item);
+            if (!normalized) return String(item);
+            return normalized.description
+                ? `${normalized.name} — ${normalized.description}`
+                : normalized.name;
+        }))}`);
+    }
     if (choice.selectCharacter) {
         const character = characterBuilds[choice.selectCharacter];
         details.push(`selectCharacter: <code>${escapeHtml(character ? character.name : choice.selectCharacter)}</code>`);
     }
     if (choice.removeItem) {
         details.push(`removeItem: ${formatDebugList(Array.isArray(choice.removeItem) ? choice.removeItem : [choice.removeItem])}`);
+    }
+    if (choice.removePartyItem) {
+        details.push(`removePartyItem: ${formatDebugList(Array.isArray(choice.removePartyItem) ? choice.removePartyItem : [choice.removePartyItem])}`);
     }
     if (choice.removeTags) {
         details.push(`removeTags: ${formatDebugList(Array.isArray(choice.removeTags) ? choice.removeTags : [choice.removeTags])}`);
@@ -959,9 +1043,21 @@ function displayParagraph(id) {
                     }
                 });
             }
+            if (checkResult.success && choice.removePartyItem) {
+                const itemsToRemove = Array.isArray(choice.removePartyItem)
+                    ? choice.removePartyItem
+                    : [choice.removePartyItem];
+                itemsToRemove.forEach(item => removePartyItem(item));
+            }
             if (checkResult.success && choice.addItem && !gameState.inventory.includes(choice.addItem)) {
                 gameState.inventory.push(choice.addItem);
                 showNotification(`📦 Получено: ${choice.addItem}`);
+            }
+            if (checkResult.success && choice.addPartyItem) {
+                const itemsToAdd = Array.isArray(choice.addPartyItem)
+                    ? choice.addPartyItem
+                    : [choice.addPartyItem];
+                itemsToAdd.forEach(item => addPartyItem(item));
             }
             if (checkResult.success && choice.setQuest) applyQuestUpdates(choice.setQuest);
             displayParagraph(checkResult.target);
@@ -998,8 +1094,10 @@ function updateTagsDisplay() {
 }
 
 function updateInventoryDisplay() {
-    const list = document.getElementById('items-list');
-    const empty = document.getElementById('empty-inv');
+    const personalList = document.getElementById('items-list');
+    const personalEmpty = document.getElementById('empty-inv');
+    const partyList = document.getElementById('party-items-list');
+    const partyEmpty = document.getElementById('empty-party-inv');
     const goldDisplay = document.getElementById('gold-display');
     const characterDisplay = document.getElementById('character-display');
     const character = getSelectedCharacter();
@@ -1011,16 +1109,43 @@ function updateInventoryDisplay() {
     if (goldDisplay) {
         goldDisplay.textContent = `Казна партии: ${gameState.gold} зм`;
     }
-    list.innerHTML = '';
-    if (gameState.inventory.length === 0) {
-        empty.style.display = 'block';
-    } else {
-        empty.style.display = 'none';
-        gameState.inventory.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = '◈ ' + item;
-            list.appendChild(li);
-        });
+
+    if (personalList && personalEmpty) {
+        personalList.innerHTML = '';
+        if (gameState.inventory.length === 0) {
+            personalEmpty.style.display = 'block';
+        } else {
+            personalEmpty.style.display = 'none';
+            gameState.inventory.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = '◈ ' + item;
+                personalList.appendChild(li);
+            });
+        }
+    }
+
+    if (partyList && partyEmpty) {
+        partyList.innerHTML = '';
+        if (gameState.partyInventory.length === 0) {
+            partyEmpty.style.display = 'block';
+        } else {
+            partyEmpty.style.display = 'none';
+            gameState.partyInventory.forEach(entry => {
+                const item = normalizePartyItem(entry);
+                if (!item) return;
+                const li = document.createElement('li');
+                li.className = 'party-item';
+                const name = document.createElement('strong');
+                name.textContent = '◈ ' + item.name;
+                li.appendChild(name);
+                if (item.description) {
+                    const description = document.createElement('p');
+                    description.textContent = item.description;
+                    li.appendChild(description);
+                }
+                partyList.appendChild(li);
+            });
+        }
     }
 }
 
@@ -1162,8 +1287,16 @@ function getDataValues(field) {
         if (!para || typeof para !== 'object') return;
         [para, para.conditionalText, ...(para.choices || [])].filter(Boolean).forEach(source => {
             const raw = source[field];
-            if (Array.isArray(raw)) raw.forEach(value => values.add(normalizeTagName(value)));
-            if (typeof raw === 'string') values.add(normalizeTagName(raw));
+            const pushValue = value => {
+                if (typeof value === 'string') {
+                    values.add(normalizeTagName(value));
+                    return;
+                }
+                const partyItem = normalizePartyItem(value);
+                if (partyItem) values.add(partyItem.name);
+            };
+            if (Array.isArray(raw)) raw.forEach(pushValue);
+            else if (raw != null) pushValue(raw);
         });
     });
     return [...values].sort((a, b) => a.localeCompare(b, 'ru'));
@@ -1245,6 +1378,7 @@ function setupDebugTools() {
     goldInput.addEventListener('change', () => {
         gameState.gold = Math.max(0, Math.floor(Number(goldInput.value) || 0));
         saveGame();
+        updateInventoryDisplay();
         updateProgressDisplay();
     });
 
@@ -1259,14 +1393,24 @@ function setupDebugTools() {
             const label = document.createElement('label');
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.checked = gameState[stateKey].includes(value);
-            checkbox.addEventListener('change', () => {
-                gameState[stateKey] = checkbox.checked
-                    ? [...new Set([...gameState[stateKey], value])]
-                    : gameState[stateKey].filter(item => item !== value);
-                saveGame();
-                updateAllDisplays();
-            });
+            if (stateKey === 'partyInventory') {
+                checkbox.checked = hasPartyItem(value);
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) addPartyItem(value);
+                    else removePartyItem(value);
+                    saveGame();
+                    updateAllDisplays();
+                });
+            } else {
+                checkbox.checked = gameState[stateKey].includes(value);
+                checkbox.addEventListener('change', () => {
+                    gameState[stateKey] = checkbox.checked
+                        ? [...new Set([...gameState[stateKey], value])]
+                        : gameState[stateKey].filter(item => item !== value);
+                    saveGame();
+                    updateAllDisplays();
+                });
+            }
             label.append(checkbox, document.createTextNode(value));
             list.appendChild(label);
         });
@@ -1274,7 +1418,8 @@ function setupDebugTools() {
         return details;
     };
     stateLists.appendChild(renderToggleGroup('Теги', getDataValues('addTags'), 'tags'));
-    stateLists.appendChild(renderToggleGroup('Предметы', getDataValues('addItem'), 'inventory'));
+    stateLists.appendChild(renderToggleGroup('Личные предметы', getDataValues('addItem'), 'inventory'));
+    stateLists.appendChild(renderToggleGroup('Общая добыча', getDataValues('addPartyItem'), 'partyInventory'));
 
     const questDetails = document.createElement('details');
     const questSummary = document.createElement('summary');

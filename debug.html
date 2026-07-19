@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debug · Театр Теней Алинитии</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body data-mode="debug">
     <div id="game-container">
@@ -49,9 +49,19 @@
 
             <section id="items-tab" class="tab-panel active" role="tabpanel">
                 <div id="character-display" class="character-display" aria-live="polite"></div>
-                <div id="gold-display" class="gold-display" aria-live="polite"></div>
-                <ul id="items-list"></ul>
-                <div id="empty-inv">Пусто</div>
+
+                <div class="inventory-section" aria-labelledby="personal-inventory-title">
+                    <h3 id="personal-inventory-title" class="inventory-section-title">Личное</h3>
+                    <ul id="items-list"></ul>
+                    <div id="empty-inv" class="inventory-empty">Пусто</div>
+                </div>
+
+                <div class="inventory-section inventory-section-party" aria-labelledby="party-inventory-title">
+                    <h3 id="party-inventory-title" class="inventory-section-title">Общее</h3>
+                    <div id="gold-display" class="gold-display" aria-live="polite"></div>
+                    <ul id="party-items-list"></ul>
+                    <div id="empty-party-inv" class="inventory-empty">Пока нет общих артефактов</div>
+                </div>
             </section>
 
             <section id="quests-tab" class="tab-panel" role="tabpanel" hidden>
@@ -82,6 +92,6 @@
     </dialog>
 
     <script src="pathbuilder-adapter.js?v=2"></script>
-    <script src="game.js?v=7"></script>
+    <script src="game.js?v=8"></script>
 </body>
 </html>

@@ -551,6 +551,29 @@ h1 {
     border-bottom: 1px solid rgba(186, 85, 211, 0.28);
 }
 
+.inventory-section {
+    margin-top: 16px;
+}
+
+.inventory-section:first-of-type {
+    margin-top: 12px;
+}
+
+.inventory-section-title {
+    margin: 0 0 10px;
+    color: #e6d5ff;
+    font-size: 0.95em;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.inventory-section-party {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(186, 85, 211, 0.28);
+}
+
 .gold-display {
     margin-bottom: 14px;
     padding-bottom: 12px;
@@ -560,16 +583,36 @@ h1 {
     letter-spacing: 0.02em;
 }
 
-#items-list {
+.inventory-empty {
+    color: #6a5a7a;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+#items-list,
+#party-items-list {
     list-style: none;
     padding-left: 0;
 }
 
 #items-list li,
+#party-items-list li,
 #quests-list li {
     padding: 6px 0;
     color: #ba55d3;
     border-bottom: 1px dashed rgba(186, 85, 211, 0.2);
+}
+
+.party-item strong {
+    display: block;
+    color: #e6d5ff;
+}
+
+.party-item p {
+    margin: 4px 0 0;
+    color: #a998b8;
+    font-size: 0.9em;
+    line-height: 1.5;
 }
 
 #quests-list {
@@ -616,6 +659,7 @@ h1 {
 }
 
 #empty-inv,
+#empty-party-inv,
 #empty-quests {
     color: #6a5a7a;
     font-style: italic;

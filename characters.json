@@ -47,14 +47,44 @@
       "mods": {},
       "equipment": [],
       "weapons": [
-        { "name": "Heavy Crossbow", "display": "Heavy Crossbow", "qty": 1, "attack": 17 },
-        { "name": "Dwarven War Axe", "display": "Dwarven War Axe", "qty": 1, "attack": 16 },
-        { "name": "Alchemical Crossbow", "display": "Alchemical Crossbow", "qty": 1, "attack": 17 },
-        { "name": "Mace", "display": "Mace", "qty": 1, "attack": 16 }
+        {
+          "name": "Heavy Crossbow",
+          "display": "Heavy Crossbow",
+          "qty": 1,
+          "attack": 17
+        },
+        {
+          "name": "Dwarven War Axe",
+          "display": "Dwarven War Axe",
+          "qty": 1,
+          "attack": 16
+        },
+        {
+          "name": "Alchemical Crossbow",
+          "display": "Alchemical Crossbow",
+          "qty": 1,
+          "attack": 17
+        },
+        {
+          "name": "Mace",
+          "display": "Mace",
+          "qty": 1,
+          "attack": 16
+        }
       ],
       "armor": [
-        { "name": "Studded Leather Armor", "display": "Studded Leather", "qty": 1, "worn": true },
-        { "name": "Studded Leather Armor", "display": "Studded Leather", "qty": 1, "worn": false }
+        {
+          "name": "Studded Leather Armor",
+          "display": "Studded Leather",
+          "qty": 1,
+          "worn": true
+        },
+        {
+          "name": "Studded Leather Armor",
+          "display": "Studded Leather",
+          "qty": 1,
+          "worn": false
+        }
       ],
       "spellCasters": [
         {
@@ -66,7 +96,11 @@
         }
       ],
       "pets": [
-        { "type": "Animal Companion", "name": "Young Badger", "animal": "Badger" }
+        {
+          "type": "Animal Companion",
+          "name": "Young Badger",
+          "animal": "Badger"
+        }
       ],
       "familiars": []
     }
@@ -119,12 +153,32 @@
       "mods": {},
       "equipment": [],
       "weapons": [
-        { "name": "Rapier", "display": "Rapier", "qty": 1, "attack": 17 },
-        { "name": "Club", "display": "Club", "qty": 1, "attack": 14 },
-        { "name": "Light Mace", "display": "Light Mace", "qty": 1, "attack": 17 }
+        {
+          "name": "Rapier",
+          "display": "Rapier",
+          "qty": 1,
+          "attack": 17
+        },
+        {
+          "name": "Club",
+          "display": "Club",
+          "qty": 1,
+          "attack": 14
+        },
+        {
+          "name": "Light Mace",
+          "display": "Light Mace",
+          "qty": 1,
+          "attack": 17
+        }
       ],
       "armor": [
-        { "name": "Leather Armor", "display": "+1 Leather", "qty": 1, "worn": true }
+        {
+          "name": "Leather Armor",
+          "display": "+1 Leather",
+          "qty": 1,
+          "worn": true
+        }
       ],
       "spellCasters": [
         {
@@ -142,6 +196,503 @@
           "innate": true
         }
       ],
+      "pets": [],
+      "familiars": []
+    }
+  },
+  {
+    "success": true,
+    "build": {
+      "name": "Korakai",
+      "class": "Oracle",
+      "dualClass": null,
+      "level": 9,
+      "xp": 0,
+      "ancestry": "Tengu",
+      "heritage": "Skyborn Tengu",
+      "background": "Cook",
+      "alignment": "N",
+      "gender": "Male",
+      "age": "31",
+      "deity": "Not set",
+      "size": 2,
+      "sizeName": "Medium",
+      "keyability": "cha",
+      "languages": [
+        "Common",
+        "Tengu"
+      ],
+      "rituals": [],
+      "resistances": [],
+      "inventorMods": [],
+      "abilities": {
+        "str": 12,
+        "dex": 16,
+        "con": 12,
+        "int": 12,
+        "wis": 14,
+        "cha": 19,
+        "breakdown": {
+          "ancestryFree": [
+            "Cha"
+          ],
+          "ancestryBoosts": [
+            "Dex"
+          ],
+          "ancestryFlaws": [],
+          "backgroundBoosts": [
+            "Con",
+            "Cha"
+          ],
+          "classBoosts": [
+            "Cha"
+          ],
+          "mapLevelledBoosts": {
+            "1": [
+              "Cha",
+              "Dex",
+              "Wis",
+              "Str"
+            ],
+            "5": [
+              "Cha",
+              "Int",
+              "Dex",
+              "Wis"
+            ]
+          }
+        }
+      },
+      "attributes": {
+        "ancestryhp": 6,
+        "classhp": 8,
+        "bonushp": 0,
+        "bonushpPerLevel": 0,
+        "speed": 25,
+        "speedBonus": 0
+      },
+      "proficiencies": {
+        "classDC": 2,
+        "perception": 2,
+        "fortitude": 4,
+        "reflex": 2,
+        "will": 6,
+        "heavy": 0,
+        "medium": 0,
+        "light": 2,
+        "unarmored": 2,
+        "advanced": 0,
+        "martial": 0,
+        "simple": 2,
+        "unarmed": 2,
+        "castingArcane": 0,
+        "castingDivine": 4,
+        "castingOccult": 0,
+        "castingPrimal": 2,
+        "acrobatics": 0,
+        "arcana": 0,
+        "athletics": 2,
+        "crafting": 6,
+        "deception": 2,
+        "diplomacy": 2,
+        "intimidation": 0,
+        "medicine": 0,
+        "nature": 2,
+        "occultism": 0,
+        "performance": 0,
+        "religion": 2,
+        "society": 0,
+        "stealth": 0,
+        "survival": 4,
+        "thievery": 0,
+        "piloting": 0,
+        "computers": 0
+      },
+      "mods": {},
+      "feats": [
+        [
+          "Seasoned",
+          null,
+          "Awarded Feat",
+          1
+        ],
+        [
+          "Skyborn Tengu",
+          null,
+          "Heritage",
+          1,
+          "Heritage Feat",
+          "standardChoice",
+          null
+        ],
+        [
+          "Storm's Lash",
+          null,
+          "Ancestry Feat",
+          1,
+          "Tengu Feat 1",
+          "standardChoice",
+          null
+        ],
+        [
+          "Alchemical Crafting",
+          null,
+          "Skill Feat",
+          2,
+          "Skill Feat 2",
+          "standardChoice",
+          null
+        ],
+        [
+          "Domain Acumen",
+          null,
+          "Class Feat",
+          2,
+          "Oracle Feat 2",
+          "standardChoice",
+          null
+        ],
+        [
+          "Canny Acumen",
+          "Fortitude",
+          "General Feat",
+          3,
+          "General Feat 3",
+          "standardChoice",
+          null
+        ],
+        [
+          "Specialty Crafting",
+          null,
+          "Skill Feat",
+          4,
+          "Skill Feat 4",
+          "standardChoice",
+          null
+        ],
+        [
+          "Vision of Weakness",
+          null,
+          "Class Feat",
+          4,
+          "Oracle Feat 4",
+          "standardChoice",
+          null
+        ],
+        [
+          "One-Toed Hop",
+          null,
+          "Ancestry Feat",
+          5,
+          "Tengu Feat 5",
+          "standardChoice",
+          null
+        ],
+        [
+          "Magical Crafting",
+          null,
+          "Skill Feat",
+          6,
+          "Skill Feat 6",
+          "standardChoice",
+          null
+        ],
+        [
+          "Advanced Revelation",
+          null,
+          "Class Feat",
+          6,
+          "Oracle Feat 6",
+          "standardChoice",
+          null
+        ],
+        [
+          "Bless Tonic",
+          null,
+          "General Feat",
+          7,
+          "General Feat 7",
+          "standardChoice",
+          null
+        ],
+        [
+          "Impeccable Crafter",
+          null,
+          "Skill Feat",
+          8,
+          "Skill Feat 8",
+          "standardChoice",
+          null
+        ],
+        [
+          "Detonating Spell",
+          null,
+          "Class Feat",
+          8,
+          "Oracle Feat 8",
+          "standardChoice",
+          null
+        ],
+        [
+          "Soaring Flight",
+          null,
+          "Ancestry Feat",
+          9,
+          "Tengu Feat 9",
+          "standardChoice",
+          null
+        ]
+      ],
+      "specials": [
+        "Tempest Mystery",
+        "Air",
+        "Revelation Spells",
+        "Oracular Curse",
+        "Low-Light Vision",
+        "Sharp Beak",
+        "Water",
+        "Signature Spells",
+        "Expert Spellcaster",
+        "Resolve",
+        "Magical Fortitude",
+        "Skyborn Tengu"
+      ],
+      "lores": [
+        [
+          "Cooking",
+          4
+        ]
+      ],
+      "equipmentContainers": {},
+      "equipment": [
+        [
+          "Backpack",
+          1,
+          "Invested"
+        ],
+        [
+          "Soap",
+          1,
+          "Invested"
+        ],
+        [
+          "Bedroll",
+          1,
+          "Invested"
+        ],
+        [
+          "Flint and Steel",
+          1,
+          "Invested"
+        ],
+        [
+          "Chalk",
+          10,
+          "Invested"
+        ],
+        [
+          "Rations",
+          14,
+          "Invested"
+        ],
+        [
+          "Rope",
+          1,
+          "Invested"
+        ],
+        [
+          "Torch",
+          5,
+          "Invested"
+        ],
+        [
+          "Waterskin",
+          1,
+          "Invested"
+        ]
+      ],
+      "specificProficiencies": {
+        "trained": [],
+        "expert": [],
+        "master": [],
+        "legendary": []
+      },
+      "weapons": [
+        {
+          "name": "Special Unarmed (1d6)",
+          "qty": 1,
+          "prof": "unarmed",
+          "die": "d6",
+          "pot": 0,
+          "str": "",
+          "mat": null,
+          "display": "Bulk",
+          "runes": [],
+          "damageType": "B, P or S",
+          "attack": 14,
+          "damageBonus": 1,
+          "extraDamage": [],
+          "increasedDice": false,
+          "isInventor": false,
+          "grade": ""
+        }
+      ],
+      "money": {
+        "cp": 0,
+        "sp": 3,
+        "gp": 8,
+        "pp": 8
+      },
+      "armor": [
+        {
+          "name": "Chain Shirt",
+          "qty": 1,
+          "prof": "light",
+          "pot": 0,
+          "res": "",
+          "mat": null,
+          "display": "Chain Shirt",
+          "worn": true,
+          "runes": [],
+          "grade": ""
+        }
+      ],
+      "spellCasters": [
+        {
+          "name": "Oracle",
+          "magicTradition": "divine",
+          "spellcastingType": "spontaneous",
+          "ability": "cha",
+          "proficiency": 4,
+          "focusPoints": 0,
+          "innate": false,
+          "perDay": [
+            6,
+            3,
+            3,
+            3,
+            3,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "spells": [
+            {
+              "spellLevel": 0,
+              "list": [
+                "Light",
+                "Detect Magic",
+                "Disrupt Undead",
+                "Guidance",
+                "Shield",
+                "Electric Arc"
+              ]
+            },
+            {
+              "spellLevel": 1,
+              "list": [
+                "Bless",
+                "Fear",
+                "Heal"
+              ]
+            },
+            {
+              "spellLevel": 2,
+              "list": [
+                "Resist Energy",
+                "Sound Burst",
+                "Faerie Fire"
+              ]
+            },
+            {
+              "spellLevel": 3,
+              "list": [
+                "Rouse Skeletons",
+                "Positive Attunement",
+                "Blindness"
+              ]
+            },
+            {
+              "spellLevel": 4,
+              "list": [
+                "Spell Immunity",
+                "Spell Immunity",
+                "Globe of Invulnerability"
+              ]
+            },
+            {
+              "spellLevel": 5,
+              "list": [
+                "Summon Healing Servitor",
+                "Summon Celestial"
+              ]
+            }
+          ],
+          "prepared": [],
+          "blendedSpells": []
+        },
+        {
+          "name": "Storm's Lash",
+          "magicTradition": "primal",
+          "spellcastingType": "prepared",
+          "ability": "cha",
+          "proficiency": 2,
+          "focusPoints": 0,
+          "innate": true,
+          "perDay": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "spells": [
+            {
+              "spellLevel": 0,
+              "list": [
+                "Electric Arc"
+              ]
+            }
+          ],
+          "prepared": [],
+          "blendedSpells": []
+        }
+      ],
+      "focusPoints": 3,
+      "focus": {
+        "divine": {
+          "cha": {
+            "abilityBonus": 4,
+            "proficiency": 4,
+            "itemBonus": 0,
+            "focusCantrips": [],
+            "focusSpells": [
+              "Pushing Gust",
+              "Tempest Touch",
+              "Tidal Surge",
+              "Vision of Weakness",
+              "Thunderburst"
+            ]
+          }
+        }
+      },
+      "formula": [],
+      "acTotal": {
+        "acProfBonus": 11,
+        "acAbilityBonus": 3,
+        "acItemBonus": 2,
+        "acTotal": 26,
+        "shieldBonus": null
+      },
       "pets": [],
       "familiars": []
     }
