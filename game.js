@@ -102,6 +102,10 @@ const questStates = ['не выдан', 'выдан', 'выполнен', 'пр�
 const isDebugMode = document.body.dataset.mode === 'debug'
     || new URLSearchParams(window.location.search).has('debug');
 const storageKey = isDebugMode ? 'alinithiaGameDebug' : 'alinithiaGame';
+const hiddenKnowledgeTagPrefixes = [
+    'Я знаком с ',
+    'Я знаю название: '
+];
 
 const tagRenames = {
     'Аномалия Лазвека': 'Я заметил странность Лазвека',
@@ -159,6 +163,11 @@ const tagRenames = {
 
 function normalizeTagName(tag) {
     return tagRenames[tag] || tag;
+}
+
+function isHiddenKnowledgeTag(tag) {
+    const normalizedTag = normalizeTagName(tag);
+    return hiddenKnowledgeTagPrefixes.some(prefix => normalizedTag.startsWith(prefix));
 }
 
 function migrateSavedTags() {
@@ -335,7 +344,7 @@ function getRequirementState(requirement) {
         normalizedName: normalizedRequirement,
         has: hasTag || hasInventoryItem || hasPartyInventoryItem,
         source: hasTag
-            ? 'тайны'
+            ? (isHiddenKnowledgeTag(normalizedRequirement) ? 'скрытого знания' : 'тайны')
             : hasInventoryItem
                 ? 'личного инвентаря'
                 : hasPartyInventoryItem
@@ -365,7 +374,9 @@ function addTag(tag) {
     tag = normalizeTagName(tag);
     if (!gameState.tags.includes(tag)) {
         gameState.tags.push(tag);
-        showNotification(`✨ Получен тег: ${tag}`);
+        if (!isHiddenKnowledgeTag(tag) || isDebugMode) {
+            showNotification(`${isHiddenKnowledgeTag(tag) ? '🧭 Получено знание' : '✨ Получен тег'}: ${tag}`);
+        }
     }
 }
 
@@ -595,6 +606,28 @@ function conditionalTextMatches(block) {
     return hasAll && hasAny && hasNoForbidden;
 }
 
+function resolveChoiceLabel(choice) {
+    const variants = Array.isArray(choice.labelVariants) ? choice.labelVariants : [];
+    const matchedIndex = variants.findIndex(conditionalTextMatches);
+    if (matchedIndex === -1) {
+        return {
+            text: choice.text,
+            matchedIndex: null
+        };
+    }
+
+    return {
+        text: variants[matchedIndex].text,
+        matchedIndex
+    };
+}
+
+function shouldShowLockedChoice(choice) {
+    if (choice.showWhenLocked === true) return true;
+    if (!choice.showWhenLocked || typeof choice.showWhenLocked !== 'object') return false;
+    return conditionalTextMatches(choice.showWhenLocked);
+}
+
 function normalizeParagraphImages(para) {
     const rawImages = [
         ...(para.image ? [para.image] : []),
@@ -743,7 +776,7 @@ function findIncomingChoices(targetId) {
             ].includes(targetId))
             .map(choice => ({
                 paragraphId,
-                text: choice.text
+                text: resolveChoiceLabel(choice).text
             }))
     );
 }
@@ -801,11 +834,13 @@ function renderAtMostConditionDebug(result) {
 
 function renderChoiceDebug(choice, index, evaluation) {
     const targetExists = choice.resetGame || Boolean(paragraphs[choice.target]);
+    const resolvedLabel = resolveChoiceLabel(choice);
     const details = [
         `#${index + 1}`,
         `target: <code>${escapeHtml(choice.target)}</code>`,
         `targetExists: <span class="${targetExists ? 'debug-true' : 'debug-false'}">${targetExists}</span>`,
-        `available: <span class="${evaluation.isAvailable ? 'debug-true' : 'debug-false'}">${evaluation.isAvailable}</span>`
+        `available: <span class="${evaluation.isAvailable ? 'debug-true' : 'debug-false'}">${evaluation.isAvailable}</span>`,
+        `label: <code>${escapeHtml(resolvedLabel.text)}</code>`
     ];
 
     const conditionLines = [
@@ -819,6 +854,20 @@ function renderChoiceDebug(choice, index, evaluation) {
 
     if (choice.addTags) {
         details.push(`addTags: ${formatDebugList(choice.addTags.map(normalizeTagName))}`);
+    }
+    if (Array.isArray(choice.labelVariants) && choice.labelVariants.length > 0) {
+        const variants = choice.labelVariants.map((variant, variantIndex) => {
+            const matched = conditionalTextMatches(variant);
+            const selected = resolvedLabel.matchedIndex === variantIndex;
+            const requirements = [
+                ...(variant.requires || []).map(tag => `requires: ${tag}`),
+                ...(variant.requiresAny || []).map(tag => `requiresAny: ${tag}`),
+                ...(variant.requiresNot || []).map(tag => `requiresNot: ${tag}`)
+            ];
+            const state = `${matched ? 'match' : 'skip'}${selected ? ', selected' : ''}`;
+            return `<span class="${selected ? 'debug-true' : 'debug-false'}">#${variantIndex + 1} ${escapeHtml(state)}: <code>${escapeHtml(variant.text)}</code>${requirements.length ? ` (${escapeHtml(requirements.join('; '))})` : ''}</span>`;
+        });
+        details.push(`labelVariants:<br>${variants.join('<br>')}`);
     }
     if (choice.addItem) {
         details.push(`addItem: <code>${escapeHtml(choice.addItem)}</code>`);
@@ -975,7 +1024,8 @@ function displayParagraph(id) {
     
     (para.choices || []).forEach((choice, index) => {
         const evaluation = evaluateChoice(choice);
-        const showLocked = choice.showWhenLocked === true;
+        const resolvedLabel = resolveChoiceLabel(choice);
+        const showLocked = shouldShowLockedChoice(choice);
 
         if (!isDebugMode && !evaluation.isAvailable && !showLocked) {
             return;
@@ -983,7 +1033,7 @@ function displayParagraph(id) {
 
         const btn = document.createElement('button');
         btn.className = `choice-btn${isDebugMode && !evaluation.isAvailable ? ' debug-unavailable-choice' : ''}${!evaluation.isAvailable ? ' locked' : ''}`;
-        btn.textContent = choice.text;
+        btn.textContent = resolvedLabel.text;
         btn.disabled = !evaluation.isAvailable && !isDebugMode;
         if (!evaluation.isAvailable) {
             const reason = getChoiceLockReason(evaluation, choice);
@@ -1081,14 +1131,19 @@ function displayParagraph(id) {
 function updateTagsDisplay() {
     const tagsDiv = document.getElementById('tags-display');
     tagsDiv.innerHTML = '';
-    if (gameState.tags.length === 0) {
+    const displayedTags = isDebugMode
+        ? gameState.tags
+        : gameState.tags.filter(tag => !isHiddenKnowledgeTag(tag));
+    if (displayedTags.length === 0) {
         tagsDiv.innerHTML = '<span style="color:#6a5a7a;font-style:italic;font-size:0.85em">Пока нет открытых тайн...</span>';
         return;
     }
-    gameState.tags.forEach(tag => {
+    displayedTags.forEach(tag => {
         const tagSpan = document.createElement('span');
         tagSpan.className = 'tag';
-        tagSpan.textContent = tag;
+        tagSpan.textContent = isDebugMode && isHiddenKnowledgeTag(tag)
+            ? `[скрытое знание] ${tag}`
+            : tag;
         tagsDiv.appendChild(tagSpan);
     });
 }
@@ -1285,7 +1340,15 @@ function getDataValues(field) {
     const values = new Set();
     Object.values(paragraphs).forEach(para => {
         if (!para || typeof para !== 'object') return;
-        [para, para.conditionalText, ...(para.choices || [])].filter(Boolean).forEach(source => {
+        const choices = para.choices || [];
+        const sources = [
+            para,
+            para.conditionalText,
+            ...(para.conditionalTexts || []),
+            ...choices,
+            ...choices.flatMap(choice => choice.labelVariants || [])
+        ].filter(Boolean);
+        sources.forEach(source => {
             const raw = source[field];
             const pushValue = value => {
                 if (typeof value === 'string') {
