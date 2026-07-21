@@ -840,7 +840,7 @@ function renderChoiceDebug(choice, index, evaluation) {
         `target: <code>${escapeHtml(choice.target)}</code>`,
         `targetExists: <span class="${targetExists ? 'debug-true' : 'debug-false'}">${targetExists}</span>`,
         `available: <span class="${evaluation.isAvailable ? 'debug-true' : 'debug-false'}">${evaluation.isAvailable}</span>`,
-        `label: <code>${escapeHtml(resolvedLabel.text)}</code>`
+        `resolved label: <code>${escapeHtml(resolvedLabel.text)}</code>`
     ];
 
     const conditionLines = [
@@ -856,6 +856,7 @@ function renderChoiceDebug(choice, index, evaluation) {
         details.push(`addTags: ${formatDebugList(choice.addTags.map(normalizeTagName))}`);
     }
     if (Array.isArray(choice.labelVariants) && choice.labelVariants.length > 0) {
+        details.push(`base label: <code>${escapeHtml(choice.text)}</code>`);
         const variants = choice.labelVariants.map((variant, variantIndex) => {
             const matched = conditionalTextMatches(variant);
             const selected = resolvedLabel.matchedIndex === variantIndex;
