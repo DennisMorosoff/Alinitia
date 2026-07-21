@@ -840,7 +840,7 @@ function renderChoiceDebug(choice, index, evaluation) {
         `target: <code>${escapeHtml(choice.target)}</code>`,
         `targetExists: <span class="${targetExists ? 'debug-true' : 'debug-false'}">${targetExists}</span>`,
         `available: <span class="${evaluation.isAvailable ? 'debug-true' : 'debug-false'}">${evaluation.isAvailable}</span>`,
-        `resolved label: <code>${escapeHtml(resolvedLabel.text)}</code>`
+        `active label: <code>${escapeHtml(resolvedLabel.text)}</code>`
     ];
 
     const conditionLines = [
@@ -856,7 +856,8 @@ function renderChoiceDebug(choice, index, evaluation) {
         details.push(`addTags: ${formatDebugList(choice.addTags.map(normalizeTagName))}`);
     }
     if (Array.isArray(choice.labelVariants) && choice.labelVariants.length > 0) {
-        details.push(`base label: <code>${escapeHtml(choice.text)}</code>`);
+        const baseSelected = resolvedLabel.matchedIndex === null;
+        details.push(`<span class="${baseSelected ? 'debug-true' : 'debug-false'}">base variant (${baseSelected ? 'active' : 'inactive'}): <code>${escapeHtml(choice.text)}</code></span>`);
         const variants = choice.labelVariants.map((variant, variantIndex) => {
             const matched = conditionalTextMatches(variant);
             const selected = resolvedLabel.matchedIndex === variantIndex;
@@ -865,7 +866,7 @@ function renderChoiceDebug(choice, index, evaluation) {
                 ...(variant.requiresAny || []).map(tag => `requiresAny: ${tag}`),
                 ...(variant.requiresNot || []).map(tag => `requiresNot: ${tag}`)
             ];
-            const state = `${matched ? 'match' : 'skip'}${selected ? ', selected' : ''}`;
+            const state = `${selected ? 'active' : 'inactive'}; ${matched ? 'match' : 'skip'}`;
             return `<span class="${selected ? 'debug-true' : 'debug-false'}">#${variantIndex + 1} ${escapeHtml(state)}: <code>${escapeHtml(variant.text)}</code>${requirements.length ? ` (${escapeHtml(requirements.join('; '))})` : ''}</span>`;
         });
         details.push(`labelVariants:<br>${variants.join('<br>')}`);
@@ -1047,7 +1048,6 @@ function displayParagraph(id) {
         }
 
         if (isDebugMode) {
-            btn.insertAdjacentHTML('beforeend', renderChoiceDebug(choice, index, evaluation));
             btn.title = evaluation.isAvailable
                 ? 'Доступный переход'
                 : 'Скрытый в обычной игре переход: доступен для просмотра в debug';
@@ -1117,6 +1117,11 @@ function displayParagraph(id) {
         };
 
         choicesDiv.appendChild(btn);
+        if (isDebugMode) {
+            const debugMeta = document.createElement('div');
+            debugMeta.innerHTML = renderChoiceDebug(choice, index, evaluation);
+            choicesDiv.appendChild(debugMeta.firstElementChild);
+        }
     });
 
     updateTagsDisplay();
