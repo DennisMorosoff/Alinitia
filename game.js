@@ -839,8 +839,7 @@ function renderChoiceDebug(choice, index, evaluation) {
         `#${index + 1}`,
         `target: <code>${escapeHtml(choice.target)}</code>`,
         `targetExists: <span class="${targetExists ? 'debug-true' : 'debug-false'}">${targetExists}</span>`,
-        `available: <span class="${evaluation.isAvailable ? 'debug-true' : 'debug-false'}">${evaluation.isAvailable}</span>`,
-        `active label: <code>${escapeHtml(resolvedLabel.text)}</code>`
+        `available: <span class="${evaluation.isAvailable ? 'debug-true' : 'debug-false'}">${evaluation.isAvailable}</span>`
     ];
 
     const conditionLines = [
@@ -857,18 +856,20 @@ function renderChoiceDebug(choice, index, evaluation) {
     }
     if (Array.isArray(choice.labelVariants) && choice.labelVariants.length > 0) {
         const baseSelected = resolvedLabel.matchedIndex === null;
-        details.push(`<span class="${baseSelected ? 'debug-true' : 'debug-false'}">base variant (${baseSelected ? 'active' : 'inactive'}): <code>${escapeHtml(choice.text)}</code></span>`);
-        const variants = choice.labelVariants.map((variant, variantIndex) => {
-            const matched = conditionalTextMatches(variant);
-            const selected = resolvedLabel.matchedIndex === variantIndex;
-            const requirements = [
-                ...(variant.requires || []).map(tag => `requires: ${tag}`),
-                ...(variant.requiresAny || []).map(tag => `requiresAny: ${tag}`),
-                ...(variant.requiresNot || []).map(tag => `requiresNot: ${tag}`)
-            ];
-            const state = `${selected ? 'active' : 'inactive'}; ${matched ? 'match' : 'skip'}`;
-            return `<span class="${selected ? 'debug-true' : 'debug-false'}">#${variantIndex + 1} ${escapeHtml(state)}: <code>${escapeHtml(variant.text)}</code>${requirements.length ? ` (${escapeHtml(requirements.join('; '))})` : ''}</span>`;
-        });
+        const variants = [
+            `<span class="${baseSelected ? 'debug-true' : 'debug-false'}">base ${baseSelected ? 'active' : 'inactive'}: <code>${escapeHtml(choice.text)}</code></span>`,
+            ...choice.labelVariants.map((variant, variantIndex) => {
+                const matched = conditionalTextMatches(variant);
+                const selected = resolvedLabel.matchedIndex === variantIndex;
+                const requirements = [
+                    ...(variant.requires || []).map(tag => `requires: ${tag}`),
+                    ...(variant.requiresAny || []).map(tag => `requiresAny: ${tag}`),
+                    ...(variant.requiresNot || []).map(tag => `requiresNot: ${tag}`)
+                ];
+                const state = `${selected ? 'active' : 'inactive'}; ${matched ? 'match' : 'skip'}`;
+                return `<span class="${selected ? 'debug-true' : 'debug-false'}">#${variantIndex + 1} ${escapeHtml(state)}: <code>${escapeHtml(variant.text)}</code>${requirements.length ? ` (${escapeHtml(requirements.join('; '))})` : ''}</span>`;
+            })
+        ];
         details.push(`labelVariants:<br>${variants.join('<br>')}`);
     }
     if (choice.addItem) {
