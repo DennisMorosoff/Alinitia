@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор · Театр Теней Алинитии</title>
+    <link rel="stylesheet" href="style.css?v=8">
+</head>
+<body data-mode="editor">
+    <div id="game-container">
+        <header>
+            <h1>🌑 Редактор Алинитии</h1>
+            <div class="subtitle">Быстрая правка параграфов и изображений</div>
+            <div id="status-bar">
+                <a href="debug.html">Debug-режим</a>
+                <a href="index.html">Обычный режим</a>
+                <button id="reset-btn" type="button">⟲ Сбросить состояние предпросмотра</button>
+            </div>
+        </header>
+
+        <aside id="progress-panel" aria-label="Прогресс аудиенции" hidden></aside>
+
+        <form id="content-editor-goto-form" class="content-editor-picker">
+            <label for="content-editor-goto-id">Быстрый выбор параграфа</label>
+            <input id="content-editor-goto-id" list="content-editor-paragraph-list" autocomplete="off" placeholder="Введите ID, например 035">
+            <datalist id="content-editor-paragraph-list"></datalist>
+            <button type="submit">Открыть</button>
+        </form>
+
+        <details id="content-editor" open>
+            <summary>Редактор параграфа <code id="content-editor-paragraph-id"></code></summary>
+            <div class="content-editor-body">
+                <div class="content-editor-status-row">
+                    <output id="content-editor-status" aria-live="polite">Подготовка редактора…</output>
+                    <span id="content-editor-dirty" hidden>Есть несохранённые изменения</span>
+                </div>
+
+                <label class="content-editor-field" for="content-editor-text">
+                    Основной текст
+                    <textarea id="content-editor-text" rows="12" spellcheck="true"></textarea>
+                </label>
+
+                <details class="content-editor-group">
+                    <summary>Условные фрагменты</summary>
+                    <div id="content-editor-conditionals"></div>
+                </details>
+
+                <details class="content-editor-group">
+                    <summary>Изображения</summary>
+                    <div id="content-editor-images"></div>
+                    <button id="content-editor-add-image" type="button">Добавить изображение</button>
+                </details>
+
+                <details class="content-editor-group">
+                    <summary>Подписи переходов</summary>
+                    <div id="content-editor-choices"></div>
+                </details>
+
+                <div class="content-editor-actions">
+                    <button id="content-editor-preview" type="button">Предпросмотр</button>
+                    <button id="content-editor-discard" type="button">Отменить правки</button>
+                    <button id="content-editor-export" type="button">Скачать data.json</button>
+                    <button id="content-editor-save" type="button" disabled>Сохранить в data.json</button>
+                </div>
+            </div>
+        </details>
+
+        <section class="editor-preview" aria-labelledby="editor-preview-title">
+            <h2 id="editor-preview-title">Предпросмотр параграфа</h2>
+            <main id="story-text" tabindex="-1"></main>
+            <div id="choices"></div>
+        </section>
+
+        <aside id="inventory" hidden>
+            <div class="inventory-tabs" role="tablist">
+                <button class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="items-tab" data-tab="items-tab">Инвентарь</button>
+                <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="quests-tab" data-tab="quests-tab">Квесты</button>
+                <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="secrets-tab" data-tab="secrets-tab">Тайны</button>
+            </div>
+            <section id="items-tab" class="tab-panel active" role="tabpanel">
+                <div id="character-display"></div>
+                <ul id="items-list"></ul>
+                <div id="empty-inv"></div>
+                <div id="gold-display"></div>
+                <ul id="party-items-list"></ul>
+                <div id="empty-party-inv"></div>
+            </section>
+            <section id="quests-tab" class="tab-panel" role="tabpanel" hidden>
+                <ul id="quests-list"></ul>
+                <div id="empty-quests"></div>
+            </section>
+            <section id="secrets-tab" class="tab-panel" role="tabpanel" hidden>
+                <div id="tags-display"></div>
+            </section>
+        </aside>
+    </div>
+
+    <div id="notification-region" class="notification-region" aria-live="polite" aria-atomic="true"></div>
+
+    <dialog id="skill-check-dialog" aria-labelledby="skill-check-title" aria-describedby="skill-check-details">
+        <form id="skill-check-form" method="dialog">
+            <h2 id="skill-check-title">Проверка навыка</h2>
+            <p id="skill-check-details"></p>
+            <label for="skill-modifier">Модификатор навыка</label>
+            <input id="skill-modifier" name="modifier" type="number" inputmode="numeric" value="0" required>
+            <output id="skill-check-result" aria-live="assertive"></output>
+            <div class="dialog-actions">
+                <button id="skill-check-cancel" type="button">Отменить действие</button>
+                <button id="skill-check-submit" type="submit">Бросить d20</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="pathbuilder-adapter.js?v=2"></script>
+    <script src="game.js?v=14"></script>
+</body>
+</html>

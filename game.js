@@ -96,12 +96,17 @@ let gameState = createInitialGameState();
 
 // База параграфов — будет загружена из data.json
 let paragraphs = {};
+let sourceParagraphs = {};
 let questDefinitions = {};
 const questStates = ['не выдан', 'выдан', 'выполнен', 'провален'];
 
-const isDebugMode = document.body.dataset.mode === 'debug'
+const pageMode = document.body.dataset.mode || 'normal';
+const isDebugMode = pageMode === 'debug'
+    || pageMode === 'editor'
     || new URLSearchParams(window.location.search).has('debug');
+const isContentEditMode = pageMode === 'editor';
 const storageKey = isDebugMode ? 'alinithiaGameDebug' : 'alinithiaGame';
+let contentEditorController = null;
 const hiddenKnowledgeTagPrefixes = [
     'Я знаком с ',
     'Я знаю название: '
@@ -163,6 +168,10 @@ const tagRenames = {
 
 function normalizeTagName(tag) {
     return tagRenames[tag] || tag;
+}
+
+function cloneJson(value) {
+    return JSON.parse(JSON.stringify(value));
 }
 
 function isHiddenKnowledgeTag(tag) {
@@ -282,7 +291,8 @@ async function loadGameData() {
             charactersResponse.json(),
             translationsResponse.json()
         ]);
-        paragraphs = storyData;
+        sourceParagraphs = storyData;
+        paragraphs = cloneJson(storyData);
         characterBuilds = PathbuilderAdapter.normalizeExports(characterExports);
         inventoryTranslations = translationData;
         questDefinitions = paragraphs._quests || {};
@@ -964,7 +974,7 @@ function renderParagraphDebug(id, para) {
     return `<section class="debug-panel">${rows.join('<br>')}</section>`;
 }
 
-function displayParagraph(id) {
+function displayParagraph(id, options = {}) {
     const para = paragraphs[id];
     if (!para) {
         document.getElementById('story-text').innerHTML = 
@@ -972,11 +982,13 @@ function displayParagraph(id) {
         return;
     }
 
-    gameState.currentParagraph = id;
-    if (!gameState.visited.includes(id)) gameState.visited.push(id);
-
-    if (para.addTags) para.addTags.forEach(tag => addTag(tag));
-    if (para.setQuest) applyQuestUpdates(para.setQuest);
+    const applyEffects = options.applyEffects !== false;
+    if (applyEffects) {
+        gameState.currentParagraph = id;
+        if (!gameState.visited.includes(id)) gameState.visited.push(id);
+        if (para.addTags) para.addTags.forEach(tag => addTag(tag));
+        if (para.setQuest) applyQuestUpdates(para.setQuest);
+    }
 
     let textHtml = '';
     if (isDebugMode) {
@@ -988,10 +1000,10 @@ function displayParagraph(id) {
 
     if (para.conditionalText && hasTags(para.conditionalText.requires)) {
         textHtml += renderParagraphText(para.conditionalText.text, isDebugMode ? 'debug-conditional-visible' : '');
-        if (para.conditionalText.addTags) {
+        if (applyEffects && para.conditionalText.addTags) {
             para.conditionalText.addTags.forEach(tag => addTag(tag));
         }
-        if (para.conditionalText.setQuest) {
+        if (applyEffects && para.conditionalText.setQuest) {
             applyQuestUpdates(para.conditionalText.setQuest);
         }
     } else if (isDebugMode && para.conditionalText) {
@@ -1008,8 +1020,8 @@ function displayParagraph(id) {
         const visible = conditionalTextMatches(block);
         if (visible) {
             textHtml += renderParagraphText(block.text, isDebugMode ? 'debug-conditional-visible' : '');
-            if (block.addTags) block.addTags.forEach(addTag);
-            if (block.setQuest) applyQuestUpdates(block.setQuest);
+            if (applyEffects && block.addTags) block.addTags.forEach(addTag);
+            if (applyEffects && block.setQuest) applyQuestUpdates(block.setQuest);
         } else if (isDebugMode) {
             textHtml += `
                 <section class="debug-hidden-block">
@@ -1129,7 +1141,8 @@ function displayParagraph(id) {
     updateInventoryDisplay();
     updateQuestDisplay();
     updateProgressDisplay();
-    saveGame();
+    if (applyEffects) saveGame();
+    contentEditorController?.showParagraph(id);
     const story = document.getElementById('story-text');
     story.focus({ preventScroll: true });
 }
@@ -1413,6 +1426,7 @@ function setupDebugTools() {
     const goldInput = document.getElementById('debug-gold');
     const characterSelect = document.getElementById('debug-character');
     const stateLists = document.getElementById('debug-state-lists');
+    if (!gotoForm || !gotoInput || !validateButton || !output || !goldInput || !stateLists) return;
 
     gotoForm.addEventListener('submit', event => {
         event.preventDefault();
@@ -1516,6 +1530,514 @@ function setupDebugTools() {
     stateLists.appendChild(questDetails);
 }
 
+function setupContentEditor() {
+    if (!isContentEditMode) return;
+
+    const root = document.getElementById('content-editor');
+    const gotoForm = document.getElementById('content-editor-goto-form');
+    const gotoInput = document.getElementById('content-editor-goto-id');
+    const paragraphList = document.getElementById('content-editor-paragraph-list');
+    const paragraphIdDisplay = document.getElementById('content-editor-paragraph-id');
+    const textInput = document.getElementById('content-editor-text');
+    const conditionalsContainer = document.getElementById('content-editor-conditionals');
+    const imagesContainer = document.getElementById('content-editor-images');
+    const choicesContainer = document.getElementById('content-editor-choices');
+    const addImageButton = document.getElementById('content-editor-add-image');
+    const previewButton = document.getElementById('content-editor-preview');
+    const discardButton = document.getElementById('content-editor-discard');
+    const exportButton = document.getElementById('content-editor-export');
+    const saveButton = document.getElementById('content-editor-save');
+    const statusOutput = document.getElementById('content-editor-status');
+    const dirtyIndicator = document.getElementById('content-editor-dirty');
+    if (!root || !gotoForm || !gotoInput || !paragraphList
+        || !paragraphIdDisplay || !textInput || !conditionalsContainer
+        || !imagesContainer || !choicesContainer || !addImageButton
+        || !previewButton || !discardButton || !exportButton || !saveButton
+        || !statusOutput || !dirtyIndicator) {
+        return;
+    }
+
+    const editorToken = document.querySelector('meta[name="alinitia-editor-token"]')?.content || '';
+    const state = {
+        currentId: null,
+        drafts: new Map(),
+        dirtyIds: new Set(),
+        imageModels: new Map(),
+        serverAvailable: false,
+        revision: null,
+        busy: false
+    };
+
+    Object.entries(sourceParagraphs)
+        .filter(([id]) => id !== '_quests')
+        .forEach(([id, paragraph]) => {
+            const option = document.createElement('option');
+            const excerpt = String(paragraph.text || '')
+                .replace(/<[^>]+>/g, '')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .slice(0, 100);
+            option.value = id;
+            option.label = excerpt;
+            paragraphList.appendChild(option);
+        });
+
+    gotoForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const id = gotoInput.value.trim();
+        if (!sourceParagraphs[id] || id === '_quests') {
+            setEditorStatus(`Параграф ${id || 'без ID'} не найден.`, 'error');
+            return;
+        }
+        displayParagraph(id, { applyEffects: false });
+        window.scrollTo({ top: 0, behavior: 'auto' });
+    });
+
+    function setEditorStatus(message, type = 'info') {
+        statusOutput.textContent = message;
+        statusOutput.dataset.type = type;
+    }
+
+    function getDraft(id) {
+        if (!state.drafts.has(id)) {
+            state.drafts.set(id, cloneJson(sourceParagraphs[id]));
+        }
+        return state.drafts.get(id);
+    }
+
+    function updateEditorActions() {
+        const dirty = state.currentId != null && state.dirtyIds.has(state.currentId);
+        dirtyIndicator.hidden = !dirty;
+        previewButton.disabled = state.busy || !dirty;
+        discardButton.disabled = state.busy || !dirty;
+        saveButton.disabled = state.busy || !dirty || !state.serverAvailable;
+        exportButton.disabled = state.busy;
+        addImageButton.disabled = state.busy;
+    }
+
+    function markDirty(id) {
+        state.dirtyIds.add(id);
+        updateEditorActions();
+    }
+
+    function describeConditions(block) {
+        const parts = [];
+        if (block.requires?.length) parts.push(`requires: ${block.requires.join(', ')}`);
+        if (block.requiresAny?.length) parts.push(`requiresAny: ${block.requiresAny.join(', ')}`);
+        if (block.requiresNot?.length) parts.push(`requiresNot: ${block.requiresNot.join(', ')}`);
+        return parts.join(' · ') || 'без условий';
+    }
+
+    function createTextareaField(labelText, value, onInput, rows = 5) {
+        const label = document.createElement('label');
+        label.className = 'content-editor-field';
+        const title = document.createElement('span');
+        title.textContent = labelText;
+        const textarea = document.createElement('textarea');
+        textarea.rows = rows;
+        textarea.value = value || '';
+        textarea.spellcheck = true;
+        textarea.addEventListener('input', () => onInput(textarea.value));
+        label.append(title, textarea);
+        return label;
+    }
+
+    function renderConditionalEditors(id, draft) {
+        conditionalsContainer.innerHTML = '';
+        const blocks = [];
+        if (draft.conditionalText) {
+            blocks.push({
+                label: 'conditionalText',
+                block: draft.conditionalText
+            });
+        }
+        (draft.conditionalTexts || []).forEach((block, index) => {
+            blocks.push({
+                label: `conditionalTexts[${index}]`,
+                block
+            });
+        });
+
+        if (blocks.length === 0) {
+            conditionalsContainer.textContent = 'В этом параграфе нет условных фрагментов.';
+            return;
+        }
+
+        blocks.forEach(({ label, block }) => {
+            const wrapper = document.createElement('section');
+            wrapper.className = 'content-editor-entry';
+            const meta = document.createElement('div');
+            meta.className = 'content-editor-meta';
+            const active = conditionalTextMatches(block);
+            meta.textContent = `${label} · ${active ? 'active' : 'inactive'} · ${describeConditions(block)}`;
+            wrapper.append(
+                meta,
+                createTextareaField('Текст фрагмента', block.text, value => {
+                    block.text = value;
+                    markDirty(id);
+                })
+            );
+            conditionalsContainer.appendChild(wrapper);
+        });
+    }
+
+    function createImageModels(draft) {
+        return normalizeParagraphImages(draft).map(image => ({
+            src: image.src,
+            alt: image.alt,
+            caption: image.caption,
+            file: null
+        }));
+    }
+
+    function getImageModels(id, draft) {
+        if (!state.imageModels.has(id)) {
+            state.imageModels.set(id, createImageModels(draft));
+        }
+        return state.imageModels.get(id);
+    }
+
+    function syncImagesToDraft(id, draft) {
+        const models = getImageModels(id, draft);
+        const images = models
+            .filter(model => model.src.trim() || model.file)
+            .map(model => ({
+                src: model.src.trim(),
+                alt: model.alt,
+                caption: model.caption
+            }));
+        delete draft.image;
+        delete draft.images;
+        if (images.length === 1) draft.image = images[0];
+        if (images.length > 1) draft.images = images;
+        markDirty(id);
+    }
+
+    function createImageTextField(labelText, value, onInput) {
+        const label = document.createElement('label');
+        label.className = 'content-editor-field content-editor-image-field';
+        const title = document.createElement('span');
+        title.textContent = labelText;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = value || '';
+        input.addEventListener('input', () => onInput(input.value));
+        label.append(title, input);
+        return label;
+    }
+
+    function renderImageEditors(id, draft) {
+        imagesContainer.innerHTML = '';
+        const models = getImageModels(id, draft);
+        if (models.length === 0) {
+            const empty = document.createElement('p');
+            empty.className = 'content-editor-empty';
+            empty.textContent = 'У параграфа пока нет изображений.';
+            imagesContainer.appendChild(empty);
+            return;
+        }
+
+        models.forEach((model, index) => {
+            const wrapper = document.createElement('section');
+            wrapper.className = 'content-editor-entry content-editor-image-entry';
+            const heading = document.createElement('div');
+            heading.className = 'content-editor-entry-heading';
+            const title = document.createElement('strong');
+            title.textContent = `Изображение ${index + 1}`;
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.textContent = 'Удалить';
+            removeButton.addEventListener('click', () => {
+                models.splice(index, 1);
+                syncImagesToDraft(id, draft);
+                renderImageEditors(id, draft);
+            });
+            heading.append(title, removeButton);
+
+            const fileLabel = document.createElement('label');
+            fileLabel.className = 'content-editor-field content-editor-image-field';
+            const fileTitle = document.createElement('span');
+            fileTitle.textContent = 'Загрузить новый файл';
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.png,.jpg,.jpeg,.webp,.gif,.avif';
+            fileInput.addEventListener('change', () => {
+                model.file = fileInput.files?.[0] || null;
+                if (model.file) {
+                    markDirty(id);
+                    setEditorStatus(`Файл «${model.file.name}» будет загружен при сохранении.`);
+                }
+            });
+            fileLabel.append(fileTitle, fileInput);
+
+            wrapper.append(
+                heading,
+                createImageTextField('Путь', model.src, value => {
+                    model.src = value;
+                    syncImagesToDraft(id, draft);
+                }),
+                createImageTextField('Alt-текст', model.alt, value => {
+                    model.alt = value;
+                    syncImagesToDraft(id, draft);
+                }),
+                createImageTextField('Подпись', model.caption, value => {
+                    model.caption = value;
+                    syncImagesToDraft(id, draft);
+                }),
+                fileLabel
+            );
+            imagesContainer.appendChild(wrapper);
+        });
+    }
+
+    function renderChoiceEditors(id, draft) {
+        choicesContainer.innerHTML = '';
+        const choices = draft.choices || [];
+        if (choices.length === 0) {
+            choicesContainer.textContent = id === STARTING_PARAGRAPH
+                ? 'Выборы персонажей создаются автоматически из characters.json и здесь не редактируются.'
+                : 'У этого параграфа нет переходов.';
+            return;
+        }
+
+        choices.forEach((choice, choiceIndex) => {
+            const wrapper = document.createElement('section');
+            wrapper.className = 'content-editor-entry';
+            const resolvedLabel = resolveChoiceLabel(choice);
+            const meta = document.createElement('div');
+            meta.className = 'content-editor-meta';
+            meta.textContent = `choices[${choiceIndex}] → ${choice.target || 'действие без target'}`;
+            wrapper.append(
+                meta,
+                createTextareaField(
+                    `Базовая подпись${resolvedLabel.matchedIndex == null ? ' · active' : ''}`,
+                    choice.text,
+                    value => {
+                        choice.text = value;
+                        markDirty(id);
+                    },
+                    2
+                )
+            );
+            (choice.labelVariants || []).forEach((variant, variantIndex) => {
+                wrapper.append(
+                    createTextareaField(
+                        `labelVariants[${variantIndex}]${resolvedLabel.matchedIndex === variantIndex ? ' · active' : ' · inactive'} · ${describeConditions(variant)}`,
+                        variant.text,
+                        value => {
+                            variant.text = value;
+                            markDirty(id);
+                        },
+                        2
+                    )
+                );
+            });
+            choicesContainer.appendChild(wrapper);
+        });
+    }
+
+    function renderEditor(id) {
+        const draft = getDraft(id);
+        paragraphIdDisplay.textContent = id;
+        textInput.value = draft.text || '';
+        textInput.oninput = () => {
+            draft.text = textInput.value;
+            markDirty(id);
+        };
+        renderConditionalEditors(id, draft);
+        renderImageEditors(id, draft);
+        renderChoiceEditors(id, draft);
+        updateEditorActions();
+    }
+
+    async function checkEditorServer() {
+        if (!editorToken) {
+            state.serverAvailable = false;
+            setEditorStatus('Запись на диск недоступна: запустите node scripts/dev-server.js. Экспорт JSON работает.');
+            updateEditorActions();
+            return;
+        }
+        try {
+            const response = await fetch('/api/editor/status', {
+                headers: { 'X-Alinitia-Editor-Token': editorToken },
+                cache: 'no-store'
+            });
+            const result = await response.json();
+            if (!response.ok || !result.editable) throw new Error(result.error || `HTTP ${response.status}`);
+            state.serverAvailable = true;
+            state.revision = result.revision;
+            setEditorStatus('Локальный сервер подключён. Можно сохранять прямо в data.json.', 'success');
+        } catch (error) {
+            state.serverAvailable = false;
+            setEditorStatus(`Запись на диск недоступна: ${error.message}. Используйте экспорт JSON.`, 'warning');
+        }
+        updateEditorActions();
+    }
+
+    async function uploadPendingImages(id, draft, uploadedImages) {
+        const models = getImageModels(id, draft);
+        for (const model of models) {
+            if (!model.file) continue;
+            const originalFile = model.file;
+            const originalSrc = model.src;
+            const response = await fetch(`/api/editor/image?name=${encodeURIComponent(model.file.name)}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': model.file.type || 'application/octet-stream',
+                    'X-Alinitia-Editor-Token': editorToken
+                },
+                body: model.file
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || `Не удалось загрузить ${model.file.name}.`);
+            model.src = result.path;
+            model.file = null;
+            uploadedImages.push({ model, originalFile, originalSrc, path: result.path });
+        }
+        syncImagesToDraft(id, draft);
+    }
+
+    async function rollbackUploadedImages(id, draft, uploadedImages) {
+        let cleanupSucceeded = true;
+        for (const upload of uploadedImages) {
+            try {
+                const response = await fetch(`/api/editor/image?path=${encodeURIComponent(upload.path)}`, {
+                    method: 'DELETE',
+                    headers: { 'X-Alinitia-Editor-Token': editorToken }
+                });
+                if (!response.ok && response.status !== 404) cleanupSucceeded = false;
+            } catch {
+                cleanupSucceeded = false;
+            }
+            upload.model.file = upload.originalFile;
+            upload.model.src = upload.originalSrc;
+        }
+        if (uploadedImages.length > 0) syncImagesToDraft(id, draft);
+        return cleanupSucceeded;
+    }
+
+    function applyDraftPreview(id) {
+        paragraphs[id] = cloneJson(getDraft(id));
+        if (id === STARTING_PARAGRAPH) hydrateCharacterSelectionParagraph();
+        displayParagraph(id, { applyEffects: false });
+        setEditorStatus('Предпросмотр обновлён без повторного применения тегов и квестов.', 'success');
+    }
+
+    previewButton.addEventListener('click', () => {
+        if (!state.currentId) return;
+        applyDraftPreview(state.currentId);
+    });
+
+    discardButton.addEventListener('click', () => {
+        const id = state.currentId;
+        if (!id || !state.dirtyIds.has(id)) return;
+        if (!confirm(`Отменить несохранённые правки параграфа ${id}?`)) return;
+        state.drafts.delete(id);
+        state.imageModels.delete(id);
+        state.dirtyIds.delete(id);
+        paragraphs[id] = cloneJson(sourceParagraphs[id]);
+        if (id === STARTING_PARAGRAPH) hydrateCharacterSelectionParagraph();
+        displayParagraph(id, { applyEffects: false });
+        setEditorStatus('Несохранённые правки отменены.');
+    });
+
+    addImageButton.addEventListener('click', () => {
+        const id = state.currentId;
+        if (!id) return;
+        const draft = getDraft(id);
+        getImageModels(id, draft).push({ src: '', alt: '', caption: '', file: null });
+        syncImagesToDraft(id, draft);
+        renderImageEditors(id, draft);
+    });
+
+    exportButton.addEventListener('click', () => {
+        const hasPendingFiles = [...state.imageModels.values()]
+            .some(models => models.some(model => model.file));
+        if (hasPendingFiles) {
+            setEditorStatus('Сначала сохраните выбранные изображения через локальный сервер или укажите готовые пути вручную.', 'warning');
+            return;
+        }
+        const exportData = cloneJson(sourceParagraphs);
+        state.dirtyIds.forEach(id => {
+            exportData[id] = cloneJson(getDraft(id));
+        });
+        const blob = new Blob([`${JSON.stringify(exportData, null, 2)}\n`], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'data.json';
+        link.click();
+        URL.revokeObjectURL(link.href);
+        setEditorStatus('data.json скачан. Замените им файл проекта после проверки diff.', 'success');
+    });
+
+    saveButton.addEventListener('click', async () => {
+        const id = state.currentId;
+        if (!id || !state.serverAvailable || !state.dirtyIds.has(id)) return;
+        state.busy = true;
+        updateEditorActions();
+        setEditorStatus(`Сохранение параграфа ${id}…`);
+        const uploadedImages = [];
+        try {
+            const draft = getDraft(id);
+            await uploadPendingImages(id, draft, uploadedImages);
+            const response = await fetch('/api/editor/paragraph', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Alinitia-Editor-Token': editorToken
+                },
+                body: JSON.stringify({
+                    paragraphId: id,
+                    paragraph: draft,
+                    expectedRevision: state.revision
+                })
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                if (response.status === 409) {
+                    state.serverAvailable = false;
+                }
+                throw new Error(result.error || `HTTP ${response.status}`);
+            }
+            state.revision = result.revision;
+            sourceParagraphs[id] = cloneJson(result.paragraph);
+            paragraphs[id] = cloneJson(result.paragraph);
+            state.drafts.delete(id);
+            state.imageModels.delete(id);
+            state.dirtyIds.delete(id);
+            if (id === STARTING_PARAGRAPH) hydrateCharacterSelectionParagraph();
+            displayParagraph(id, { applyEffects: false });
+            setEditorStatus(`Параграф ${id} сохранён. Резервная копия: data.json.bak.`, 'success');
+        } catch (error) {
+            const cleanupSucceeded = await rollbackUploadedImages(id, getDraft(id), uploadedImages);
+            const cleanupMessage = cleanupSucceeded
+                ? ''
+                : ' Не все загруженные файлы удалось удалить; проверьте папку images/.';
+            setEditorStatus(`Не удалось сохранить: ${error.message}${cleanupMessage}`, 'error');
+        } finally {
+            state.busy = false;
+            updateEditorActions();
+        }
+    });
+
+    contentEditorController = {
+        showParagraph(id) {
+            if (!sourceParagraphs[id]) return;
+            state.currentId = id;
+            gotoInput.value = id;
+            renderEditor(id);
+        }
+    };
+    contentEditorController.showParagraph(gameState.currentParagraph);
+    checkEditorServer();
+
+    window.addEventListener('beforeunload', event => {
+        if (state.dirtyIds.size === 0) return;
+        event.preventDefault();
+        event.returnValue = '';
+    });
+}
+
 // ============ CSS АНИМАЦИИ ============
 const style = document.createElement('style');
 style.textContent = `
@@ -1528,6 +2050,12 @@ document.head.appendChild(style);
 if (isDebugMode) {
     document.body.classList.add('debug-mode');
 }
+if (isContentEditMode) {
+    document.body.classList.add('editor-mode');
+}
 document.getElementById('reset-btn').onclick = () => resetGame();
 setupInventoryTabs();
-loadGameData().then(setupDebugTools);
+loadGameData().then(() => {
+    setupDebugTools();
+    setupContentEditor();
+});
