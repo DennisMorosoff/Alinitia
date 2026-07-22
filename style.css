@@ -130,17 +130,19 @@ h1 {
     box-shadow: 0 0 10px rgba(220, 20, 60, 0.5);
 }
 
-#normal-mode-link {
+.mode-nav-btn {
     background: rgba(75, 0, 130, 0.35);
     color: #d8c3ff;
     border: 1px solid rgba(186, 85, 211, 0.45);
     padding: 8px 16px;
     border-radius: 5px;
-    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
     font-size: 0.85em;
 }
 
-#normal-mode-link:hover {
+.mode-nav-btn:hover {
     background: rgba(138, 43, 226, 0.45);
     box-shadow: 0 0 10px rgba(138, 43, 226, 0.35);
 }

@@ -2028,7 +2028,16 @@ function setupContentEditor() {
             renderEditor(id);
         }
     };
-    contentEditorController.showParagraph(gameState.currentParagraph);
+
+    const requestedId = new URLSearchParams(window.location.search).get('p')?.trim();
+    const initialId = requestedId && sourceParagraphs[requestedId] && requestedId !== '_quests'
+        ? requestedId
+        : gameState.currentParagraph;
+    if (initialId !== gameState.currentParagraph) {
+        displayParagraph(initialId, { applyEffects: false });
+    } else {
+        contentEditorController.showParagraph(initialId);
+    }
     checkEditorServer();
 
     window.addEventListener('beforeunload', event => {
@@ -2053,6 +2062,21 @@ if (isDebugMode) {
 if (isContentEditMode) {
     document.body.classList.add('editor-mode');
 }
+
+document.querySelectorAll('.mode-nav-btn[data-nav]').forEach(button => {
+    button.addEventListener('click', () => {
+        window.location.href = button.dataset.nav;
+    });
+});
+
+const editCurrentButton = document.getElementById('edit-current-btn');
+if (editCurrentButton) {
+    editCurrentButton.addEventListener('click', () => {
+        const id = gameState.currentParagraph || STARTING_PARAGRAPH;
+        window.open(`edit.html?p=${encodeURIComponent(id)}`, '_blank', 'noopener,noreferrer');
+    });
+}
+
 document.getElementById('reset-btn').onclick = () => resetGame();
 setupInventoryTabs();
 loadGameData().then(() => {

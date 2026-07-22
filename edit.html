@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактор · Театр Теней Алинитии</title>
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body data-mode="editor">
     <div id="game-container">
@@ -12,8 +12,8 @@
             <h1>🌑 Редактор Алинитии</h1>
             <div class="subtitle">Быстрая правка параграфов и изображений</div>
             <div id="status-bar">
-                <a href="debug.html">Debug-режим</a>
-                <a href="index.html">Обычный режим</a>
+                <button type="button" class="mode-nav-btn" data-nav="debug.html">Debug-режим</button>
+                <button type="button" class="mode-nav-btn" data-nav="index.html">Обычный режим</button>
                 <button id="reset-btn" type="button">⟲ Сбросить состояние предпросмотра</button>
             </div>
         </header>
@@ -112,6 +112,6 @@
     </dialog>
 
     <script src="pathbuilder-adapter.js?v=2"></script>
-    <script src="game.js?v=14"></script>
+    <script src="game.js?v=15"></script>
 </body>
 </html>
