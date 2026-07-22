@@ -1539,6 +1539,7 @@ function setupContentEditor() {
     const paragraphList = document.getElementById('content-editor-paragraph-list');
     const paragraphIdDisplay = document.getElementById('content-editor-paragraph-id');
     const textInput = document.getElementById('content-editor-text');
+    const textToolbar = document.getElementById('content-editor-text-toolbar');
     const conditionalsContainer = document.getElementById('content-editor-conditionals');
     const imagesContainer = document.getElementById('content-editor-images');
     const choicesContainer = document.getElementById('content-editor-choices');
@@ -1550,7 +1551,7 @@ function setupContentEditor() {
     const statusOutput = document.getElementById('content-editor-status');
     const dirtyIndicator = document.getElementById('content-editor-dirty');
     if (!root || !gotoForm || !gotoInput || !paragraphList
-        || !paragraphIdDisplay || !textInput || !conditionalsContainer
+        || !paragraphIdDisplay || !textInput || !textToolbar || !conditionalsContainer
         || !imagesContainer || !choicesContainer || !addImageButton
         || !previewButton || !discardButton || !exportButton || !saveButton
         || !statusOutput || !dirtyIndicator) {
@@ -1567,6 +1568,195 @@ function setupContentEditor() {
         revision: null,
         busy: false
     };
+
+    function storyTextToEditorHtml(text) {
+        const parts = String(text || '').split(/\n\n/);
+        if (parts.length === 1 && !parts[0]) return '<p><br></p>';
+        return parts.map(part => `<p>${part || '<br>'}</p>`).join('');
+    }
+
+    function serializeInlineHtml(node) {
+        let result = '';
+        node.childNodes.forEach(child => {
+            if (child.nodeType === Node.TEXT_NODE) {
+                result += child.textContent;
+                return;
+            }
+            if (child.nodeType !== Node.ELEMENT_NODE) return;
+            const tag = child.tagName.toLowerCase();
+            if (tag === 'br') {
+                result += ' ';
+                return;
+            }
+            const inner = serializeInlineHtml(child);
+            if (tag === 'strong' || tag === 'b') {
+                result += inner ? `<strong>${inner}</strong>` : '';
+                return;
+            }
+            if (tag === 'em' || tag === 'i') {
+                result += inner ? `<em>${inner}</em>` : '';
+                return;
+            }
+            if (tag === 'q') {
+                result += inner ? `<q>${inner}</q>` : '';
+                return;
+            }
+            result += inner;
+        });
+        return result;
+    }
+
+    function editorHtmlToStoryText(element) {
+        const blocks = [];
+        const pushBlock = node => {
+            const text = serializeInlineHtml(node).replace(/[ \t\r\n]+/g, ' ').trim();
+            blocks.push(text);
+        };
+        const children = [...element.childNodes];
+        const hasBlocks = children.some(child =>
+            child.nodeType === Node.ELEMENT_NODE && ['P', 'DIV'].includes(child.tagName)
+        );
+        if (!hasBlocks) {
+            return serializeInlineHtml(element).replace(/[ \t\r\n]+/g, ' ').trim();
+        }
+        children.forEach(child => {
+            if (child.nodeType === Node.ELEMENT_NODE && ['P', 'DIV'].includes(child.tagName)) {
+                pushBlock(child);
+            } else if (child.nodeType === Node.TEXT_NODE && child.textContent.trim()) {
+                blocks.push(child.textContent.replace(/[ \t\r\n]+/g, ' ').trim());
+            }
+        });
+        while (blocks.length > 1 && blocks[blocks.length - 1] === '') blocks.pop();
+        return blocks.join('\n\n');
+    }
+
+    function unwrapElement(element) {
+        const parent = element.parentNode;
+        if (!parent) return;
+        while (element.firstChild) {
+            parent.insertBefore(element.firstChild, element);
+        }
+        parent.removeChild(element);
+        parent.normalize();
+    }
+
+    function toggleQuote(surface) {
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        const anchor = selection.anchorNode;
+        if (!anchor || !surface.contains(anchor)) return;
+
+        const startElement = anchor.nodeType === Node.ELEMENT_NODE
+            ? anchor
+            : anchor.parentElement;
+        const existing = startElement?.closest?.('q');
+        if (existing && surface.contains(existing)) {
+            unwrapElement(existing);
+            return;
+        }
+
+        const range = selection.getRangeAt(0);
+        if (range.collapsed) return;
+
+        const quote = document.createElement('q');
+        quote.appendChild(range.extractContents());
+        range.insertNode(quote);
+        selection.removeAllRanges();
+        const selected = document.createRange();
+        selected.selectNodeContents(quote);
+        selection.addRange(selected);
+    }
+
+    function clearInlineFormatting(surface) {
+        document.execCommand('removeFormat', false, null);
+        const selection = window.getSelection();
+        if (!selection.rangeCount || selection.isCollapsed) return;
+        const range = selection.getRangeAt(0);
+        if (!surface.contains(range.commonAncestorContainer)) return;
+        const quotes = [...surface.querySelectorAll('q')].filter(quote =>
+            selection.containsNode(quote, true)
+        );
+        quotes.forEach(unwrapElement);
+    }
+
+    function applyRichCommand(surface, command) {
+        surface.focus();
+        if (command === 'quote') {
+            toggleQuote(surface);
+        } else if (command === 'removeFormat') {
+            clearInlineFormatting(surface);
+        } else {
+            document.execCommand(command, false, null);
+        }
+        surface.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function bindRichToolbar(toolbar, surface) {
+        toolbar.querySelectorAll('[data-rich-command]').forEach(button => {
+            button.addEventListener('mousedown', event => event.preventDefault());
+            button.addEventListener('click', () => {
+                applyRichCommand(surface, button.dataset.richCommand);
+            });
+        });
+    }
+
+    function createRichToolbar() {
+        const toolbar = document.createElement('div');
+        toolbar.className = 'rich-text-toolbar';
+        toolbar.setAttribute('role', 'toolbar');
+        toolbar.setAttribute('aria-label', 'Форматирование текста');
+        [
+            ['bold', '<strong>Ж</strong>', 'Полужирный (Ctrl+B)'],
+            ['italic', '<em>К</em>', 'Курсив (Ctrl+I)'],
+            ['quote', '«»', 'Цитата / прямая речь'],
+            ['removeFormat', '✕', 'Сбросить формат']
+        ].forEach(([command, label, title]) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.dataset.richCommand = command;
+            button.title = title;
+            button.innerHTML = label;
+            toolbar.appendChild(button);
+        });
+        return toolbar;
+    }
+
+    function createRichTextField(labelText, value, onChange) {
+        const field = document.createElement('div');
+        field.className = 'content-editor-field';
+        const title = document.createElement('span');
+        title.textContent = labelText;
+        const editor = document.createElement('div');
+        editor.className = 'rich-text-editor';
+        const toolbar = createRichToolbar();
+        const surface = document.createElement('div');
+        surface.className = 'rich-text-surface';
+        surface.contentEditable = 'true';
+        surface.spellcheck = true;
+        surface.setAttribute('role', 'textbox');
+        surface.setAttribute('aria-multiline', 'true');
+        surface.innerHTML = storyTextToEditorHtml(value);
+        bindRichToolbar(toolbar, surface);
+        surface.addEventListener('input', () => onChange(editorHtmlToStoryText(surface)));
+        surface.addEventListener('paste', event => {
+            event.preventDefault();
+            const plain = (event.clipboardData?.getData('text/plain') || '').replace(/\r\n/g, '\n');
+            const parts = plain.replace(/\n{3,}/g, '\n\n').split(/\n\n/);
+            if (parts.length <= 1) {
+                document.execCommand('insertText', false, plain.replace(/\n/g, ' '));
+            } else {
+                document.execCommand(
+                    'insertHTML',
+                    false,
+                    parts.map(part => `<p>${escapeHtml(part).replace(/\n/g, ' ')}</p>`).join('')
+                );
+            }
+            onChange(editorHtmlToStoryText(surface));
+        });
+        editor.append(toolbar, surface);
+        field.append(title, editor);
+        return field;
+    }
 
     Object.entries(sourceParagraphs)
         .filter(([id]) => id !== '_quests')
@@ -1672,7 +1862,7 @@ function setupContentEditor() {
             meta.textContent = `${label} · ${active ? 'active' : 'inactive'} · ${describeConditions(block)}`;
             wrapper.append(
                 meta,
-                createTextareaField('Текст фрагмента', block.text, value => {
+                createRichTextField('Текст фрагмента', block.text, value => {
                     block.text = value;
                     markDirty(id);
                 })
@@ -1839,16 +2029,36 @@ function setupContentEditor() {
     function renderEditor(id) {
         const draft = getDraft(id);
         paragraphIdDisplay.textContent = id;
-        textInput.value = draft.text || '';
-        textInput.oninput = () => {
-            draft.text = textInput.value;
-            markDirty(id);
-        };
+        textInput.innerHTML = storyTextToEditorHtml(draft.text || '');
         renderConditionalEditors(id, draft);
         renderImageEditors(id, draft);
         renderChoiceEditors(id, draft);
         updateEditorActions();
     }
+
+    bindRichToolbar(textToolbar, textInput);
+    textInput.addEventListener('input', () => {
+        if (!state.currentId) return;
+        getDraft(state.currentId).text = editorHtmlToStoryText(textInput);
+        markDirty(state.currentId);
+    });
+    textInput.addEventListener('paste', event => {
+        event.preventDefault();
+        const plain = (event.clipboardData?.getData('text/plain') || '').replace(/\r\n/g, '\n');
+        const parts = plain.replace(/\n{3,}/g, '\n\n').split(/\n\n/);
+        if (parts.length <= 1) {
+            document.execCommand('insertText', false, plain.replace(/\n/g, ' '));
+        } else {
+            document.execCommand(
+                'insertHTML',
+                false,
+                parts.map(part => `<p>${escapeHtml(part).replace(/\n/g, ' ')}</p>`).join('')
+            );
+        }
+        if (!state.currentId) return;
+        getDraft(state.currentId).text = editorHtmlToStoryText(textInput);
+        markDirty(state.currentId);
+    });
 
     async function checkEditorServer() {
         if (!editorToken) {

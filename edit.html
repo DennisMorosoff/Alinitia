@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактор · Театр Теней Алинитии</title>
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body data-mode="editor">
     <div id="game-container">
@@ -35,10 +35,18 @@
                     <span id="content-editor-dirty" hidden>Есть несохранённые изменения</span>
                 </div>
 
-                <label class="content-editor-field" for="content-editor-text">
-                    Основной текст
-                    <textarea id="content-editor-text" rows="12" spellcheck="true"></textarea>
-                </label>
+                <div class="content-editor-field">
+                    <span id="content-editor-text-label">Основной текст</span>
+                    <div class="rich-text-editor" aria-labelledby="content-editor-text-label">
+                        <div class="rich-text-toolbar" id="content-editor-text-toolbar" role="toolbar" aria-label="Форматирование текста">
+                            <button type="button" data-rich-command="bold" title="Полужирный (Ctrl+B)"><strong>Ж</strong></button>
+                            <button type="button" data-rich-command="italic" title="Курсив (Ctrl+I)"><em>К</em></button>
+                            <button type="button" data-rich-command="quote" title="Цитата / прямая речь">«»</button>
+                            <button type="button" data-rich-command="removeFormat" title="Сбросить формат">✕</button>
+                        </div>
+                        <div id="content-editor-text" class="rich-text-surface" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true" aria-labelledby="content-editor-text-label"></div>
+                    </div>
+                </div>
 
                 <details class="content-editor-group">
                     <summary>Условные фрагменты</summary>
@@ -112,6 +120,6 @@
     </dialog>
 
     <script src="pathbuilder-adapter.js?v=2"></script>
-    <script src="game.js?v=15"></script>
+    <script src="game.js?v=17"></script>
 </body>
 </html>

@@ -179,6 +179,19 @@ h1 {
     color: #ba55d3;
 }
 
+#story-text q {
+    color: #e8d4ff;
+    font-style: italic;
+}
+
+#story-text p > q:only-child {
+    display: block;
+    margin: 0.15em 0 0.15em 0.6em;
+    padding-left: 0.85em;
+    border-left: 2px solid rgba(186, 85, 211, 0.5);
+    text-indent: 0;
+}
+
 .paragraph-image {
     margin: 0 0 22px;
     padding: 10px;
@@ -308,7 +321,8 @@ h1 {
 #debug-tools input,
 #debug-tools select,
 #content-editor input,
-#content-editor textarea {
+#content-editor textarea,
+#content-editor .rich-text-surface {
     width: 100%;
     padding: 9px 11px;
     color: #f0e4ff;
@@ -568,6 +582,63 @@ h1 {
     display: grid;
     gap: 6px;
     color: #d8c6ef;
+}
+
+.rich-text-editor {
+    display: grid;
+    gap: 0;
+    border: 1px solid rgba(186, 85, 211, 0.55);
+    border-radius: 5px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.rich-text-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+    border-bottom: 1px solid rgba(186, 85, 211, 0.35);
+    background: rgba(40, 16, 72, 0.55);
+}
+
+.rich-text-toolbar button {
+    min-width: 2.2em;
+    padding: 6px 10px !important;
+}
+
+#content-editor .rich-text-surface {
+    min-height: 12em;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    line-height: 1.55;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+}
+
+#content-editor .rich-text-surface p {
+    margin: 0 0 0.85em;
+}
+
+#content-editor .rich-text-surface p:last-child {
+    margin-bottom: 0;
+}
+
+#content-editor .rich-text-surface q {
+    color: #e8d4ff;
+    font-style: italic;
+}
+
+#content-editor .rich-text-surface p > q:only-child {
+    display: block;
+    margin: 0.15em 0 0.15em 0.4em;
+    padding-left: 0.75em;
+    border-left: 2px solid rgba(186, 85, 211, 0.5);
+}
+
+#content-editor .content-editor-entry .rich-text-surface {
+    min-height: 5.5em;
 }
 
 #content-editor textarea {
