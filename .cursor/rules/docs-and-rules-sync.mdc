@@ -22,6 +22,7 @@ alwaysApply: true
 
 - механика движка или формат данных (`data-json-mechanics.mdc`);
 - сюжетный канон, NPC, локации, квесты, аудиенция, жетоны, путешественники (`alinithia-project-context.mdc`);
+- роли HTML-входов (`index` / `debug` / `edit`) или authoring-UI (`alinithia-project-context.mdc`, `data-json-mechanics.mdc`);
 - состав или порядок синхронизации документов (`scenario-document-sync.mdc`, это правило);
 - git/commit-соглашения (`git-operations.mdc`).
 
@@ -37,3 +38,4 @@ alwaysApply: true
 2. `AI_CONTEXT.txt` и сценарный документ не противоречат коду.
 3. `.cursor/rules` не содержат устаревших адресов, запретов или паттернов.
 4. Устаревшие TODO в сценарном документе сняты, если уже реализовано.
+5. Если трогался UI или HTML-входы: в `index.html` нет authoring-кнопок/`edit.html`; правка контента только через `edit.html`; «Отредактировать» только в `debug.html`.

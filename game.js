@@ -2280,11 +2280,13 @@ document.querySelectorAll('.mode-nav-btn[data-nav]').forEach(button => {
 });
 
 const editCurrentButton = document.getElementById('edit-current-btn');
-if (editCurrentButton) {
+if (editCurrentButton && pageMode === 'debug') {
     editCurrentButton.addEventListener('click', () => {
         const id = gameState.currentParagraph || STARTING_PARAGRAPH;
         window.open(`edit.html?p=${encodeURIComponent(id)}`, '_blank', 'noopener,noreferrer');
     });
+} else if (editCurrentButton) {
+    editCurrentButton.remove();
 }
 
 document.getElementById('reset-btn').onclick = () => resetGame();
