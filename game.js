@@ -2280,11 +2280,17 @@ document.querySelectorAll('.mode-nav-btn[data-nav]').forEach(button => {
     });
 });
 
+// Пишущий редактор доступен только через локальный scripts/dev-server.js (порт по умолчанию).
+const LOCAL_EDITOR_BASE = 'http://127.0.0.1:4173';
 const editCurrentButton = document.getElementById('edit-current-btn');
 if (editCurrentButton && pageMode === 'debug') {
     editCurrentButton.addEventListener('click', () => {
         const id = gameState.currentParagraph || STARTING_PARAGRAPH;
-        window.open(`edit.html?p=${encodeURIComponent(id)}`, '_blank', 'noopener,noreferrer');
+        window.open(
+            `${LOCAL_EDITOR_BASE}/edit.html?p=${encodeURIComponent(id)}`,
+            '_blank',
+            'noopener,noreferrer'
+        );
     });
 } else if (editCurrentButton) {
     editCurrentButton.remove();

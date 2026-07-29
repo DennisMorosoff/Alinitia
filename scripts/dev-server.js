@@ -413,6 +413,15 @@ const server = http.createServer(async (request, response) => {
     }
 });
 
+server.on('error', error => {
+    if (error.code === 'EADDRINUSE') {
+        console.log(`Порт ${PORT} уже занят — сервер, скорее всего, уже запущен: http://${HOST}:${PORT}/edit.html`);
+        process.exit(0);
+    }
+    console.error(error);
+    process.exit(1);
+});
+
 server.listen(PORT, HOST, () => {
     console.log(`Обычная игра: http://${HOST}:${PORT}/`);
     console.log(`Debug-режим: http://${HOST}:${PORT}/debug.html`);
