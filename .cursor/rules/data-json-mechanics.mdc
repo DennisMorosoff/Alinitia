@@ -13,6 +13,7 @@ alwaysApply: false
 - `requires` и `requiresNot` проверяются по `gameState.tags`, `gameState.inventory` (личное) и `gameState.partyInventory` (общая добыча, по `name`).
 - Используй каноничные русские имена тегов из текущих данных, например `Я знаком с культом`; старые алиасы нужны только для миграции сохранений.
 - `requires` означает, что должны быть все перечисленные тайны/предметы.
+- `requiresAny` на выборе означает, что достаточно одного из списка (как у `conditionalTexts` / `labelVariants`).
 - `requiresNot` скрывает выбор, если есть любая перечисленная тайна/предмет.
 - `conditionalText.requires` использует тот же механизм условий.
 

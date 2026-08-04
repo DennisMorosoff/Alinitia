@@ -715,6 +715,7 @@ function evaluateAtMostRequirement(requirement) {
 
 function evaluateChoice(choice) {
     const required = evaluateRequirements(choice.requires || []);
+    const requiredAny = evaluateRequirements(choice.requiresAny || []);
     const forbidden = evaluateRequirements(choice.requiresNot || []);
     const requiredQuests = evaluateQuestRequirements(choice.requiresQuest || []);
     const forbiddenQuests = evaluateQuestRequirements(choice.requiresQuestNot || []);
@@ -724,22 +725,26 @@ function evaluateChoice(choice) {
         ? Math.max(0, Math.floor(Number(choice.requiresGold)))
         : 0;
     const missingRequired = required.filter(result => !result.has);
+    const hasRequiredAny = requiredAny.length === 0 || requiredAny.some(result => result.has);
     const presentForbidden = forbidden.filter(result => result.has);
     const missingRequiredQuests = requiredQuests.filter(result => !result.has);
     const presentForbiddenQuests = forbiddenQuests.filter(result => result.has);
 
     return {
         required,
+        requiredAny,
         forbidden,
         requiredQuests,
         forbiddenQuests,
         requiredAtLeast,
         requiredAtMost,
         missingRequired,
+        hasRequiredAny,
         presentForbidden,
         missingRequiredQuests,
         presentForbiddenQuests,
         isAvailable: missingRequired.length === 0
+            && hasRequiredAny
             && presentForbidden.length === 0
             && missingRequiredQuests.length === 0
             && presentForbiddenQuests.length === 0
@@ -756,6 +761,9 @@ function getChoiceLockReason(evaluation, choice) {
     const reasons = [];
     const missing = evaluation.required.filter(item => !item.has).map(item => item.name);
     if (missing.length) reasons.push(`нужно: ${missing.join(', ')}`);
+    if (evaluation.requiredAny?.length && !evaluation.hasRequiredAny) {
+        reasons.push(`нужно одно из: ${evaluation.requiredAny.map(item => item.name).join(', ')}`);
+    }
     if (evaluation.missingGold > 0) {
         reasons.push(`не хватает ${evaluation.missingGold} зм (нужно ${evaluation.requiredGold})`);
     }
@@ -795,9 +803,13 @@ function findIncomingChoices(targetId) {
 function renderConditionDebug(results, mode) {
     if (results.length === 0) return '';
 
-    const label = mode === 'required' ? 'requires' : 'requiresNot';
+    const label = mode === 'required'
+        ? 'requires'
+        : mode === 'requiresAny'
+            ? 'requiresAny'
+            : 'requiresNot';
     const lines = results.map(result => {
-        const passed = mode === 'required' ? result.has : !result.has;
+        const passed = mode === 'requiresNot' ? !result.has : result.has;
         const normalized = result.normalizedName !== result.name
             ? ` → <code>${escapeHtml(result.normalizedName)}</code>`
             : '';
@@ -855,6 +867,7 @@ function renderChoiceDebug(choice, index, evaluation) {
 
     const conditionLines = [
         renderConditionDebug(evaluation.required, 'required'),
+        renderConditionDebug(evaluation.requiredAny, 'requiresAny'),
         renderConditionDebug(evaluation.forbidden, 'forbidden'),
         renderQuestConditionDebug(evaluation.requiredQuests, 'required'),
         renderQuestConditionDebug(evaluation.forbiddenQuests, 'forbidden'),
