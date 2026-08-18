@@ -2294,7 +2294,7 @@ document.querySelectorAll('.mode-nav-btn[data-nav]').forEach(button => {
 });
 
 // Пишущий редактор доступен только через локальный scripts/dev-server.js (порт по умолчанию).
-const LOCAL_EDITOR_BASE = 'http://127.0.0.1:4173';
+const LOCAL_EDITOR_BASE = 'http://127.0.0.1:3000';
 const editCurrentButton = document.getElementById('edit-current-btn');
 if (editCurrentButton && pageMode === 'debug') {
     editCurrentButton.addEventListener('click', () => {

@@ -8,7 +8,7 @@ const DATA_PATH = path.join(ROOT, 'data.json');
 const IMAGES_PATH = path.join(ROOT, 'images');
 const HOST = '127.0.0.1';
 const portArg = process.argv.find(argument => argument.startsWith('--port='));
-const PORT = Number.parseInt(portArg?.split('=')[1] || '4173', 10);
+const PORT = Number.parseInt(portArg?.split('=')[1] || '3000', 10);
 const EDITOR_TOKEN = crypto.randomBytes(24).toString('hex');
 const MAX_JSON_BYTES = 2 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
