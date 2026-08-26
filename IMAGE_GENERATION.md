@@ -2,7 +2,7 @@
 
 Цель: потихоньку закрывать дыры в `images/`, сохраняя **один визуальный язык** с уже существующими кадрами (Мальведра, Корвин, Люценция, Лазвек, Храм, Лотос, Сарель, Элиандра…).
 
-Статус покрытия: ~43 параграфа из ~296 уже с `image` / `images`. Полный набор — позже; этот файл — рабочий порядок и style-lock.
+Статус покрытия: ~52 параграфа из ~296 уже с `image` / `images`. Полный набор — позже; этот файл — рабочий порядок и style-lock.
 
 ---
 
@@ -27,7 +27,7 @@ Palette rules:
 - Accents by location (pick ONE primary accent, do not rainbow):
   - Cult / Temple / Lazvek: violet-purple glow + blood crimson
   - Black Lotus / luxury vice: crimson, gold, warm amber lamps, obsidian
-  - Tower of Light / Sarel: cold white marble + cyan-gold celestial light (still gloomy, never cheerful)
+  - Tower of Light / Sarel: pale stone obelisk lit from within (warm white / pale gold glow), lonely celestial contrast against black sea — still gloomy, never cheerful sunny heaven
   - Rebels / Warehouse: torch orange, soot, midnight-ore metal, propaganda posters
   - Labyrinth: near-black void, faint purple sigils, almost no ambient light
   - Audience / Nocticula: theatrical purple-black, stage lighting, crescent motifs
@@ -131,9 +131,11 @@ CONSISTENCY NOTES:
   Параграфы: `H03` (на `009` оставлен портрет Лазвека).  
   **SUBJECT:** Underground rebel warehouse establishing shot: too-neat crates of midnight-ore weapons, revolutionary posters, damp stone, torch orange light, staged-looking revolution set. No named characters required (or distant silhouettes only).
 
-- [ ] **Башня Света** → `images/Башня Света.png`  
-  Параграфы: `H05`, фон для `061`/`062`.  
-  **SUBJECT:** Tower of Light — cold white marble embassy of Heaven stranded in the Abyss night; bureaucratic celestial architecture, pale cyan-gold windows, lonely and wrong, never hopeful sunny heaven.
+- [x] **Башня Света** → `images/Башня света.jpg`  
+  Параграфы: `H05`, `062` (на `061` оставлен портрет Сареля).  
+  **Канон формы (из карты города):** на `Город Алинития версия 2.png` это **светящийся обелиск в левом нижнем углу** — не мраморный дворец и не готический маяк справа.  
+  **Рефы:** обязательно `Город Алинития версия 2.png` (+ опционально crop левого нижнего угла); `Элиандра.png` / `Сарель.png` только как текстурный эталон, не как форма здания.  
+  **SUBJECT:** Close establishing shot of THAT same Tower of Light from the city map — tall slender four-sided tapering stone obelisk on its own rocky islet in the still black sea; entire shaft glowing from within with warm pale-gold / white light; small simple arched doorway at the base; bright reflection on the water; sparse dark vegetation on the rocks; distant dark gothic islands and bridges of Alinitia behind (do NOT invent a different palace, cathedral, or lighthouse). Lonely Heaven embassy stranded in the Abyss — wrong and cold despite the glow, never sunny cheerful heaven. Match the exact silhouette from the attached city reference bottom-left.
 
 - [x] **Вход в Лабиринт Теней** → `images/Лабиринт Теней.jpg`  
   Параграфы: `H06`.  
@@ -147,8 +149,8 @@ CONSISTENCY NOTES:
   Параграфы: `090` (wide shot в `images` перед портретом Ноктикулы).  
   **SUBJECT:** Audience hall throne room — shadow-silk stage, empty seats like a theatre, purple spotlight on the throne, masks on walls, cinematic scale.
 
-- [ ] *(подключение, не генерация)* **H02** ← уже есть `Храм Забвения.png`  
-  Просто повесить на хаб `H02`.
+- [x] *(подключение, не генерация)* **H02** ← `Храм Забвения.png`  
+  Повешено на хаб `H02`.
 
 ---
 
@@ -156,23 +158,23 @@ CONSISTENCY NOTES:
 
 #### Сюжетные удары
 
-- [ ] **Площадь: глашатай и вербовщик** → `images/Проповедь на площади.png`  
+- [x] **Площадь: глашатай и вербовщик** → `images/Проповедь на площади.jpg`  
   Параграфы: `002`.  
   **SUBJECT:** Central Crossroads night scene: boring Cult herald reading tax liturgy from a scroll beside the screaming fountain; in the shadows a passionate rebel recruiter half-emerges. Theatrical contrast of bureaucracy vs fire. Crowd as blurred extras.
 
-- [ ] **Эстетичный пожар склада** → `images/Искусство огня на складе.png`  
+- [x] **Эстетичный пожар склада** → `images/Искусство огня на складе.jpg`  
   Параграфы: `018`.  
   **SUBJECT:** Rebel armory transformed into erotic-bloody artful blaze — beautiful cruel composition, not a boring warehouse fire. Purple-crimson light, staged catastrophe.
 
-- [ ] **Кристалл Истины в Храме** → `images/Кристалл Истины.png`  
+- [x] **Кристалл Истины в Храме** → `images/Кристалл Истины.jpg`  
   Параграфы: `023`.  
   **SUBJECT:** Temple walls projecting scandalous intimate visions from a truth-crystal; cultists frozen in horror/shame; purple magical projections, gothic nave.
 
-- [ ] **Проклятый кинжал / срыв Жрицы** → `images/Проклятый кинжал.png`  
-  Параграфы: `024`.  
+- [x] **Проклятый кинжал / срыв Жрицы** → `images/Проклятый кинжал.jpg` + `images/Проклятый кинжал разломан.jpg`  
+  Параграфы: `024` (оба в `images`: кинжал → срыв).  
   **SUBJECT:** High Priestess throne hall disrupted — cursed dagger on altar, Malvedra-like figure cracking composure, shadows laughing. Keep face consistent with Malvedra art if showing her.
 
-- [ ] **Казнь Нимвеласа** → `images/Казнь Нимвеласа.png`  
+- [x] **Казнь Нимвеласа** → `images/Казнь Нимвеласа.jpg`  
   Параграфы: `027a`.  
   **SUBJECT:** Public cult execution of a young trembling priest; ritual cruelty as bureaucracy; temple courtyard, purple candles, fear as spectacle.
 
@@ -295,7 +297,7 @@ Ultra detailed, cinematic lighting, coherent anatomy, masterpiece concept art.
 1. ~~Эвелия~~ ✅  
 2. ~~Орвен~~ ✅  
 3. ~~Склад Повстанцев~~ ✅  
-4. Башня Света  
+4. ~~Башня Света~~ ✅  
 5. ~~Ноктикула + Зал~~ ✅  
 6. ~~Врата / Лабиринт / Церемониймейстер~~ ✅  
 7. Дальше — P1 по вкусу прохождения
