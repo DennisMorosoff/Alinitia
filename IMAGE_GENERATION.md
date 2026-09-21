@@ -2,7 +2,7 @@
 
 Цель: потихоньку закрывать дыры в `images/`, сохраняя **один визуальный язык** с уже существующими кадрами (Мальведра, Корвин, Люценция, Лазвек, Храм, Лотос, Сарель, Элиандра…).
 
-Статус покрытия: ~52 параграфа из ~296 уже с `image` / `images`. Полный набор — позже; этот файл — рабочий порядок и style-lock.
+Статус покрытия: ~58 параграфов из ~304 уже с `image` / `images`. Полный набор — позже; этот файл — рабочий порядок и style-lock.
 
 ---
 
@@ -89,7 +89,8 @@ CONSISTENCY NOTES:
 |---|---|
 | `Фонтан.png` | `006` (+ варианты) |
 | `Минотавр.png`, `Друэргар.png`, `Кобольд.png`, `Фея.png` | дуэль `054` |
-| `Город Алинития.png` / `версия 2` | `000` / атмосфера |
+| `Город Алинития версия 2.png` | `000` — повешена в `data.json` |
+| `Город Алинития.png` | резервный дубль `Панорама Алинитии.png` — не использован |
 | `Нимвелас.png` | дубль `Отрок Нимвелас.png` — не плодить третий |
 
 ---
@@ -122,7 +123,7 @@ CONSISTENCY NOTES:
   **SUBJECT:** Goddess Nocticula as theatrical sovereign of shadows and beautiful betrayal — elegant, predatory, amused critic of mortals. Dark beauty, crescent motifs, stage-throne of living shadow and silk, purple-black theatrical lighting, audience hall. Not a mindless monster; a director-goddess watching a play. Avoid generic red-skin devil cliché; prefer pale/shadowed majesty with crescent jewelry and veil of night.
 
 - [x] **Церемониймейстер** → `images/Церемониймейстер.jpg`  
-  Параграфы: `046a`.  
+  Параграфы: `046a` (повешен в `data.json` в `images[]` рядом с Коридором Масок).  
   **SUBJECT:** Neutral palace protocol figure at the Threshold — ornate blank ceremonial mask, formal black-and-silver robes, ledger or ritual staff, Corridor of Masks behind. Neither ally nor enemy: living etiquette. Cool moonlight + faint purple accents.
 
 #### Локации (установочные кадры)
