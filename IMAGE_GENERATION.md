@@ -178,19 +178,19 @@ CONSISTENCY NOTES:
   Параграфы: `027a`.  
   **SUBJECT:** Public cult execution of a young trembling priest; ritual cruelty as bureaucracy; temple courtyard, purple candles, fear as spectacle.
 
-- [ ] **Разоблачение Лейтенанта** → `images/Лейтенант пойман.png`  
+- [x] **Разоблачение Лейтенанта** → `images/Лейтенант пойман.jpg`  
   Параграфы: `029`.  
   **SUBJECT:** Rebel lieutenant caught with bribes/wine/velvet luxury among crates — corruption of the revolution exposed under torchlight.
 
-- [ ] **Карта нитей / покои Сареля** → `images/Карта нитей.png`  
+- [x] **Карта нитей / покои Сареля** → `images/Карта нитей.jpg`  
   Параграфы: `062a`.  
   **SUBJECT:** Hidden seam behind a shelf in angelic bureaucratic chambers; glowing thread-map of the Theatre conspiracy; cold cyan light vs abyssal night outside.
 
-- [ ] **Коридор Масок** → `images/Коридор Масок.png`  
+- [x] **Коридор Масок** → `images/Коридор Масок.jpg`  
   Параграфы: `046a`.  
   **SUBJECT:** Corridor of Masks — walls of named masks of previous petitioners, purple gloom, judgment theatre before the goddess.
 
-- [ ] **Долг Лотоса у врат** → `images/Долг Лотоса.png`  
+- [x] **Долг Лотоса у врат** → `images/Долг Лотоса.jpg`  
   Параграфы: `046-lotus-debt`.  
   **SUBJECT:** Red Lotus thread tightening around memory at the audience gates — luxurious crimson threat, debt made visible as silk/binding light.
 
@@ -226,7 +226,7 @@ CONSISTENCY NOTES:
 
 #### Портреты второго эшелона (P1)
 
-- [ ] **Лейтенант** → `images/Лейтенант.png` → `028`/`029`  
+- [x] **Лейтенант** → `images/Лейтенант.jpg` → `028`/`029`  
   **SUBJECT:** Practical corrupt rebel lieutenant, orcish or rough humanoid features OK if consistent with text; wine, velvet bribes, warehouse grit, weak greedy eyes.
 
 - [ ] **Тифлинг Гнилой Колбы** → `images/Тифлинг Гнилой Колбы.png` → `004`  
