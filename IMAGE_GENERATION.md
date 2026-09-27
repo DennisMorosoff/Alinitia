@@ -54,6 +54,19 @@ Negative constraints:
 Ultra detailed, cinematic lighting, coherent anatomy, consistent dark-fantasy oil-digital look, masterpiece concept art.
 ```
 
+### STYLE LOCK: НАСКАЛЬНЫЙ РИСУНОК НА КАМНЕ (Галерея Каменных Пророчиц)
+
+Для параграфов `076`, `076-loui`, `076-harsk`, `076-korakai` используй этот блок вместо базового style-lock. Рисунок должен выглядеть как вырезанный на каменной стене — не как отдельная иллюстрация.
+
+```text
+STYLE LOCK — НАСКАЛЬНЫЙ РИСУНОК НА КАМНЕ (Галерея Каменных Пророчиц):
+The image is a prehistoric cave painting / rock carving on a rough black stone wall, not a standalone illustration. The drawing is made with chiseled grooves, ochre and charcoal pigment rubbed into the cracks, and faint glowing violet sigil-lines. Primitive, flat, symbolic, deliberately crude — like Paleolithic petroglyphs or a dungeon wall carved by an obsessive hand. Shallow relief, visible chisel marks, pigment pooled in the grooves. The stone around the drawing is wet, black, and glazed with a thin layer of frost that catches the light. Single cold light source from the left, deep shadows, no ambient fill. Palette: near-black stone, cold silver-blue moonlight, faint violet glow in the deepest grooves, one muted accent per image (see SUBJECT). No readable text, no letters, no runes with meaning — any marks are abstract scratches. No frame, no border, no UI.
+
+Negative: no photorealistic rendering, no 3D CGI look, no smooth digital painting, no anime, no text, no letters, no modern objects, no color gradients beyond stone and pigment, no extra figures outside the drawing.
+```
+
+Для общего вида галереи (`076`) используй базовый style-lock из §1, но добавь в SUBJECT: «walls covered with primitive rock carvings, three fresh ones glowing faintly violet, the rest erased to smoothness».
+
 ---
 
 ## 2. Шаблон запроса к Gemini
@@ -250,6 +263,25 @@ CONSISTENCY NOTES:
 - [ ] Разбитая статуя / алтарь → `022`
 - [ ] Коридор проникновения в Башню → `062`
 - [ ] Серия Лабиринта (одна стильная пачка, не по картинке на каждый узел): клетки `070`, имена `071`, шёпот `075`, зеркала `077`, ритуал `080`
+- [ ] **Галерея Каменных Пророчиц** → `images/Галерея Каменных Пророчиц.jpg`  
+  Параграф: `076`.  
+  **SUBJECT:** Round underground chamber, walls one solid block of black stone, wet and glazed with a thin layer of frost. On the walls, large primitive rock carvings — three fresh ones glowing faintly violet, the rest erased to smoothness. Single cold light source from the left, deep shadows. No people. Wide interior shot.  
+  **Style:** базовый style-lock §1 + «walls covered with primitive rock carvings, three fresh ones glowing faintly violet, the rest erased to smoothness».
+
+- [ ] **Пророчица девяти хвостов** → `images/Пророчица девяти хвостов.jpg`  
+  Параграф: `076-loui`.  
+  **SUBJECT:** Rock carving on black stone wall. The carving shows a hall with columns, a long table, and a figure in a long cloak standing behind it. Behind the figure, a sign of two crossed swords carved into the stone. On the table, an open book with rows of names (abstract scratches, no readable text). The top sheet is pinned with a golden nail, and on it a crescent seal. The last page has an unfinished name — ink spreading. Primitive, flat, symbolic. Muted accent: cold gold.  
+  **Style:** STYLE LOCK «Наскальный рисунок на камне» (см. §1.1).
+
+- [ ] **Пророчица в степи** → `images/Пророчица в степи.jpg`  
+  Параграф: `076-harsk`.  
+  **SUBJECT:** Rock carving on black stone wall. The carving shows an open steppe to the horizon, yellow dust, long shadows. A huge beast runs across it — long neck, heavy tail, three fingers on the forelimbs, the size of a wagon. A human figure rides on its back — the drawing cannot tell whether he rides or is carried. Above, the sky is full of demons flying in a wedge, all faces turned toward the rider. Primitive, flat, symbolic. Muted accent: dusty yellow-ochre.  
+  **Style:** STYLE LOCK «Наскальный рисунок на камне» (см. §1.1).
+
+- [ ] **Пророчица над облаками** → `images/Пророчица над облаками.jpg`  
+  Параграф: `076-korakai`.  
+  **SUBJECT:** Rock carving on black stone wall. The carving shows clouds, then above the clouds, then higher still where the sky is faded like old paper. At the top, a stone spire with a bare branch, and on the branch a winged figure with wide wings, legs tucked. In its hands, an unrolled scroll twice its length — the second end disappears into a cloud. Below, a city seen from above — only roofs, and in each window a tiny figure repeating the reader's gesture. Primitive, flat, symbolic. Muted accent: faded paper-white.  
+  **Style:** STYLE LOCK «Наскальный рисунок на камне» (см. §1.1).
 - [ ] Убийство Мальведры / Эвелии → `047a` / `048a`
 - [ ] Провалы финалов → `093-fail` / `094-fail` (или вариации тронного зала)
 
