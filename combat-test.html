@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Боевой полигон · Театр Теней Алинитии</title>
+    <link rel="stylesheet" href="style.css?v=16">
+</head>
+<body data-mode="combat-test">
+    <div id="game-container">
+        <header>
+            <h1>⚔️ Боевой полигон</h1>
+            <div class="subtitle">Тест интерактивных боёв · выбери героя и противника</div>
+            <div id="status-bar">
+                <button type="button" class="mode-nav-btn" data-nav="index.html">Обычная игра</button>
+                <button id="reset-btn">⟲ Сбросить полигон</button>
+            </div>
+        </header>
+
+        <aside id="progress-panel" aria-label="Прогресс"></aside>
+
+        <main id="story-text" tabindex="-1"></main>
+
+        <div id="choices"></div>
+
+        <aside id="inventory">
+            <div class="inventory-tabs" role="tablist" aria-label="Инвентарь и открытые тайны">
+                <button class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="items-tab" data-tab="items-tab">📦 Инвентарь</button>
+                <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="quests-tab" data-tab="quests-tab">📜 Квесты</button>
+                <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="secrets-tab" data-tab="secrets-tab">🔮 Тайны</button>
+            </div>
+
+            <section id="items-tab" class="tab-panel active" role="tabpanel">
+                <div id="character-display" class="character-display" aria-live="polite"></div>
+
+                <div class="inventory-section" aria-labelledby="personal-inventory-title">
+                    <h3 id="personal-inventory-title" class="inventory-section-title">Личное</h3>
+                    <ul id="items-list"></ul>
+                    <div id="empty-inv" class="inventory-empty">Пусто</div>
+                </div>
+
+                <div class="inventory-section inventory-section-party" aria-labelledby="party-inventory-title">
+                    <h3 id="party-inventory-title" class="inventory-section-title">Общее</h3>
+                    <div id="gold-display" class="gold-display" aria-live="polite"></div>
+                    <ul id="party-items-list"></ul>
+                    <div id="empty-party-inv" class="inventory-empty">Пока нет общих артефактов</div>
+                </div>
+            </section>
+
+            <section id="quests-tab" class="tab-panel" role="tabpanel" hidden>
+                <ul id="quests-list"></ul>
+                <div id="empty-quests">Нет выданных квестов</div>
+            </section>
+
+            <section id="secrets-tab" class="tab-panel" role="tabpanel" hidden>
+                <div id="tags-display"></div>
+            </section>
+        </aside>
+    </div>
+
+    <div id="notification-region" class="notification-region" aria-live="polite" aria-atomic="true"></div>
+
+    <dialog id="skill-check-dialog" aria-labelledby="skill-check-title" aria-describedby="skill-check-details">
+        <form id="skill-check-form" method="dialog">
+            <h2 id="skill-check-title">Проверка навыка</h2>
+            <p id="skill-check-details"></p>
+            <label for="skill-modifier">Модификатор навыка</label>
+            <input id="skill-modifier" name="modifier" type="number" inputmode="numeric" value="0" required>
+            <output id="skill-check-result" aria-live="assertive"></output>
+            <div class="dialog-actions">
+                <button id="skill-check-cancel" type="button">Отменить действие</button>
+                <button id="skill-check-submit" type="submit">Бросить d20</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="pathbuilder-adapter.js?v=2"></script>
+    <script src="game.js?v=26"></script>
+</body>
+</html>

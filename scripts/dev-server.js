@@ -317,7 +317,7 @@ async function handleImageDelete(request, response, url) {
 }
 
 function resolveStaticPath(urlPath) {
-    if (/^\/(?:index\.html|debug\.html|edit\.html|game\.js|pathbuilder-adapter\.js|style\.css|data\.json|characters\.json|inventory-translations\.json)$/.test(urlPath)) {
+    if (/^\/(?:index\.html|debug\.html|edit\.html|combat-test\.html|game\.js|pathbuilder-adapter\.js|style\.css|data\.json|combat-tests\.json|characters\.json|inventory-translations\.json)$/.test(urlPath)) {
         return path.resolve(ROOT, `.${urlPath}`);
     }
     if (!urlPath.startsWith('/images/')) return null;
@@ -425,6 +425,7 @@ server.on('error', error => {
 server.listen(PORT, HOST, () => {
     console.log(`Обычная игра: http://${HOST}:${PORT}/`);
     console.log(`Debug-режим: http://${HOST}:${PORT}/debug.html`);
+    console.log(`Боевой полигон: http://${HOST}:${PORT}/combat-test.html`);
     console.log(`Редактор: http://${HOST}:${PORT}/edit.html`);
     console.log('Сервер принимает соединения только с этого компьютера.');
 });

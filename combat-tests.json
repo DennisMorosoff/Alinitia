@@ -1,0 +1,1826 @@
+{
+  "TEST-START": {
+    "text": "Это тестовый полигон. Выбери героя, за которого будешь проходить бой. У каждого героя свой набор противодействий, поэтому один и тот же противник будет ощущаться по-разному.\n\nТестовые бои не влияют на основное сохранение игры.",
+    "characterSelectionTarget": "TEST-HUB"
+  },
+  "TEST-HUB": {
+    "text": "Выбери противника. После боя можно вернуться сюда и попробовать другого героя.\n\n<strong>Как читать бой:</strong> каждый раунд — два этапа. Сначала бьёт враг: ты выбираешь защиту, и проверка решает, получишь ли ты урон. Потом ты наносишь свой обычный удар — он описан в параграфе и проходит автоматически. Успех защиты — 0 урона тебе; провал — получаешь урон, но твой удар всё равно проходит.\n\nВ PF2E у героя 3 действия, поэтому обычный ход — 1–3 удара с multiple attack penalty (−5/−10; agile — −4/−8). В пилоте: Harsk — два выстрела из алхимического арбалета, Loui — спеллстрайк и рапира, Korakai — удар веры и раскат грома.\n\nНа полигоне специально видны DC и цена провала — в реальной игре они будут скрыты, и ты увидишь только название действия.\n\nЕсли бой окажется слишком коротким или слишком длинным — это нормально для первого теста. Скажи, где было скучно, где страшно, а где не хватило вариантов.",
+    "choices": [
+      {
+        "text": "⚔️ Пилигрим 7-9 — экстремальная, до 10 раундов",
+        "target": "TEST-PILGRIM-1"
+      },
+      {
+        "text": "⚔️ Лирисса — лёгкая, до 5 раундов",
+        "target": "TEST-LIRISSA-1"
+      },
+      {
+        "text": "⚔️ Бронг — средняя, до 7 раундов",
+        "target": "TEST-BRONG-1"
+      },
+      {
+        "text": "🎭 Сменить героя",
+        "target": "TEST-START"
+      }
+    ]
+  },
+  "TEST-PILGRIM-1": {
+    "text": "Пилигрим разворачивает клешню. Он бьёт дважды, как метроном, и каждый удар сопровождается сухим щелчком счётчика.",
+    "addTags": [
+      "Я в бою с Пилигрим 7-9"
+    ],
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 1,
+      "roundsTotal": 10,
+      "attackDamage": 34,
+      "nextTarget": "TEST-PILGRIM-2",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Клешня-молот",
+      "icon": "🦾",
+      "hint": "Провал — 34 HP. Два удара по AC 24.",
+      "image": "images/Пилигрим 7-9.png",
+      "start": true,
+      "zeroTarget": "TEST-PILGRIM-6"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в шарнир",
+        "target": "TEST-PILGRIM-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "✨ Спеллстрайк в паузу",
+        "target": "TEST-PILGRIM-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "⚡ Дуга в сустав",
+        "target": "TEST-PILGRIM-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 28,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-2",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-2",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🏹 Козырь: Последний болт",
+        "target": "TEST-PILGRIM-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 20,
+          "failHeroDamage": 34,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🪞 Козырь: Зеркальная ловушка",
+        "target": "TEST-PILGRIM-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 20,
+          "failHeroDamage": 34,
+          "guard": true,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🌩️ Козырь: Глас Грозы",
+        "target": "TEST-PILGRIM-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 34,
+          "heal": 15,
+          "ace": true,
+          "autoSuccess": true
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-2": {
+    "text": "Куб с граффити на груди вспыхивает. Силовой конус идёт низом, выбивая пыль из камней и сбивая дыхание.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 2,
+      "roundsTotal": 10,
+      "attackDamage": 36,
+      "nextTarget": "TEST-PILGRIM-3",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Импульс хаоса",
+      "icon": "🌀",
+      "hint": "Провал — 36 HP и «неуклюжесть 1».",
+      "image": "images/Пилигрим 7-9.png",
+      "zeroTarget": "TEST-PILGRIM-6"
+    },
+    "choices": [
+      {
+        "text": "🪨 Дварфийская стойкость",
+        "target": "TEST-PILGRIM-3",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 28,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🔮 Щит-руна",
+        "target": "TEST-PILGRIM-3",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🌪️ Слово бури",
+        "target": "TEST-PILGRIM-3",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-3",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-3",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 36
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-3": {
+    "text": "Пилигрим начинает читать вслух. Не угрозы — числа. Вероятность вашей смерти, вероятность промаха, вероятность того, что вы уже мертвы.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 3,
+      "roundsTotal": 10,
+      "attackDamage": 20,
+      "nextTarget": "TEST-PILGRIM-4",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Статистика смерти",
+      "icon": "📉",
+      "hint": "Провал — 20 HP и испуг 2.",
+      "image": "images/Пилигрим 7-9.png",
+      "zeroTarget": "TEST-PILGRIM-6"
+    },
+    "choices": [
+      {
+        "text": "🧠 Не слушать",
+        "target": "TEST-PILGRIM-4",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 28,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "🎭 Не верить цифрам",
+        "target": "TEST-PILGRIM-4",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 30,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "📖 Ответить проповедью",
+        "target": "TEST-PILGRIM-4",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 30,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-4",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-4",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 20
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-4": {
+    "text": "Кристалл на груди вспыхивает и находит вас взглядом. Теперь он видит не партию, а одну цель — и все его удары пойдут по ней.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 4,
+      "roundsTotal": 10,
+      "attackDamage": 28,
+      "nextTarget": "TEST-PILGRIM-5",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Протокол наблюдения",
+      "icon": "👁️",
+      "hint": "Провал — 28 HP. Он помечает одного героя.",
+      "image": "images/Пилигрим 7-9.png",
+      "zeroTarget": "TEST-PILGRIM-6"
+    },
+    "choices": [
+      {
+        "text": "🎯 Сбить метку",
+        "target": "TEST-PILGRIM-5",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🪞 Лисья подмена",
+        "target": "TEST-PILGRIM-5",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 30,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🌬️ Ветер под крылом",
+        "target": "TEST-PILGRIM-5",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-5",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 28
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-5": {
+    "text": "Он сбрасывает граффити в клешню и бьёт им, как печатью. Воздух становится тяжёлым, будто сама площадь запоминает удар.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 5,
+      "roundsTotal": 10,
+      "attackDamage": 38,
+      "nextTarget": "TEST-PILGRIM-6",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Клешня и граффити",
+      "icon": "🦾",
+      "hint": "Провал — 38 HP.",
+      "image": "images/Пилигрим 7-9.png",
+      "zeroTarget": "TEST-PILGRIM-6"
+    },
+    "choices": [
+      {
+        "text": "🌫️ Засада охотника",
+        "target": "TEST-PILGRIM-6",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 30,
+          "failHeroDamage": 38
+        }
+      },
+      {
+        "text": "🖐️ Кража компонента",
+        "target": "TEST-PILGRIM-6",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 30,
+          "failHeroDamage": 38
+        }
+      },
+      {
+        "text": "⚡ Громовой хлыст",
+        "target": "TEST-PILGRIM-6",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 30,
+          "failHeroDamage": 38
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-6",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 38
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-6",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 38
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-6": {
+    "text": "Корпус пересобирается с сухим треском. Пилигрим поднимает голову и повторяет ваш последний приём — почти правильно, почти насмешливо.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 6,
+      "roundsTotal": 10,
+      "attackDamage": 36,
+      "nextTarget": "TEST-PILGRIM-7",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Сбор данных",
+      "icon": "🧮",
+      "hint": "Новая выборка. Он копирует ваш прошлый приём.",
+      "image": "images/Пилигрим 7-9.png",
+      "resetEnemyHp": true,
+      "phase": 2
+    },
+    "choices": [
+      {
+        "text": "🔀 Сменить тактику",
+        "target": "TEST-PILGRIM-7",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Выживание",
+          "dc": 29,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🪄 Подменить данные",
+        "target": "TEST-PILGRIM-7",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🥁 Сбить с ритма",
+        "target": "TEST-PILGRIM-7",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-7",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-7",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 36
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-7": {
+    "text": "Куб вероятностей вращается в его руке. Один из ваших удачных моментов уже вычеркнут из списка возможных.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 7,
+      "roundsTotal": 10,
+      "attackDamage": 34,
+      "nextTarget": "TEST-PILGRIM-8",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Куб вероятностей",
+      "icon": "🎲",
+      "hint": "Провал — 34 HP. Он отменяет крит. успех.",
+      "image": "images/Пилигрим 7-9.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в куб",
+        "target": "TEST-PILGRIM-8",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🖐️ Украсть грань",
+        "target": "TEST-PILGRIM-8",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 30,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "⚡ Молния в куб",
+        "target": "TEST-PILGRIM-8",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 30,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-8",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-8",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 34
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-8": {
+    "text": "Он раскрывает журнал на странице, где ещё нет ваших имён. Тени вокруг сжимаются в кольцо, и воздух начинает считать ваши вдохи.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 8,
+      "roundsTotal": 10,
+      "attackDamage": 35,
+      "nextTarget": "TEST-PILGRIM-9",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Закрытие выборки",
+      "icon": "🕳️",
+      "hint": "Провал — 35 HP.",
+      "image": "images/Пилигрим 7-9.png"
+    },
+    "choices": [
+      {
+        "text": "🪨 Дварфийская стойкость",
+        "target": "TEST-PILGRIM-9",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 28,
+          "failHeroDamage": 35
+        }
+      },
+      {
+        "text": "🪞 Зеркальная ловушка",
+        "target": "TEST-PILGRIM-9",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 30,
+          "failHeroDamage": 35
+        }
+      },
+      {
+        "text": "🌩️ Глас Грозы",
+        "target": "TEST-PILGRIM-9",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 30,
+          "failHeroDamage": 35
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-9",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 35
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-9",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 35
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-9": {
+    "text": "Он больше не считает. Клешня и силовой импульс идут одновременно — грубо, быстро, без прежней аккуратности.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 9,
+      "roundsTotal": 10,
+      "attackDamage": 40,
+      "nextTarget": "TEST-PILGRIM-10",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Клешня + импульс",
+      "icon": "🌪️",
+      "hint": "Провал — 40 HP.",
+      "image": "images/Пилигрим 7-9.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в корпус",
+        "target": "TEST-PILGRIM-10",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 40
+        }
+      },
+      {
+        "text": "🤺 Рапира в щель",
+        "target": "TEST-PILGRIM-10",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 40
+        }
+      },
+      {
+        "text": "⚡ Громовой хлыст",
+        "target": "TEST-PILGRIM-10",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 30,
+          "failHeroDamage": 40
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-10",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 40
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-10",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 40
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-10": {
+    "text": "Пилигрим закрывает журнал. Впервые за бой он смотрит не на страницу, а прямо на вас. Последний расчёт должен быть точным.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 10,
+      "roundsTotal": 10,
+      "attackDamage": 42,
+      "nextTarget": "TEST-PILGRIM-TIMEOUT",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Последний расчёт",
+      "icon": "💀",
+      "hint": "Провал — 42 HP. Финальный раунд.",
+      "image": "images/Пилигрим 7-9.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Добить в щель",
+        "target": "TEST-PILGRIM-TIMEOUT",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 42
+        }
+      },
+      {
+        "text": "📕 Разбить журнал",
+        "target": "TEST-PILGRIM-TIMEOUT",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 30,
+          "failHeroDamage": 42
+        }
+      },
+      {
+        "text": "⚡ Молния в граффити",
+        "target": "TEST-PILGRIM-TIMEOUT",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 30,
+          "failHeroDamage": 42
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-PILGRIM-TIMEOUT",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 42
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-PILGRIM-TIMEOUT",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 42
+        }
+      }
+    ]
+  },
+  "TEST-PILGRIM-WIN": {
+    "text": "Пилигрим 7-9 замирает. Впервые за несколько лет его журнал не дописан: последняя строка обрывается на половине. Кристаллы гаснут, и Перекрёсток становится чуть тише.",
+    "combatEnd": true,
+    "addTags": [
+      "Пилигрим 7-9 мёртв"
+    ],
+    "choices": [
+      {
+        "text": "↩️ Вернуться на полигон",
+        "target": "TEST-HUB"
+      }
+    ]
+  },
+  "TEST-PILGRIM-DEFEAT": {
+    "text": "Последний удар достигает цели — и мир Алинитии не даёт вам умереть. Тени подбирают то, что осталось от героя, и возвращают его на сцену. Пилигрим уже делает новую запись.",
+    "combatEnd": true,
+    "choices": [
+      {
+        "text": "⚔️ Снова в бой с Пилигрим 7-9",
+        "target": "TEST-PILGRIM-1"
+      },
+      {
+        "text": "↩️ Вернуться на полигон",
+        "target": "TEST-HUB"
+      }
+    ]
+  },
+  "TEST-PILGRIM-TIMEOUT": {
+    "text": "Пилигрим замыкает выборку. Вы больше не бойцы — вы строка в его журнале, которую он наконец дописал. Тени выдворяют вас с Перекрёстка.",
+    "combatEnd": true,
+    "choices": [
+      {
+        "text": "⚔️ Попробовать снова",
+        "target": "TEST-PILGRIM-1"
+      },
+      {
+        "text": "↩️ Вернуться на полигон",
+        "target": "TEST-HUB"
+      }
+    ]
+  },
+  "TEST-LIRISSA-1": {
+    "text": "Плеть описывает ленивую дугу. Лирисса не спешит: ей интересно, как вы двигаетесь, когда думаете, что контролируете бой.",
+    "addTags": [
+      "Я в бою с Лирисса"
+    ],
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 70,
+      "enemyAc": 23,
+      "round": 1,
+      "roundsTotal": 5,
+      "attackDamage": 16,
+      "nextTarget": "TEST-LIRISSA-2",
+      "victoryTarget": "TEST-LIRISSA-WIN",
+      "defeatTarget": "TEST-LIRISSA-DEFEAT",
+      "timeoutTarget": "TEST-LIRISSA-TIMEOUT",
+      "action": "Шёлковая плеть",
+      "icon": "🪢",
+      "hint": "Провал — 16 HP и сбит с ног.",
+      "image": "images/Лирисса.png",
+      "start": true
+    },
+    "choices": [
+      {
+        "text": "🏹 Отсечь кончик",
+        "target": "TEST-LIRISSA-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 23,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🤸 Поймать ритм",
+        "target": "TEST-LIRISSA-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 21,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "⚡ Ветер под плащом",
+        "target": "TEST-LIRISSA-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 21,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-LIRISSA-2",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 21,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-LIRISSA-2",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 22,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🏹 Козырь: Последний болт",
+        "target": "TEST-LIRISSA-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🪞 Козырь: Зеркальная ловушка",
+        "target": "TEST-LIRISSA-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "guard": true,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🌩️ Козырь: Глас Грозы",
+        "target": "TEST-LIRISSA-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "heal": 15,
+          "ace": true,
+          "autoSuccess": true
+        }
+      }
+    ]
+  },
+  "TEST-LIRISSA-2": {
+    "text": "Она пробует крик на вкус — короткий, режущий, почти музыкальный. Он должен выбить из вас первую настоящую эмоцию.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 70,
+      "enemyAc": 23,
+      "round": 2,
+      "roundsTotal": 5,
+      "attackDamage": 16,
+      "nextTarget": "TEST-LIRISSA-3",
+      "victoryTarget": "TEST-LIRISSA-WIN",
+      "defeatTarget": "TEST-LIRISSA-DEFEAT",
+      "timeoutTarget": "TEST-LIRISSA-TIMEOUT",
+      "action": "Пробный крик",
+      "icon": "📢",
+      "hint": "Провал — 16 HP и испуг 1.",
+      "image": "images/Лирисса.png"
+    },
+    "choices": [
+      {
+        "text": "🪨 Дварфийская глухота",
+        "target": "TEST-LIRISSA-3",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 20,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🎭 Ответить иллюзией",
+        "target": "TEST-LIRISSA-3",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 22,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🎼 Спеть в ответ",
+        "target": "TEST-LIRISSA-3",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Исполнение",
+          "dc": 22,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-LIRISSA-3",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 22,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-LIRISSA-3",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 23,
+          "failHeroDamage": 16
+        }
+      }
+    ]
+  },
+  "TEST-LIRISSA-3": {
+    "text": "Плеть едва касается, но боль идёт не от кожи — от памяти. Лирисса умеет находить место, которое болит громче всего.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 70,
+      "enemyAc": 23,
+      "round": 3,
+      "roundsTotal": 5,
+      "attackDamage": 18,
+      "nextTarget": "TEST-LIRISSA-4",
+      "victoryTarget": "TEST-LIRISSA-WIN",
+      "defeatTarget": "TEST-LIRISSA-DEFEAT",
+      "timeoutTarget": "TEST-LIRISSA-TIMEOUT",
+      "action": "Укол в эмоцию",
+      "icon": "💔",
+      "hint": "Провал — 18 HP.",
+      "image": "images/Лирисса.png"
+    },
+    "choices": [
+      {
+        "text": "🧠 Думать о добыче",
+        "target": "TEST-LIRISSA-4",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 21,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🔮 Разложить чувство",
+        "target": "TEST-LIRISSA-4",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 22,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "📖 Молитва буре",
+        "target": "TEST-LIRISSA-4",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 22,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-LIRISSA-4",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 22,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-LIRISSA-4",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 23,
+          "failHeroDamage": 18
+        }
+      }
+    ]
+  },
+  "TEST-LIRISSA-4": {
+    "text": "Она напевает, и рана на её плече затягивается. Это не боевое заклинание — это привычка относиться к боли как к аккомпанементу.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 70,
+      "enemyAc": 23,
+      "round": 4,
+      "roundsTotal": 5,
+      "attackDamage": 16,
+      "nextTarget": "TEST-LIRISSA-5",
+      "victoryTarget": "TEST-LIRISSA-WIN",
+      "defeatTarget": "TEST-LIRISSA-DEFEAT",
+      "timeoutTarget": "TEST-LIRISSA-TIMEOUT",
+      "action": "Soothe",
+      "icon": "💚",
+      "hint": "Провал — 16 HP, и она лечится на 25 HP.",
+      "image": "images/Лирисса.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в горло",
+        "target": "TEST-LIRISSA-5",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 23,
+          "failHeroDamage": 16,
+          "enemyHeal": 25
+        }
+      },
+      {
+        "text": "🖐️ Украсть компонент",
+        "target": "TEST-LIRISSA-5",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 22,
+          "failHeroDamage": 16,
+          "enemyHeal": 25
+        }
+      },
+      {
+        "text": "🌩️ Контрзаклинание",
+        "target": "TEST-LIRISSA-5",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 22,
+          "failHeroDamage": 16,
+          "enemyHeal": 25
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-LIRISSA-5",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 22,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-LIRISSA-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 23,
+          "failHeroDamage": 16
+        }
+      }
+    ]
+  },
+  "TEST-LIRISSA-5": {
+    "text": "Она наконец перестаёт играть. Три быстрых укола — в ритм вашего собственного пульса, который она уже успела запомнить.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 70,
+      "enemyAc": 23,
+      "round": 5,
+      "roundsTotal": 5,
+      "attackDamage": 16,
+      "nextTarget": "TEST-LIRISSA-TIMEOUT",
+      "victoryTarget": "TEST-LIRISSA-WIN",
+      "defeatTarget": "TEST-LIRISSA-DEFEAT",
+      "timeoutTarget": "TEST-LIRISSA-TIMEOUT",
+      "action": "Три укола",
+      "icon": "🗡️",
+      "hint": "Провал — 16 HP. Легендарное действие.",
+      "image": "images/Лирисса.png"
+    },
+    "choices": [
+      {
+        "text": "🛡️ Подставить арбалет",
+        "target": "TEST-LIRISSA-TIMEOUT",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 21,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🪞 Зеркальный щит",
+        "target": "TEST-LIRISSA-TIMEOUT",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 22,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🌬️ Штормовой шаг",
+        "target": "TEST-LIRISSA-TIMEOUT",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 22,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-LIRISSA-TIMEOUT",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 22,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-LIRISSA-TIMEOUT",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 23,
+          "failHeroDamage": 16
+        }
+      }
+    ]
+  },
+  "TEST-LIRISSA-WIN": {
+    "text": "Лирисса опускает плеть. На её лице — не страх, а любопытство: боль оказалась интереснее, чем она рассчитывала. Она уходит, унося ваш крик как новый оттенок.",
+    "combatEnd": true,
+    "addTags": [
+      "Лирисса мёртв"
+    ],
+    "choices": [
+      {
+        "text": "↩️ Вернуться на полигон",
+        "target": "TEST-HUB"
+      }
+    ]
+  },
+  "TEST-LIRISSA-DEFEAT": {
+    "text": "Плеть опускается на плечо, и мир становится слишком громким. Лирисса наклоняется к вам с интересом коллекционера: этот крик она запомнит.",
+    "combatEnd": true,
+    "choices": [
+      {
+        "text": "⚔️ Снова в бой с Лирисса",
+        "target": "TEST-LIRISSA-1"
+      },
+      {
+        "text": "↩️ Вернуться на полигон",
+        "target": "TEST-HUB"
+      }
+    ]
+  },
+  "TEST-LIRISSA-TIMEOUT": {
+    "text": "Лирисса устаёт ждать. Она уходит, оставив вас с ощущением, что вы так и не стали достаточно интересными.",
+    "combatEnd": true,
+    "choices": [
+      {
+        "text": "⚔️ Попробовать снова",
+        "target": "TEST-LIRISSA-1"
+      },
+      {
+        "text": "↩️ Вернуться на полигон",
+        "target": "TEST-HUB"
+      }
+    ]
+  },
+  "TEST-BRONG-1": {
+    "text": "Бронг поднимает молот обеими руками. Удар идёт сверху, как при ковке: без ярости, с точным расчётом на то, что металл не выдержит.",
+    "addTags": [
+      "Я в бою с Бронг"
+    ],
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 1,
+      "roundsTotal": 7,
+      "attackDamage": 26,
+      "nextTarget": "TEST-BRONG-2",
+      "victoryTarget": "TEST-BRONG-WIN",
+      "defeatTarget": "TEST-BRONG-DEFEAT",
+      "timeoutTarget": "TEST-BRONG-TIMEOUT",
+      "action": "Кузнечный молот",
+      "icon": "🔨",
+      "hint": "Провал — 26 HP.",
+      "image": "images/Бронг.png",
+      "start": true
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в заклёпку",
+        "target": "TEST-BRONG-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🤸 Скользнуть под молот",
+        "target": "TEST-BRONG-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "⚡ Ветер в горн",
+        "target": "TEST-BRONG-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 25,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-BRONG-2",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-BRONG-2",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🏹 Козырь: Последний болт",
+        "target": "TEST-BRONG-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 20,
+          "failHeroDamage": 26,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🪞 Козырь: Зеркальная ловушка",
+        "target": "TEST-BRONG-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 20,
+          "failHeroDamage": 26,
+          "guard": true,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🌩️ Козырь: Глас Грозы",
+        "target": "TEST-BRONG-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 26,
+          "heal": 15,
+          "ace": true,
+          "autoSuccess": true
+        }
+      }
+    ]
+  },
+  "TEST-BRONG-2": {
+    "text": "Жар идёт от наковальни волнами. Воздух дрожит, и каждый вдох обжигает изнутри.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 2,
+      "roundsTotal": 7,
+      "attackDamage": 18,
+      "nextTarget": "TEST-BRONG-3",
+      "victoryTarget": "TEST-BRONG-WIN",
+      "defeatTarget": "TEST-BRONG-DEFEAT",
+      "timeoutTarget": "TEST-BRONG-TIMEOUT",
+      "action": "Жар кузницы",
+      "icon": "🔥",
+      "hint": "Провал — 18 HP. Аура действует до конца боя.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🌡️ Прочитать жар",
+        "target": "TEST-BRONG-3",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Выживание",
+          "dc": 24,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "❄️ Остудить металл",
+        "target": "TEST-BRONG-3",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 25,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🪨 Закалить себя",
+        "target": "TEST-BRONG-3",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-BRONG-3",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-BRONG-3",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 18
+        }
+      }
+    ]
+  },
+  "TEST-BRONG-3": {
+    "text": "Он идёт вперёд плечом, как таран. За его спиной наковальня, впереди — вы, и отступать ему некуда.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 3,
+      "roundsTotal": 7,
+      "attackDamage": 28,
+      "nextTarget": "TEST-BRONG-4",
+      "victoryTarget": "TEST-BRONG-WIN",
+      "defeatTarget": "TEST-BRONG-DEFEAT",
+      "timeoutTarget": "TEST-BRONG-TIMEOUT",
+      "action": "Натиск наковальни",
+      "icon": "🪨",
+      "hint": "Провал — 28 HP и сбит с ног.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🛡️ Устоять",
+        "target": "TEST-BRONG-4",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🪞 Лисья подмена",
+        "target": "TEST-BRONG-4",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🌬️ Штормовой шаг",
+        "target": "TEST-BRONG-4",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-BRONG-4",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-BRONG-4",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 28
+        }
+      }
+    ]
+  },
+  "TEST-BRONG-4": {
+    "text": "Он бьёт по раскалённой заготовке, и искры летят в вас. Мелочь, но каждая оставляет ожог.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 4,
+      "roundsTotal": 7,
+      "attackDamage": 24,
+      "nextTarget": "TEST-BRONG-5",
+      "victoryTarget": "TEST-BRONG-WIN",
+      "defeatTarget": "TEST-BRONG-DEFEAT",
+      "timeoutTarget": "TEST-BRONG-TIMEOUT",
+      "action": "Раскалённая искра",
+      "icon": "✨",
+      "hint": "Провал — 24 HP и горение.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Сбить искру",
+        "target": "TEST-BRONG-5",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🔮 Щит-руна",
+        "target": "TEST-BRONG-5",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "⚡ Громовой хлыст",
+        "target": "TEST-BRONG-5",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-BRONG-5",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-BRONG-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 24
+        }
+      }
+    ]
+  },
+  "TEST-BRONG-5": {
+    "text": "Он раздувает горн, и пламя становится белым. Кузня просыпается целиком, и жар начинает давить на кости.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 5,
+      "roundsTotal": 7,
+      "attackDamage": 30,
+      "nextTarget": "TEST-BRONG-6",
+      "victoryTarget": "TEST-BRONG-WIN",
+      "defeatTarget": "TEST-BRONG-DEFEAT",
+      "timeoutTarget": "TEST-BRONG-TIMEOUT",
+      "action": "Пробуждение горна",
+      "icon": "🌋",
+      "hint": "Провал — 30 HP. Легендарное действие.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в горн",
+        "target": "TEST-BRONG-6",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🖐️ Разбить наковальню",
+        "target": "TEST-BRONG-6",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "TEST-BRONG-6",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-BRONG-6",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-BRONG-6",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 30
+        }
+      }
+    ]
+  },
+  "TEST-BRONG-6": {
+    "text": "Он ловит вас клещами и поднимает молот. В кузне нет злости — только следующая операция.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 6,
+      "roundsTotal": 7,
+      "attackDamage": 30,
+      "nextTarget": "TEST-BRONG-7",
+      "victoryTarget": "TEST-BRONG-WIN",
+      "defeatTarget": "TEST-BRONG-DEFEAT",
+      "timeoutTarget": "TEST-BRONG-TIMEOUT",
+      "action": "Молот и клещи",
+      "icon": "🗜️",
+      "hint": "Провал — 30 HP и захват.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Отсечь клещи",
+        "target": "TEST-BRONG-7",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🤸 Выскользнуть",
+        "target": "TEST-BRONG-7",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "⚡ Громовой хлыст",
+        "target": "TEST-BRONG-7",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-BRONG-7",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-BRONG-7",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 30
+        }
+      }
+    ]
+  },
+  "TEST-BRONG-7": {
+    "text": "Он ставит вас на наковальню — не буквально, но взглядом. Последний удар должен показать, из чего вы сделаны.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 7,
+      "roundsTotal": 7,
+      "attackDamage": 32,
+      "nextTarget": "TEST-BRONG-TIMEOUT",
+      "victoryTarget": "TEST-BRONG-WIN",
+      "defeatTarget": "TEST-BRONG-DEFEAT",
+      "timeoutTarget": "TEST-BRONG-TIMEOUT",
+      "action": "Последняя ковка",
+      "icon": "⚒️",
+      "hint": "Провал — 32 HP. Финальный раунд.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Добить в щель",
+        "target": "TEST-BRONG-TIMEOUT",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 32
+        }
+      },
+      {
+        "text": "🖐️ Разбить заготовку",
+        "target": "TEST-BRONG-TIMEOUT",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 25,
+          "failHeroDamage": 32
+        }
+      },
+      {
+        "text": "🎼 Песня кузнеца",
+        "target": "TEST-BRONG-TIMEOUT",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Исполнение",
+          "dc": 25,
+          "failHeroDamage": 32
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "TEST-BRONG-TIMEOUT",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 32
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "TEST-BRONG-TIMEOUT",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 32
+        }
+      }
+    ]
+  },
+  "TEST-BRONG-WIN": {
+    "text": "Бронг опускает молот. Жар в кузне гаснет, и он смотрит на вас без злобы — только с усталой оценкой металла, который всё-таки выдержал.",
+    "combatEnd": true,
+    "addTags": [
+      "Бронг мёртв"
+    ],
+    "choices": [
+      {
+        "text": "↩️ Вернуться на полигон",
+        "target": "TEST-HUB"
+      }
+    ]
+  },
+  "TEST-BRONG-DEFEAT": {
+    "text": "Молот опускается, и мир становится тяжёлым. Бронг подхватывает вас, как небрежно брошенную заготовку, и выносит из кузни.",
+    "combatEnd": true,
+    "choices": [
+      {
+        "text": "⚔️ Снова в бой с Бронг",
+        "target": "TEST-BRONG-1"
+      },
+      {
+        "text": "↩️ Вернуться на полигон",
+        "target": "TEST-HUB"
+      }
+    ]
+  },
+  "TEST-BRONG-TIMEOUT": {
+    "text": "Бронг просто перестаёт бить. Вы ещё стоите, но уже не боец — просто металл, который не стоит дальнейшей ковки.",
+    "combatEnd": true,
+    "choices": [
+      {
+        "text": "⚔️ Попробовать снова",
+        "target": "TEST-BRONG-1"
+      },
+      {
+        "text": "↩️ Вернуться на полигон",
+        "target": "TEST-HUB"
+      }
+    ]
+  }
+}

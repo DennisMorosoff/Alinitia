@@ -2,9 +2,13 @@
 const STARTING_GOLD = 2000;
 const STARTING_PARAGRAPH = '000';
 
+function getStartingParagraph() {
+    return isCombatTestMode ? 'TEST-START' : STARTING_PARAGRAPH;
+}
+
 function createInitialGameState() {
     return {
-        currentParagraph: STARTING_PARAGRAPH,
+        currentParagraph: getStartingParagraph(),
         characterId: null,
         tags: [],
         inventory: [],
@@ -12,7 +16,8 @@ function createInitialGameState() {
         quests: {},
         visited: [],
         flags: {},
-        gold: STARTING_GOLD
+        gold: STARTING_GOLD,
+        combat: null
     };
 }
 
@@ -84,6 +89,7 @@ function applyCharacterSelection(characterId) {
 
     gameState.characterId = character.id;
     gameState.inventory = PathbuilderAdapter.extractInventory(character, inventoryTranslations);
+    gameState.combat = null;
     showNotification(`🎭 Выбран персонаж: ${character.name}`);
     return true;
 }
@@ -92,6 +98,19 @@ function formatModifier(modifier) {
     return `${modifier >= 0 ? '+' : ''}${modifier}`;
 }
 
+const pageMode = document.body.dataset.mode || 'normal';
+const isCombatTestMode = pageMode === 'combat-test'
+    || new URLSearchParams(window.location.search).has('combat-test');
+const isDebugMode = pageMode === 'debug'
+    || pageMode === 'editor'
+    || new URLSearchParams(window.location.search).has('debug');
+const isContentEditMode = pageMode === 'editor';
+const storageKey = isDebugMode
+    ? 'alinithiaGameDebug'
+    : isCombatTestMode
+        ? 'alinithiaCombatTest'
+        : 'alinithiaGame';
+
 let gameState = createInitialGameState();
 
 // База параграфов — будет загружена из data.json
@@ -99,13 +118,6 @@ let paragraphs = {};
 let sourceParagraphs = {};
 let questDefinitions = {};
 const questStates = ['не выдан', 'выдан', 'выполнен', 'провален'];
-
-const pageMode = document.body.dataset.mode || 'normal';
-const isDebugMode = pageMode === 'debug'
-    || pageMode === 'editor'
-    || new URLSearchParams(window.location.search).has('debug');
-const isContentEditMode = pageMode === 'editor';
-const storageKey = isDebugMode ? 'alinithiaGameDebug' : 'alinithiaGame';
 let contentEditorController = null;
 const hiddenKnowledgeTagPrefixes = [
     'Я знаком с ',
@@ -227,6 +239,34 @@ function ensureGameStateShape() {
     if (!gameState.flags || typeof gameState.flags !== 'object' || Array.isArray(gameState.flags)) {
         gameState.flags = {};
     }
+    if (gameState.combat != null && (
+        typeof gameState.combat !== 'object'
+        || !gameState.combat.fightId
+        || !gameState.combat.heroId
+    )) {
+        gameState.combat = null;
+        changed = true;
+    }
+    if (!('combat' in gameState)) {
+        gameState.combat = null;
+        changed = true;
+    }
+    if (!gameState.characterId && gameState.combat) {
+        gameState.combat = null;
+        changed = true;
+    }
+    if (gameState.combat && gameState.combat.heroId !== gameState.characterId) {
+        gameState.combat = null;
+        changed = true;
+    }
+    if (gameState.combat && !Array.isArray(gameState.combat.log)) {
+        gameState.combat.log = [];
+        changed = true;
+    }
+    if (gameState.combat && !Array.isArray(gameState.combat.usedAces)) {
+        gameState.combat.usedAces = [];
+        changed = true;
+    }
     if (legacyCharacterIds[gameState.characterId] && characterBuilds[legacyCharacterIds[gameState.characterId]]) {
         gameState.characterId = legacyCharacterIds[gameState.characterId];
         changed = true;
@@ -269,23 +309,23 @@ function migrateLucenciaDealTagToQuest() {
 }
 
 // ============ ЗАГРУЗКА ДАННЫХ ============
-function hydrateCharacterSelectionParagraph() {
-    const paragraph = paragraphs[STARTING_PARAGRAPH];
-    if (!paragraph?.characterSelectionTarget) {
-        throw new Error(`Параграф ${STARTING_PARAGRAPH} не содержит characterSelectionTarget`);
-    }
+function hydrateCharacterSelectionParagraph(id = STARTING_PARAGRAPH) {
+    const paragraph = paragraphs[id];
+    if (!paragraph?.characterSelectionTarget) return false;
     paragraph.choices = Object.values(characterBuilds)
         .map(character => PathbuilderAdapter.createChoice(character, paragraph.characterSelectionTarget));
+    return true;
 }
 
 async function loadGameData() {
     try {
+        const dataFile = isCombatTestMode ? 'combat-tests.json' : 'data.json';
         const [storyResponse, charactersResponse, translationsResponse] = await Promise.all([
-            fetch('data.json', { cache: 'no-store' }),
+            fetch(dataFile, { cache: 'no-store' }),
             fetch('characters.json', { cache: 'no-store' }),
             fetch('inventory-translations.json', { cache: 'no-store' })
         ]);
-        if (!storyResponse.ok) throw new Error(`data.json: HTTP ${storyResponse.status}`);
+        if (!storyResponse.ok) throw new Error(`${dataFile}: HTTP ${storyResponse.status}`);
         if (!charactersResponse.ok) throw new Error(`characters.json: HTTP ${charactersResponse.status}`);
         if (!translationsResponse.ok) throw new Error(`inventory-translations.json: HTTP ${translationsResponse.status}`);
 
@@ -299,10 +339,18 @@ async function loadGameData() {
         characterBuilds = PathbuilderAdapter.normalizeExports(characterExports);
         inventoryTranslations = translationData;
         questDefinitions = paragraphs._quests || {};
-        hydrateCharacterSelectionParagraph();
+        hydrateCharacterSelectionParagraph(STARTING_PARAGRAPH);
+        hydrateCharacterSelectionParagraph('TEST-START');
         console.log(`✅ Загружено ${Object.keys(paragraphs).length} параграфов и ${Object.keys(characterBuilds).length} персонажей`);
 
         loadGame();
+        if (isCombatTestMode) {
+            const currentExists = Boolean(paragraphs[gameState.currentParagraph]);
+            if (!gameState.characterId || !currentExists) {
+                gameState.currentParagraph = 'TEST-START';
+                gameState.combat = null;
+            }
+        }
         displayParagraph(gameState.currentParagraph);
     } catch (error) {
         console.error('❌ Ошибка загрузки данных игры:', error);
@@ -406,12 +454,272 @@ function getCheckDegree(roll, total, dc) {
     return degree;
 }
 
-function resolveSkillCheck(choice) {
-    if (!choice.skillCheck) {
-        return Promise.resolve({ target: choice.target, success: true, degree: 2 });
+const COMBAT_HERO_STATS = {
+    harsk: { hp: 107, ac: 27 },
+    'loui-xiv': { hp: 98, ac: 26 },
+    korakai: { hp: 87, ac: 26 }
+};
+
+// В PF2E у персонажа 3 действия, а не «атака за уровень». Обычный ход:
+// 2–3 Strike-а с multiple attack penalty (−5 / −10; agile — −4 / −8).
+// Ниже — игровая абстракция обычного удара каждого героя.
+const COMBAT_HERO_ROUTINES = {
+    harsk: {
+        name: 'Алхимический арбалет',
+        description: 'Твой ответ — два болта из алхимического арбалета: первый в сочленение, второй в тень за ним.',
+        attacks: [
+            { name: 'первый выстрел', bonus: 17, dice: [2, 8], flat: 6 },
+            { name: 'второй выстрел', bonus: 12, dice: [2, 8], flat: 6 }
+        ]
+    },
+    'loui-xiv': {
+        name: 'Спеллстрайк и рапира',
+        description: 'Твой ответ — спеллстрайк: заклинание входит в клинок, а следом идёт укол рапирой.',
+        attacks: [
+            { name: 'спеллстрайк', bonus: 17, dice: [3, 6], flat: 5 },
+            { name: 'рапира', bonus: 12, dice: [2, 6], flat: 5 }
+        ]
+    },
+    korakai: {
+        name: 'Удар веры и раскат грома',
+        description: 'Твой ответ — удар веры, и следом по врагу проходит раскат грома.',
+        attacks: [
+            { name: 'удар веры', bonus: 16, dice: [4, 6], flat: 4 },
+            { name: 'раскат грома', bonus: 11, dice: [2, 6], flat: 4 }
+        ]
+    }
+};
+
+function getCombatHeroStats(heroId) {
+    return COMBAT_HERO_STATS[heroId] || { hp: 100, ac: 25 };
+}
+
+function getCombatHeroRoutine(heroId) {
+    return COMBAT_HERO_ROUTINES[heroId] || null;
+}
+
+function rollD20() {
+    return Math.floor(Math.random() * 20) + 1;
+}
+
+function rollDamage(count, sides) {
+    let total = 0;
+    for (let i = 0; i < count; i += 1) total += Math.floor(Math.random() * sides) + 1;
+    return total;
+}
+
+function resolveHeroAttacks(state) {
+    const routine = getCombatHeroRoutine(state.heroId);
+    if (!routine) return [];
+
+    const results = [];
+    let totalDamage = 0;
+
+    for (const attack of routine.attacks) {
+        if (state.enemyHp <= 0) break;
+
+        const roll = rollD20();
+        const total = roll + attack.bonus;
+        const degree = getCheckDegree(roll, total, state.enemyAc);
+        const degrees = ['крит. провал', 'промах', 'попадание', 'крит. попадание'];
+
+        if (degree <= 1) {
+            results.push({ attack: attack.name, roll, total, degree, damage: 0 });
+            state.log.push(`Твой удар (${attack.name}): d20 ${roll} + ${attack.bonus} = ${total} против AC ${state.enemyAc} — ${degrees[degree]}.`);
+            continue;
+        }
+
+        let damage = rollDamage(attack.dice[0], attack.dice[1]) + attack.flat;
+        if (degree === 3) damage *= 2;
+        state.enemyHp = Math.max(0, state.enemyHp - damage);
+        totalDamage += damage;
+        results.push({ attack: attack.name, roll, total, degree, damage });
+        state.log.push(`Твой удар (${attack.name}): d20 ${roll} + ${attack.bonus} = ${total} против AC ${state.enemyAc} — ${degrees[degree]}, ${damage} урона.`);
     }
 
-    const check = choice.skillCheck;
+    if (state.log.length > 8) state.log = state.log.slice(-8);
+    if (totalDamage && (isCombatTestMode || isDebugMode)) {
+        showNotification(`💥 Твой удар: −${totalDamage} HP`);
+    }
+    return results;
+}
+
+function syncCombatState(para, applyEffects) {
+    const data = para.combat;
+    if (!data || !applyEffects) return;
+    const hero = getSelectedCharacter();
+    if (!hero) return;
+    const heroStats = getCombatHeroStats(hero.id);
+    let state = gameState.combat;
+
+    if (!state || state.fightId !== data.fightId || data.start) {
+        state = {
+            fightId: data.fightId,
+            enemyName: data.enemyName || 'Противник',
+            enemyHpMax: Number(data.enemyHpMax) || 100,
+            enemyHp: Number(data.enemyHpMax) || 100,
+            enemyAc: Number(data.enemyAc) || 20,
+            heroId: hero.id,
+            heroName: hero.name,
+            heroHpMax: heroStats.hp,
+            heroHp: heroStats.hp,
+            round: Number(data.round) || 1,
+            roundsTotal: Number(data.roundsTotal) || 10,
+            attackDamage: Number(data.attackDamage) || 10,
+            usedAces: [],
+            guard: 0,
+            phase: 1,
+            log: []
+        };
+        gameState.combat = state;
+    }
+
+    if (data.resetEnemyHp) {
+        state.enemyHpMax = Number(data.enemyHpMax) || state.enemyHpMax;
+        state.enemyHp = state.enemyHpMax;
+        state.phase = Number(data.phase) || ((state.phase || 1) + 1);
+        if (applyEffects) {
+            showNotification(`🌀 ${state.enemyName} пересобирается. Новая выборка.`, 'warning');
+        }
+    }
+
+    state.round = Number(data.round) || state.round;
+    state.roundsTotal = Number(data.roundsTotal) || state.roundsTotal;
+    state.enemyAc = Number(data.enemyAc) || state.enemyAc;
+    state.attackDamage = Number(data.attackDamage) || state.attackDamage;
+    state.nextTarget = data.nextTarget || state.nextTarget;
+    state.victoryTarget = data.victoryTarget || state.victoryTarget;
+    state.defeatTarget = data.defeatTarget || state.defeatTarget;
+    state.timeoutTarget = data.timeoutTarget || state.timeoutTarget;
+    state.zeroTarget = data.zeroTarget || null;
+    state.action = data.action || '';
+    state.hint = data.hint || '';
+    state.icon = data.icon || '⚔️';
+    state.image = data.image || '';
+    state.title = data.title || '';
+}
+
+function applyCombatChoice(choice, result) {
+    const state = gameState.combat;
+    if (!state) return choice.target;
+
+    const check = choice.combatCheck || {};
+    const degree = Number.isInteger(result?.degree) ? result.degree : 2;
+    let heroDamage = 0;
+    let enemyHeal = 0;
+
+    if (degree <= 1) {
+        heroDamage = Math.max(0, Number(check.failHeroDamage ?? state.attackDamage) || 0);
+        if (degree === 0) heroDamage *= 2;
+        enemyHeal = Math.max(0, Number(check.enemyHeal) || 0);
+    }
+
+    if (check.heal && degree >= 2) {
+        const heal = Math.max(0, Number(check.heal) || 0);
+        state.heroHp = Math.min(state.heroHpMax, state.heroHp + heal);
+        showNotification(`💚 ${state.heroName}: +${heal} HP`);
+    }
+
+    if (check.guard && degree >= 2) state.guard = 1;
+    if (state.guard && heroDamage > 0) {
+        heroDamage = Math.floor(heroDamage / 2);
+        state.guard = 0;
+        showNotification('🛡️ Щит поглотил половину удара');
+    }
+
+    if (enemyHeal) {
+        state.enemyHp = Math.min(state.enemyHpMax, state.enemyHp + enemyHeal);
+    }
+    state.heroHp = Math.max(0, state.heroHp - heroDamage);
+
+    if (check.ace && !state.usedAces.includes(state.heroId)) {
+        state.usedAces.push(state.heroId);
+    }
+
+    const degreeLabel = degree >= 2
+        ? (degree === 3 ? 'крит. успех' : 'успех')
+        : (degree === 0 ? 'крит. провал' : 'провал');
+    state.log.push(`Р${state.round}: защита — ${degreeLabel}; герой −${heroDamage}${enemyHeal ? `, враг +${enemyHeal}` : ''}`);
+    if (state.log.length > 8) state.log.shift();
+
+    if (enemyHeal) showNotification(`💚 ${state.enemyName}: +${enemyHeal} HP`, 'warning');
+    if (heroDamage) showNotification(`🩸 ${state.heroName}: −${heroDamage} HP`, 'warning');
+
+    if (state.heroHp <= 0) return state.defeatTarget;
+
+    // Второй этап раунда: обычный удар(ы) выбранного героя.
+    resolveHeroAttacks(state);
+
+    if (state.enemyHp <= 0) return state.zeroTarget || state.victoryTarget;
+    if (state.round >= state.roundsTotal) return state.timeoutTarget || state.defeatTarget;
+    return choice.nextTarget || state.nextTarget || choice.target;
+}
+
+function renderCombatPanel(para) {
+    const state = gameState.combat;
+    if (!state) return '';
+
+    const data = para.combat || {};
+    const heroPercent = Math.max(0, Math.min(100, Math.round((state.heroHp / state.heroHpMax) * 100)));
+    const enemyPercent = Math.max(0, Math.min(100, Math.round((state.enemyHp / state.enemyHpMax) * 100)));
+    const icon = data.icon || state.icon || '⚔️';
+    const action = data.action || state.action || '';
+    const hint = (isCombatTestMode || isDebugMode) ? (data.hint || state.hint || '') : '';
+    const image = data.image || state.image || '';
+    const phaseLabel = state.phase > 1 ? ` · фаза ${state.phase}` : '';
+    const log = (isCombatTestMode || isDebugMode)
+        ? (state.log || []).slice(-3)
+            .map(entry => `<div>${escapeHtml(entry)}</div>`)
+            .join('')
+        : '';
+
+    return `
+        <section class="combat-panel" aria-label="Бой">
+            <div class="combat-top">
+                <div class="combat-title">${icon} <strong>${escapeHtml(state.enemyName)}</strong>${phaseLabel}</div>
+                <div class="combat-round">Раунд ${state.round} / ${state.roundsTotal}</div>
+            </div>
+            <div class="combat-bars">
+                <div class="combat-bar-row">
+                    <span class="combat-bar-label">${escapeHtml(state.heroName)}</span>
+                    <div class="combat-bar"><div class="combat-bar-fill combat-bar-hero" style="width:${heroPercent}%"></div></div>
+                    <span class="combat-bar-value">${state.heroHp}/${state.heroHpMax}</span>
+                </div>
+                <div class="combat-bar-row">
+                    <span class="combat-bar-label">${escapeHtml(state.enemyName)}</span>
+                    <div class="combat-bar"><div class="combat-bar-fill combat-bar-enemy" style="width:${enemyPercent}%"></div></div>
+                    <span class="combat-bar-value">${state.enemyHp}/${state.enemyHpMax}</span>
+                </div>
+            </div>
+            <div class="combat-strike${image ? ' has-image' : ''}"${image ? ` style="background-image:linear-gradient(90deg, rgba(15,5,36,0.96) 0%, rgba(15,5,36,0.7) 45%, rgba(15,5,36,0.08) 100%), url('${escapeHtml(image)}')"` : ''}>
+                <div class="combat-strike-icon" aria-hidden="true">${icon}</div>
+                <div class="combat-strike-copy">
+                    <strong>${escapeHtml(action)}</strong>
+                    ${hint ? `<span>${escapeHtml(hint)}</span>` : ''}
+                </div>
+            </div>
+            ${log ? `<div class="combat-log">${log}</div>` : ''}
+        </section>
+    `;
+}
+
+function resolveSkillCheck(choice) {
+    if (choice.combatCheck?.autoSuccess) {
+        return Promise.resolve({ target: choice.target, success: true, degree: 2, auto: true });
+    }
+
+    const check = choice.skillCheck || (choice.combatCheck ? {
+        skill: choice.combatCheck.skill || 'Атака',
+        dc: choice.combatCheck.dc,
+        label: choice.combatCheck.label,
+        failTarget: choice.target,
+        criticalFailureTarget: choice.target,
+        criticalSuccessTarget: choice.target
+    } : null);
+
+    if (!check) {
+        return Promise.resolve({ target: choice.target, success: true, degree: 2 });
+    }
     const dialog = document.getElementById('skill-check-dialog');
     const form = document.getElementById('skill-check-form');
     const title = document.getElementById('skill-check-title');
@@ -424,14 +732,18 @@ function resolveSkillCheck(choice) {
     const character = getSelectedCharacter();
     const resolvedSkill = resolveCharacterSkillCheck(check.skill);
     const hasCharacterModifier = Boolean(character && resolvedSkill);
+    const isCombatCheck = Boolean(choice.combatCheck);
+    const hideCombatNumbers = isCombatCheck && !isCombatTestMode && !isDebugMode;
 
     return new Promise(resolve => {
         let rolledResult = null;
         let settled = false;
 
-        title.textContent = `Проверка: ${check.skill}`;
+        title.textContent = `Проверка: ${check.label || check.skill}`;
         if (hasCharacterModifier) {
-            details.textContent = `${character.name} · ${resolvedSkill.skill} ${formatModifier(resolvedSkill.modifier)} · DC ${check.dc}`;
+            details.textContent = hideCombatNumbers
+                ? `${character.name} · ${resolvedSkill.skill} ${formatModifier(resolvedSkill.modifier)}`
+                : `${character.name} · ${resolvedSkill.skill} ${formatModifier(resolvedSkill.modifier)} · DC ${check.dc}`;
             modifierInput.value = String(resolvedSkill.modifier);
             modifierInput.readOnly = !isDebugMode;
             if (modifierLabel) {
@@ -440,9 +752,10 @@ function resolveSkillCheck(choice) {
                     : `Модификатор персонажа (${character.name})`;
             }
         } else {
+            const difficultyText = hideCombatNumbers ? 'Сложность скрыта.' : `Сложность DC ${check.dc}.`;
             details.textContent = character
-                ? `Сложность DC ${check.dc}. Для «${check.skill}» нет автомодификатора — введите вручную.`
-                : `Сложность DC ${check.dc}. Персонаж не выбран — введите модификатор вручную.`;
+                ? `${difficultyText} Для «${check.skill}» нет автомодификатора — введите вручную.`
+                : `${difficultyText} Персонаж не выбран — введите модификатор вручную.`;
             modifierInput.value = '0';
             modifierInput.readOnly = false;
             if (modifierLabel) modifierLabel.textContent = 'Модификатор навыка';
@@ -495,7 +808,10 @@ function resolveSkillCheck(choice) {
             const skillNote = hasCharacterModifier && resolvedSkill.skill !== check.skill
                 ? ` (${resolvedSkill.skill})`
                 : '';
-            result.textContent = `d20: ${roll}; модификатор: ${formatModifier(modifier)}${skillNote}; итог: ${total} против DC ${check.dc}. Результат: ${degreeLabels[degree]}.`;
+            const totalText = hideCombatNumbers
+                ? ''
+                : `; итог: ${total} против DC ${check.dc}`;
+            result.textContent = `d20: ${roll}; модификатор: ${formatModifier(modifier)}${skillNote}${totalText}. Результат: ${degreeLabels[degree]}.`;
             modifierInput.disabled = true;
             submit.textContent = 'Продолжить';
             cancel.hidden = true;
@@ -619,6 +935,24 @@ function conditionalTextMatches(block) {
     return hasAll && hasAny && hasNoForbidden;
 }
 
+function formatCombatChoiceLabel(choice, baseText) {
+    const check = choice.combatCheck;
+    if (!check) return baseText;
+
+    if (check.autoSuccess || check.ace) {
+        const parts = ['автоуспех', 'защита'];
+        if (check.heal) parts.push(`лечит ${check.heal}`);
+        if (check.guard) parts.push('щит');
+        return `${baseText} — ${parts.join(' · ')}`;
+    }
+
+    const parts = [];
+    if (check.skill) parts.push(`${check.skill} DC ${check.dc}`);
+    if (check.failHeroDamage) parts.push(`провал −${check.failHeroDamage} HP`);
+    if (check.heal) parts.push(`лечит ${check.heal}`);
+    return parts.length ? `${baseText} — ${parts.join(' · ')}` : baseText;
+}
+
 function resolveChoiceLabel(choice) {
     const variants = Array.isArray(choice.labelVariants) ? choice.labelVariants : [];
     const matchedIndex = variants.findIndex(conditionalTextMatches);
@@ -731,6 +1065,12 @@ function evaluateChoice(choice) {
     const presentForbidden = forbidden.filter(result => result.has);
     const missingRequiredQuests = requiredQuests.filter(result => !result.has);
     const presentForbiddenQuests = forbiddenQuests.filter(result => result.has);
+    const requiredHero = choice.requiresHero || null;
+    const heroLocked = Boolean(requiredHero && requiredHero !== gameState.characterId);
+    const aceUsed = Boolean(
+        choice.combatCheck?.ace
+        && gameState.combat?.usedAces?.includes(gameState.characterId)
+    );
 
     return {
         required,
@@ -745,6 +1085,9 @@ function evaluateChoice(choice) {
         presentForbidden,
         missingRequiredQuests,
         presentForbiddenQuests,
+        requiredHero,
+        heroLocked,
+        aceUsed,
         isAvailable: missingRequired.length === 0
             && hasRequiredAny
             && presentForbidden.length === 0
@@ -752,7 +1095,9 @@ function evaluateChoice(choice) {
             && presentForbiddenQuests.length === 0
             && (!requiredAtLeast || requiredAtLeast.has)
             && (!requiredAtMost || requiredAtMost.has)
-            && gameState.gold >= requiredGold,
+            && gameState.gold >= requiredGold
+            && !heroLocked
+            && !aceUsed,
         requiredGold,
         missingGold: Math.max(0, requiredGold - gameState.gold)
     };
@@ -761,6 +1106,13 @@ function evaluateChoice(choice) {
 function getChoiceLockReason(evaluation, choice) {
     if (choice.lockReason) return choice.lockReason;
     const reasons = [];
+    if (evaluation.requiredHero) {
+        const hero = characterBuilds[evaluation.requiredHero];
+        reasons.push(`только для ${hero?.name || evaluation.requiredHero}`);
+    }
+    if (evaluation.aceUsed) {
+        reasons.push('козырь уже использован');
+    }
     const missing = evaluation.required.filter(item => !item.has).map(item => item.name);
     if (missing.length) reasons.push(`нужно: ${missing.join(', ')}`);
     if (evaluation.requiredAny?.length && !evaluation.hasRequiredAny) {
@@ -1006,11 +1358,18 @@ function displayParagraph(id, options = {}) {
         if (para.setQuest) applyQuestUpdates(para.setQuest);
     }
 
+    if (applyEffects && para.combatEnd) {
+        gameState.combat = null;
+    } else if (applyEffects && para.combat) {
+        syncCombatState(para, applyEffects);
+    }
+
     let textHtml = '';
     if (isDebugMode) {
         textHtml += renderParagraphDebug(id, para);
     }
 
+    textHtml += renderCombatPanel(para);
     textHtml += renderParagraphImages(para);
     textHtml += renderParagraphText(para.text);
 
@@ -1048,6 +1407,19 @@ function displayParagraph(id, options = {}) {
         }
     });
 
+    if (para.combat) {
+        const routine = getCombatHeroRoutine(gameState.characterId);
+        if (routine?.description) {
+            textHtml += renderParagraphText(routine.description, 'combat-hero-attack');
+        }
+        if ((isCombatTestMode || isDebugMode) && routine) {
+            const attackInfo = routine.attacks
+                .map(attack => `${attack.name} +${attack.bonus} (${attack.dice[0]}d${attack.dice[1]}+${attack.flat})`)
+                .join(' · ');
+            textHtml += `<p class="combat-hero-routine"><em>Твой удар: ${escapeHtml(routine.name)} — ${escapeHtml(attackInfo)} против AC ${gameState.combat?.enemyAc ?? '?'}.</em></p>`;
+        }
+    }
+
     document.getElementById('story-text').innerHTML = textHtml;
 
     const choicesDiv = document.getElementById('choices');
@@ -1064,7 +1436,9 @@ function displayParagraph(id, options = {}) {
 
         const btn = document.createElement('button');
         btn.className = `choice-btn${isDebugMode && !evaluation.isAvailable ? ' debug-unavailable-choice' : ''}${!evaluation.isAvailable ? ' locked' : ''}`;
-        btn.textContent = resolvedLabel.text;
+        btn.textContent = (isCombatTestMode || isDebugMode) && choice.combatCheck
+            ? formatCombatChoiceLabel(choice, resolvedLabel.text)
+            : resolvedLabel.text;
         btn.disabled = !evaluation.isAvailable && !isDebugMode;
         if (!evaluation.isAvailable) {
             const reason = getChoiceLockReason(evaluation, choice);
@@ -1091,6 +1465,11 @@ function displayParagraph(id, options = {}) {
 
             const checkResult = await resolveSkillCheck(choice);
             if (!checkResult) return;
+            if (choice.combatCheck) {
+                const combatTarget = applyCombatChoice(choice, checkResult);
+                if (!combatTarget) return;
+                checkResult.target = combatTarget;
+            }
             if (checkResult.success && choice.selectCharacter) {
                 applyCharacterSelection(choice.selectCharacter);
             }
@@ -1361,6 +1740,14 @@ function setupInventoryTabs() {
 }
 
 function resetGame(silent = false) {
+    if (isCombatTestMode) {
+        localStorage.removeItem(storageKey);
+        gameState = createInitialGameState();
+        gameState.currentParagraph = getStartingParagraph();
+        displayParagraph(gameState.currentParagraph);
+        return;
+    }
+
     const message = isDebugMode
         ? 'Начать debug-прохождение заново? Обычное сохранение не будет затронуто.'
         : 'Начать игру заново? Весь прогресс будет потерян.';
@@ -1368,7 +1755,8 @@ function resetGame(silent = false) {
     if (silent || confirm(message)) {
         localStorage.removeItem(storageKey);
         gameState = createInitialGameState();
-        displayParagraph(STARTING_PARAGRAPH);
+        gameState.currentParagraph = getStartingParagraph();
+        displayParagraph(gameState.currentParagraph);
     }
 }
 
