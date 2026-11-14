@@ -1206,3 +1206,33 @@ body[data-mode="combat-test"] .notification-region {
     color: #a998b8;
     font-size: 0.82rem;
 }
+
+.combat-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 0;
+}
+
+.combat-status-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    border: 1px solid rgba(186, 85, 211, 0.4);
+    background: rgba(138, 43, 226, 0.14);
+    color: #e6d5ff;
+}
+
+.combat-status-hero {
+    border-color: rgba(255, 123, 123, 0.5);
+    background: rgba(163, 15, 15, 0.18);
+    color: #ffd1d1;
+}
+
+.combat-status-enemy {
+    border-color: rgba(67, 224, 160, 0.45);
+    background: rgba(29, 143, 93, 0.16);
+    color: #c9ffe6;
+}

@@ -12,6 +12,7 @@
         'атлетика': { key: 'athletics', ability: 'str', modName: 'Athletics' },
         'ремесло': { key: 'crafting', ability: 'int', modName: 'Crafting' },
         'крафт': { key: 'crafting', ability: 'int', modName: 'Crafting' },
+        'мастерство': { key: 'crafting', ability: 'int', modName: 'Crafting' },
         'обман': { key: 'deception', ability: 'cha', modName: 'Deception' },
         'дипломатия': { key: 'diplomacy', ability: 'cha', modName: 'Diplomacy' },
         'запугивание': { key: 'intimidation', ability: 'cha', modName: 'Intimidation' },

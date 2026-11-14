@@ -267,6 +267,18 @@ function ensureGameStateShape() {
         gameState.combat.usedAces = [];
         changed = true;
     }
+    if (gameState.combat && !Array.isArray(gameState.combat.heroConditions)) {
+        gameState.combat.heroConditions = [];
+        changed = true;
+    }
+    if (gameState.combat && !Array.isArray(gameState.combat.enemyBuffs)) {
+        gameState.combat.enemyBuffs = [];
+        changed = true;
+    }
+    if (gameState.combat && !Number.isFinite(Number(gameState.combat.currentEnemyAcPenalty))) {
+        gameState.combat.currentEnemyAcPenalty = 0;
+        changed = true;
+    }
     if (legacyCharacterIds[gameState.characterId] && characterBuilds[legacyCharacterIds[gameState.characterId]]) {
         gameState.characterId = legacyCharacterIds[gameState.characterId];
         changed = true;
@@ -484,8 +496,8 @@ const COMBAT_HERO_ROUTINES = {
         name: 'Удар веры и раскат грома',
         description: 'Твой ответ — удар веры, и следом по врагу проходит раскат грома.',
         attacks: [
-            { name: 'удар веры', bonus: 16, dice: [4, 6], flat: 4 },
-            { name: 'раскат грома', bonus: 11, dice: [2, 6], flat: 4 }
+            { name: 'удар веры', bonus: 16, dice: [4, 6], flat: 4, damageType: 'electricity' },
+            { name: 'раскат грома', bonus: 11, dice: [2, 6], flat: 4, damageType: 'electricity' }
         ]
     }
 };
@@ -508,9 +520,94 @@ function rollDamage(count, sides) {
     return total;
 }
 
+function getHeroAttackPenalty(state) {
+    return (state.heroConditions || []).reduce((sum, condition) => (
+        sum + Math.max(0, Number(condition.attackPenalty) || 0)
+    ), 0);
+}
+
+function getHeroMissChance(state) {
+    return Math.max(0, ...(state.heroConditions || []).map(condition => (
+        Math.max(0, Number(condition.missChance) || 0)
+    )), 0);
+}
+
+function getEnemyAcWithBuffs(state) {
+    const buffBonus = (state.enemyBuffs || []).reduce((sum, buff) => (
+        sum + (Number(buff.acBonus) || 0)
+    ), 0);
+    return state.enemyAc + buffBonus - (Number(state.currentEnemyAcPenalty) || 0);
+}
+
+function getEnemyConcealment(state) {
+    return Math.max(0, ...(state.enemyBuffs || []).map(buff => (
+        Math.max(0, Number(buff.concealment) || 0)
+    )), 0);
+}
+
+function applyHeroCondition(state, effect) {
+    if (!effect || !effect.id) return;
+    const condition = {
+        id: effect.id,
+        label: effect.label || effect.id,
+        turns: Math.max(1, Number(effect.turns) || 1),
+        attackPenalty: Number(effect.attackPenalty) || 0,
+        defensePenalty: Number(effect.defensePenalty) || 0,
+        missChance: Number(effect.missChance) || 0,
+        skipAttack: Boolean(effect.skipAttack)
+    };
+    state.heroConditions.push(condition);
+    state.log.push(`Состояние: ${condition.label} (${condition.turns} р.).`);
+    showNotification(`🌀 ${condition.label}`, 'warning');
+}
+
+function applyEnemyBuff(state, effect) {
+    if (!effect || !effect.id) return;
+    const buff = {
+        id: effect.id,
+        label: effect.label || effect.id,
+        turns: Math.max(1, Number(effect.turns) || 1),
+        acBonus: Number(effect.acBonus) || 0,
+        concealment: Number(effect.concealment) || 0,
+        healPerRound: Number(effect.healPerRound) || 0
+    };
+    state.enemyBuffs.push(buff);
+    state.log.push(`Усиление врага: ${buff.label} (${buff.turns} р.).`);
+    showNotification(`✨ ${state.enemyName}: ${buff.label}`);
+}
+
+function tickCombatEffects(state) {
+    state.heroConditions = (state.heroConditions || [])
+        .map(condition => ({ ...condition, turns: condition.turns - 1 }))
+        .filter(condition => condition.turns > 0);
+    state.enemyBuffs = (state.enemyBuffs || [])
+        .map(buff => ({ ...buff, turns: buff.turns - 1 }))
+        .filter(buff => buff.turns > 0);
+    state.currentEnemyAcPenalty = 0;
+    state.buffInterrupted = false;
+}
+
 function resolveHeroAttacks(state) {
     const routine = getCombatHeroRoutine(state.heroId);
     if (!routine) return [];
+
+    const enemyAc = getEnemyAcWithBuffs(state);
+    const attackPenalty = getHeroAttackPenalty(state);
+    const missChance = getEnemyConcealment(state);
+    const regen = (state.enemyBuffs || []).reduce((sum, buff) => (
+        sum + (Number(buff.healPerRound) || 0)
+    ), 0);
+    if (regen) {
+        state.enemyHp = Math.min(state.enemyHpMax, state.enemyHp + regen);
+        state.log.push(`${state.enemyName} восстанавливает ${regen} HP.`);
+    }
+
+    const cannotAct = (state.heroConditions || []).some(condition => condition.skipAttack && condition.turns > 0);
+
+    if (cannotAct) {
+        state.log.push('Ты не можешь действовать: контроль не даёт нанести удар.');
+        return [];
+    }
 
     const results = [];
     let totalDamage = 0;
@@ -518,23 +615,36 @@ function resolveHeroAttacks(state) {
     for (const attack of routine.attacks) {
         if (state.enemyHp <= 0) break;
 
+        if (missChance > 0 && Math.random() < missChance) {
+            state.log.push(`Твой удар (${attack.name}): промах из-за укрытия/иллюзии.`);
+            results.push({ attack: attack.name, roll: 0, total: 0, degree: 1, damage: 0, concealed: true });
+            continue;
+        }
+
         const roll = rollD20();
-        const total = roll + attack.bonus;
-        const degree = getCheckDegree(roll, total, state.enemyAc);
+        const effectiveBonus = attack.bonus - attackPenalty;
+        const total = roll + effectiveBonus;
+        const degree = getCheckDegree(roll, total, enemyAc);
         const degrees = ['крит. провал', 'промах', 'попадание', 'крит. попадание'];
+        const penaltyNote = attackPenalty ? ` − ${attackPenalty} (штраф)` : '';
 
         if (degree <= 1) {
             results.push({ attack: attack.name, roll, total, degree, damage: 0 });
-            state.log.push(`Твой удар (${attack.name}): d20 ${roll} + ${attack.bonus} = ${total} против AC ${state.enemyAc} — ${degrees[degree]}.`);
+            state.log.push(`Твой удар (${attack.name}): d20 ${roll} + ${attack.bonus}${penaltyNote} = ${total} против AC ${enemyAc} — ${degrees[degree]}.`);
             continue;
         }
 
         let damage = rollDamage(attack.dice[0], attack.dice[1]) + attack.flat;
         if (degree === 3) damage *= 2;
+        let weaknessNote = '';
+        if (state.weaknessType && state.weakness > 0 && attack.damageType === state.weaknessType) {
+            damage += state.weakness;
+            weaknessNote = ` (+${state.weakness} слабость)`;
+        }
         state.enemyHp = Math.max(0, state.enemyHp - damage);
         totalDamage += damage;
-        results.push({ attack: attack.name, roll, total, degree, damage });
-        state.log.push(`Твой удар (${attack.name}): d20 ${roll} + ${attack.bonus} = ${total} против AC ${state.enemyAc} — ${degrees[degree]}, ${damage} урона.`);
+        results.push({ attack: attack.name, roll, total, degree, damage, weakness: weaknessNote });
+        state.log.push(`Твой удар (${attack.name}): d20 ${roll} + ${attack.bonus}${penaltyNote} = ${total} против AC ${enemyAc} — ${degrees[degree]}, ${damage} урона${weaknessNote}.`);
     }
 
     if (state.log.length > 8) state.log = state.log.slice(-8);
@@ -569,6 +679,13 @@ function syncCombatState(para, applyEffects) {
             usedAces: [],
             guard: 0,
             phase: 1,
+            heroConditions: [],
+            enemyBuffs: [],
+            currentEnemyAcPenalty: 0,
+            buffInterrupted: false,
+            weaknessType: data.weaknessType || null,
+            weakness: Number(data.weakness) || 0,
+            weaknessLabel: data.weaknessLabel || '',
             log: []
         };
         gameState.combat = state;
@@ -597,6 +714,9 @@ function syncCombatState(para, applyEffects) {
     state.icon = data.icon || '⚔️';
     state.image = data.image || '';
     state.title = data.title || '';
+    state.weaknessType = data.weaknessType || state.weaknessType || null;
+    state.weakness = Number.isFinite(Number(data.weakness)) ? Number(data.weakness) : (state.weakness || 0);
+    state.weaknessLabel = data.weaknessLabel || state.weaknessLabel || '';
 }
 
 function applyCombatChoice(choice, result) {
@@ -647,8 +767,56 @@ function applyCombatChoice(choice, result) {
 
     if (state.heroHp <= 0) return state.defeatTarget;
 
+    const combatData = paragraphs[gameState.currentParagraph]?.combat || {};
+    state.currentEnemyAcPenalty = 0;
+    state.buffInterrupted = false;
+
+    const clearedConditions = degree >= 2 && Boolean(check.clearConditions);
+
+    if (clearedConditions) {
+        const removed = state.heroConditions.length;
+        state.heroConditions = [];
+        if (removed) {
+            state.log.push('Ты сбрасываешь контроль.');
+            showNotification('🧠 Контроль сброшен');
+        }
+    }
+
+    if (degree >= 2 && check.dispelBuff) {
+        const removed = state.enemyBuffs.pop();
+        if (removed) {
+            state.log.push(`Ты снимаешь усиление: ${removed.label}.`);
+            showNotification(`🪄 Снято усиление: ${removed.label}`);
+        }
+        // Срыв текущего каста не даёт наложить новый бафф в этом раунде.
+        state.buffInterrupted = true;
+    }
+
+    if (degree >= 2 && check.interruptBuff) {
+        state.buffInterrupted = true;
+        state.log.push('Ты прерываешь подготовку врага.');
+        showNotification('✋ Каст прерван');
+    }
+
+    if (degree >= 2 && check.expose) {
+        state.currentEnemyAcPenalty = Math.max(0, Number(check.expose) || 2);
+        state.log.push(`Враг оголён: AC −${state.currentEnemyAcPenalty} до конца раунда.`);
+        showNotification('🎯 Враг оголён');
+    }
+
+    if (degree <= 1 && combatData.controlEffect) {
+        applyHeroCondition(state, combatData.controlEffect);
+    }
+    if (combatData.debuffEffect && !clearedConditions) {
+        applyHeroCondition(state, combatData.debuffEffect);
+    }
+    if (combatData.buffEffect && !state.buffInterrupted) {
+        applyEnemyBuff(state, combatData.buffEffect);
+    }
+
     // Второй этап раунда: обычный удар(ы) выбранного героя.
     resolveHeroAttacks(state);
+    tickCombatEffects(state);
 
     if (state.enemyHp <= 0) return state.zeroTarget || state.victoryTarget;
     if (state.round >= state.roundsTotal) return state.timeoutTarget || state.defeatTarget;
@@ -673,6 +841,34 @@ function renderCombatPanel(para) {
             .join('')
         : '';
 
+    const statusItems = [
+        ...(state.heroConditions || []).map(condition => ({ ...condition, side: 'hero' })),
+        ...(state.enemyBuffs || []).map(buff => ({ ...buff, side: 'enemy' }))
+    ];
+    if (state.weaknessType && state.weakness > 0) {
+        statusItems.push({
+            id: 'weakness',
+            label: `Слабость: ${state.weaknessLabel || state.weaknessType}`,
+            side: 'enemy',
+            weakness: state.weakness
+        });
+    }
+    const statusHtml = statusItems.length
+        ? `<div class="combat-status">${statusItems.map(item => {
+            const details = [];
+            if (isCombatTestMode || isDebugMode) {
+                if (item.turns) details.push(`${item.turns} р.`);
+                if (item.attackPenalty) details.push(`−${item.attackPenalty} атака`);
+                if (item.acBonus) details.push(`+${item.acBonus} AC`);
+                if (item.concealment) details.push(`${Math.round(item.concealment * 100)}% промах`);
+                if (item.skipAttack) details.push('пропуск удара');
+                if (item.weakness) details.push(`+${item.weakness} урона`);
+            }
+            const suffix = details.length ? ` (${details.join(', ')})` : '';
+            return `<span class="combat-status-item combat-status-${item.side}">${escapeHtml(item.label)}${escapeHtml(suffix)}</span>`;
+        }).join('')}</div>`
+        : '';
+
     return `
         <section class="combat-panel" aria-label="Бой">
             <div class="combat-top">
@@ -691,6 +887,7 @@ function renderCombatPanel(para) {
                     <span class="combat-bar-value">${state.enemyHp}/${state.enemyHpMax}</span>
                 </div>
             </div>
+            ${statusHtml}
             <div class="combat-strike${image ? ' has-image' : ''}"${image ? ` style="background-image:linear-gradient(90deg, rgba(15,5,36,0.96) 0%, rgba(15,5,36,0.7) 45%, rgba(15,5,36,0.08) 100%), url('${escapeHtml(image)}')"` : ''}>
                 <div class="combat-strike-icon" aria-hidden="true">${icon}</div>
                 <div class="combat-strike-copy">
@@ -950,6 +1147,10 @@ function formatCombatChoiceLabel(choice, baseText) {
     if (check.skill) parts.push(`${check.skill} DC ${check.dc}`);
     if (check.failHeroDamage) parts.push(`провал −${check.failHeroDamage} HP`);
     if (check.heal) parts.push(`лечит ${check.heal}`);
+    if (check.clearConditions) parts.push('снимает состояние');
+    if (check.dispelBuff) parts.push('снимает бафф');
+    if (check.interruptBuff) parts.push('прерывает каст');
+    if (check.expose) parts.push(`оголяет врага −${check.expose} AC`);
     return parts.length ? `${baseText} — ${parts.join(' · ')}` : baseText;
 }
 
