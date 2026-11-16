@@ -208,7 +208,7 @@ CONSISTENCY NOTES:
   Параграфы: `046-lotus-debt`.  
   **SUBJECT:** Red Lotus thread tightening around memory at the audience gates — luxurious crimson threat, debt made visible as silk/binding light.
 
-- [ ] **Оргия Лотоса (один кадр)** → `images/Оргия Лотоса.png`  
+- [x] **Оргия Лотоса (один кадр)** → `images/Оргия начало.jpg`  
   Параграфы: `051-orgy-attend` / `051-orgy-done`.  
   **SUBJECT:** Black Lotus grand salon orgy as aesthetic ritual of passion — velvet, mirrors, crimson crystal light, elegant not pornographic; silhouettes and atmosphere over explicit anatomy.
 
