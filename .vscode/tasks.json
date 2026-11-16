@@ -2,21 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Alinitia: editor write server",
+      "label": "Alinitia: DDEV start",
       "type": "shell",
-      "command": "node scripts/dev-server.js",
-      "isBackground": true,
-      "problemMatcher": {
-        "owner": "alinitia-dev-server",
-        "pattern": {
-          "regexp": "^$"
-        },
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": ".",
-          "endsPattern": "Редактор:|уже занят"
-        }
-      },
+      "command": "ddev start",
       "presentation": {
         "reveal": "silent",
         "panel": "dedicated",

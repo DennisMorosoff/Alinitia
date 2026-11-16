@@ -41,6 +41,7 @@ const fights = [
         phase2Hp: 65,
         ac: 24,
         attackDamage: 34,
+        surpriseDC: 30,
         damageByRound: [34, 36, 20, 28, 38, 36, 34, 35, 40, 42],
         winText: 'Пилигрим 7-9 замирает. Впервые за несколько лет его журнал не дописан: последняя строка обрывается на половине. Кристаллы гаснут, и Перекрёсток становится чуть тише.',
         defeatText: 'Последний удар достигает цели — и мир Алинитии не даёт вам умереть. Тени подбирают то, что осталось от героя, и возвращают его на сцену. Пилигрим уже делает новую запись.',
@@ -177,6 +178,7 @@ const fights = [
         hp: 65,
         ac: 22,
         attackDamage: 14,
+        surpriseDC: 22,
         damageByRound: [14, 16, 16, 18, 18, 20],
         winText: 'Контроль срывается. Лирисса на миг теряет ритм — и этого хватает. Она падает, всё ещё пытаясь улыбнуться чужой болью.',
         defeatText: 'Крик входит в кость, и мир становится слишком громким. Лирисса наклоняется к вам с интересом коллекционера: этот крик она запомнит.',
@@ -277,6 +279,7 @@ const fights = [
         hp: 55,
         ac: 28,
         attackDamage: 26,
+        surpriseDC: 24,
         damageByRound: [26, 18, 28, 24, 30, 30, 32],
         winText: 'Бронг опускает молот. Жар в кузне гаснет, и он смотрит на вас без злобы — только с усталой оценкой металла, который всё-таки выдержал.',
         defeatText: 'Молот опускается, и мир становится тяжёлым. Бронг подхватывает вас, как небрежно брошенную заготовку, и выносит из кузни.',
@@ -377,6 +380,7 @@ const fights = [
         hp: 70,
         ac: 26,
         attackDamage: 22,
+        surpriseDC: 26,
         damageByRound: [22, 24, 22, 26, 24, 28, 30],
         winText: 'Последний бафф гаснет вместе с ней. Элиандра опускается на колени, и свет вокруг становится просто светом.',
         defeatText: 'Она становится слишком яркой, чтобы по ней попасть. Последний удар проходит мимо, а следующий — уже по вам.',
@@ -505,6 +509,7 @@ const fights = [
         hp: 65,
         ac: 27,
         attackDamage: 22,
+        surpriseDC: 27,
         damageByRound: [22, 24, 20, 22, 24, 26, 28],
         winText: "Эхо стихает. Зар'Ак опускает руки, и в тишине становится слышно, как рассыпаются его кристаллы.",
         defeatText: 'Последнее эхо входит в голову и остаётся там. Вы ещё стоите, но ваши удары больше не достигают цели.',
@@ -626,6 +631,7 @@ const fights = [
         hp: 70,
         ac: 26,
         attackDamage: 22,
+        surpriseDC: 28,
         damageByRound: [22, 24, 22, 26, 24, 26, 28],
         winText: 'Ритм сбивается. Теневой дозор распадается на отдельные ноты и гаснет, не дождавшись финального аккорда.',
         defeatText: 'Тишина становится плотной. Дозор заканчивает такт, и вы понимаете, что уже давно не слышите собственного пульса.',
@@ -768,6 +774,7 @@ const fights = [
         hp: 60,
         ac: 23,
         attackDamage: 24,
+        surpriseDC: 24,
         damageByRound: [24, 26, 24, 28, 26, 28],
         weaknessType: 'electricity',
         weakness: 6,
@@ -858,6 +865,7 @@ function buildFight(fight) {
     const winId = `${prefix}-WIN`;
     const defeatId = `${prefix}-DEFEAT`;
     const timeoutId = `${prefix}-TIMEOUT`;
+    const hasSurprise = Boolean(fight.surpriseDC);
     const paragraphs = {};
 
     fight.rounds.forEach((round, index) => {
@@ -895,7 +903,7 @@ function buildFight(fight) {
                 weakness: fight.weakness,
                 weaknessLabel: fight.weaknessLabel
             } : {}),
-            ...(isFirst ? { start: true } : {}),
+            ...(isFirst && !hasSurprise ? { start: true } : {}),
             ...(zeroTarget ? { zeroTarget } : {}),
             ...(isPhase2Start ? { resetEnemyHp: true, enemyHpMax: fight.phase2Hp, phase: 2 } : {})
         };
@@ -930,6 +938,50 @@ function buildFight(fight) {
             }))
         };
     });
+
+    if (hasSurprise) {
+        const surpriseId = `${prefix}-SURPRISE`;
+        const phase2Target = fight.phase2From ? ids[fight.phase2From - 1] : null;
+        paragraphs[surpriseId] = {
+            text: 'Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.',
+            combat: {
+                fightId: fight.id,
+                enemyName: fight.name,
+                enemyHpMax: fight.hp,
+                enemyAc: fight.ac,
+                round: 0,
+                roundsTotal: fight.rounds.length,
+                attackDamage: 0,
+                nextTarget: ids[0],
+                victoryTarget: winId,
+                defeatTarget: defeatId,
+                timeoutTarget: timeoutId,
+                action: 'Внезапная атака',
+                icon: '🕶️',
+                hint: `Скрытность DC ${fight.surpriseDC}. Успех — бесплатный удар до первого раунда.`,
+                image: fight.image,
+                start: true,
+                surpriseRound: true,
+                ...(phase2Target ? { zeroTarget: phase2Target } : {}),
+                ...(fight.weaknessType ? {
+                    weaknessType: fight.weaknessType,
+                    weakness: fight.weakness,
+                    weaknessLabel: fight.weaknessLabel
+                } : {})
+            },
+            choices: [{
+                text: '🕶️ Ударить из тени',
+                target: ids[0],
+                combatCheck: {
+                    skill: 'Скрытность',
+                    dc: fight.surpriseDC,
+                    failHeroDamage: 0,
+                    surpriseAttack: true
+                }
+            }]
+        };
+        fight.surpriseId = surpriseId;
+    }
 
     paragraphs[winId] = {
         text: fight.winText,
@@ -967,7 +1019,7 @@ const data = {
         characterSelectionTarget: 'TEST-HUB'
     },
     'TEST-HUB': {
-        text: 'Выбери противника. После боя можно вернуться сюда и попробовать другого героя.\n\n<strong>Как читать бой:</strong> каждый раунд — два этапа. Сначала бьёт враг: ты выбираешь защиту, и проверка решает, получишь ли ты урон. Потом ты наносишь свой обычный удар — он описан в параграфе и проходит автоматически. Успех защиты — 0 урона тебе; провал — получаешь урон, но твой удар всё равно проходит.\n\nВ PF2E у героя 3 действия, поэтому обычный ход — 1–3 удара с multiple attack penalty (−5/−10; agile — −4/−8). В пилоте: Harsk — два выстрела из алхимического арбалета, Loui — спеллстрайк и рапира, Korakai — удар веры и раскат грома.\n\n<strong>Архетипы:</strong> контроллер — снимай контроль; баффер — снимай или прерывай усиления; дебаффер — стряхивай дебаффы; танк — переживи и бей точно.\n\nНа полигоне специально видны DC и цена провала — в реальной игре они будут скрыты, и ты увидишь только название действия.\n\nЕсли бой окажется слишком коротким или слишком длинным — это нормально для первого теста. Скажи, где было скучно, где страшно, а где не хватило вариантов.',
+        text: 'Выбери противника. После боя можно вернуться сюда и попробовать другого героя.\n\n<strong>Внезапность:</strong> варианты «🕶️ напасть неожиданно» проверяют Скрытность против индивидуального DC врага. Успех даёт бесплатный обычный удар при AC −2 до первого раунда; провал сразу начинает обычный бой.\n\n<strong>Как читать бой:</strong> каждый раунд — два этапа. Сначала бьёт враг: ты выбираешь защиту, и проверка решает, получишь ли ты урон. Потом ты наносишь свой обычный удар — он описан в параграфе и проходит автоматически. Успех защиты — 0 урона тебе; провал — получаешь урон, но твой удар всё равно проходит.\n\nВ PF2E у героя 3 действия, поэтому обычный ход — 1–3 удара с multiple attack penalty (−5/−10; agile — −4/−8). В пилоте: Harsk — два выстрела из алхимического арбалета, Loui — спеллстрайк и рапира, Korakai — удар веры и раскат грома.\n\n<strong>Архетипы:</strong> контроллер — снимай контроль; баффер — снимай или прерывай усиления; дебаффер — стряхивай дебаффы; танк — переживи и бей точно.\n\nНа полигоне специально видны DC и цена провала — в реальной игре они будут скрыты, и ты увидишь только название действия.\n\nЕсли бой окажется слишком коротким или слишком длинным — это нормально для первого теста. Скажи, где было скучно, где страшно, а где не хватило вариантов.',
         choices: []
     }
 };
@@ -978,6 +1030,12 @@ for (const fight of fights) {
         text: `⚔️ ${fight.name} — ${fight.difficulty}, до ${fight.rounds.length} раундов`,
         target: `TEST-${fight.key}-1`
     });
+    if (fight.surpriseId) {
+        data['TEST-HUB'].choices.push({
+            text: `🕶️ ${fight.name} — напасть неожиданно`,
+            target: fight.surpriseId
+        });
+    }
 }
 
 data['TEST-HUB'].choices.push({ text: '🎭 Сменить героя', target: 'TEST-START' });

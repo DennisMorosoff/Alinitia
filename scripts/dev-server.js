@@ -6,15 +6,34 @@ const fs = require('fs/promises');
 const ROOT = path.resolve(__dirname, '..');
 const DATA_PATH = path.join(ROOT, 'data.json');
 const IMAGES_PATH = path.join(ROOT, 'images');
-const HOST = '127.0.0.1';
+const HOST = process.env.EDITOR_HOST || '127.0.0.1';
 const portArg = process.argv.find(argument => argument.startsWith('--port='));
-const PORT = Number.parseInt(portArg?.split('=')[1] || '3000', 10);
+const PORT = Number.parseInt(portArg?.split('=')[1] || process.env.EDITOR_PORT || '3000', 10);
 const EDITOR_TOKEN = crypto.randomBytes(24).toString('hex');
 const MAX_JSON_BYTES = 2 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
 const ALLOWED_IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.avif']);
-const ALLOWED_HOSTS = new Set([`${HOST}:${PORT}`, `localhost:${PORT}`]);
-const ALLOWED_ORIGINS = new Set([`http://${HOST}:${PORT}`, `http://localhost:${PORT}`]);
+const ALLOWED_HOSTNAMES = new Set(
+    (process.env.EDITOR_ALLOWED_HOSTS || '127.0.0.1,localhost,alinitia.ddev.site')
+        .split(',')
+        .map(value => value.trim().toLowerCase())
+        .filter(Boolean)
+);
+
+function isAllowedHost(hostHeader) {
+    if (!hostHeader) return false;
+    const hostname = hostHeader.replace(/^\[|\]$/g, '').split(':')[0].toLowerCase();
+    return ALLOWED_HOSTNAMES.has(hostname);
+}
+
+function isAllowedOrigin(origin) {
+    if (!origin) return false;
+    try {
+        return ALLOWED_HOSTNAMES.has(new URL(origin).hostname.toLowerCase());
+    } catch {
+        return false;
+    }
+}
 const pendingImageUploads = new Set();
 let storyWriteQueue = Promise.resolve();
 const MIME_TYPES = {
@@ -45,9 +64,19 @@ function sendError(response, status, message) {
 function isEditorRequest(request) {
     const origin = request.headers.origin;
     const referer = request.headers.referer;
-    const hasLocalContext = origin
-        ? ALLOWED_ORIGINS.has(origin)
-        : [...ALLOWED_ORIGINS].some(allowedOrigin => referer?.startsWith(`${allowedOrigin}/edit.html`));
+    let hasLocalContext = false;
+
+    if (origin) {
+        hasLocalContext = isAllowedOrigin(origin);
+    } else if (referer) {
+        try {
+            const refererUrl = new URL(referer);
+            hasLocalContext = isAllowedOrigin(refererUrl.origin) && refererUrl.pathname === '/edit.html';
+        } catch {
+            hasLocalContext = false;
+        }
+    }
+
     return hasLocalContext && request.headers['x-alinitia-editor-token'] === EDITOR_TOKEN;
 }
 
@@ -381,8 +410,8 @@ async function serveStatic(request, response, url) {
 
 const server = http.createServer(async (request, response) => {
     try {
-        if (!ALLOWED_HOSTS.has(request.headers.host)) {
-            sendError(response, 403, 'Сервер доступен только через localhost.');
+        if (!isAllowedHost(request.headers.host)) {
+            sendError(response, 403, 'Сервер доступен только через localhost или DDEV.');
             return;
         }
         const url = new URL(request.url, `http://${request.headers.host || `${HOST}:${PORT}`}`);
@@ -415,7 +444,7 @@ const server = http.createServer(async (request, response) => {
 
 server.on('error', error => {
     if (error.code === 'EADDRINUSE') {
-        console.log(`Порт ${PORT} уже занят — сервер, скорее всего, уже запущен: http://${HOST}:${PORT}/edit.html`);
+        console.log(`Порт ${PORT} уже занят — сервер, скорее всего, уже запущен: http://localhost:${PORT}/edit.html`);
         process.exit(0);
     }
     console.error(error);
@@ -423,9 +452,9 @@ server.on('error', error => {
 });
 
 server.listen(PORT, HOST, () => {
-    console.log(`Обычная игра: http://${HOST}:${PORT}/`);
-    console.log(`Debug-режим: http://${HOST}:${PORT}/debug.html`);
-    console.log(`Боевой полигон: http://${HOST}:${PORT}/combat-test.html`);
-    console.log(`Редактор: http://${HOST}:${PORT}/edit.html`);
+    console.log(`Обычная игра: http://localhost:${PORT}/`);
+    console.log(`Debug-режим: http://localhost:${PORT}/debug.html`);
+    console.log(`Боевой полигон: http://localhost:${PORT}/combat-test.html`);
+    console.log(`Редактор: http://localhost:${PORT}/edit.html`);
     console.log('Сервер принимает соединения только с этого компьютера.');
 });

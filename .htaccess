@@ -1,0 +1,36 @@
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP:X-Forwarded-Proto} !^https$ [NC]
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000"
+</IfModule>
+
+AddDefaultCharset UTF-8
+AddType application/json .json
+
+# На проде не должно быть редактора, debug-режима и тестового полигона.
+<FilesMatch "^(edit|debug|combat-test)\.html$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^(combat-tests\.json|data\.json\.bak)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/webp "access plus 7 days"
+    ExpiresByType image/png "access plus 7 days"
+    ExpiresByType image/jpeg "access plus 7 days"
+    ExpiresByType image/gif "access plus 7 days"
+    ExpiresByType text/css "access plus 1 hours"
+    ExpiresByType text/javascript "access plus 1 hours"
+    ExpiresByType application/json "access plus 0 seconds"
+</IfModule>

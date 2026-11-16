@@ -1,0 +1,23 @@
+name: alinitia
+type: generic
+docroot: ""
+php_version: "8.3"
+webserver_type: nginx-fpm
+nodejs_version: "22"
+omit_containers: [db, dba]
+disable_upload_dirs_warning: true
+
+web_environment:
+  - EDITOR_HOST=0.0.0.0
+  - EDITOR_ALLOWED_HOSTS=alinitia.ddev.site,localhost,127.0.0.1
+
+web_extra_daemons:
+  - name: editor
+    command: node scripts/dev-server.js --port=3000
+    directory: /var/www/html
+
+web_extra_exposed_ports:
+  - name: editor
+    container_port: 3000
+    http_port: 3000
+    https_port: 3001

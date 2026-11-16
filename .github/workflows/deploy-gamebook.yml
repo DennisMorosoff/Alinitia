@@ -1,0 +1,65 @@
+name: Deploy Alinitia (prod)
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-alinitia-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DEPLOY_PATH: ${{ secrets.GAMEBOOK_DEPLOY_PATH }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check deploy secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST SSH_USER SSH_PRIVATE_KEY DEPLOY_PATH; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::Не задан GitHub secret: $name"
+              exit 1
+            fi
+          done
+
+      - name: Prepare SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy static production files
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" -o IdentitiesOnly=yes \
+            "$SSH_USER@$SSH_HOST" "mkdir -p '$DEPLOY_PATH'"
+          rsync -avz \
+            -e "ssh -i ~/.ssh/deploy_key -p ${SSH_PORT} -o IdentitiesOnly=yes" \
+            .htaccess \
+            index.html \
+            game.js \
+            pathbuilder-adapter.js \
+            style.css \
+            data.json \
+            characters.json \
+            inventory-translations.json \
+            images \
+            "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
+
+      - name: Done
+        run: echo "Alinitia production files deployed."

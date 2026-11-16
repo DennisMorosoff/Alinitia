@@ -683,6 +683,7 @@ function syncCombatState(para, applyEffects) {
             enemyBuffs: [],
             currentEnemyAcPenalty: 0,
             buffInterrupted: false,
+            surpriseRound: Boolean(data.surpriseRound),
             weaknessType: data.weaknessType || null,
             weakness: Number(data.weakness) || 0,
             weaknessLabel: data.weaknessLabel || '',
@@ -714,6 +715,7 @@ function syncCombatState(para, applyEffects) {
     state.icon = data.icon || '⚔️';
     state.image = data.image || '';
     state.title = data.title || '';
+    state.surpriseRound = Boolean(data.surpriseRound);
     state.weaknessType = data.weaknessType || state.weaknessType || null;
     state.weakness = Number.isFinite(Number(data.weakness)) ? Number(data.weakness) : (state.weakness || 0);
     state.weaknessLabel = data.weaknessLabel || state.weaknessLabel || '';
@@ -725,6 +727,23 @@ function applyCombatChoice(choice, result) {
 
     const check = choice.combatCheck || {};
     const degree = Number.isInteger(result?.degree) ? result.degree : 2;
+
+    if (check.surpriseAttack) {
+        if (degree >= 2) {
+            state.currentEnemyAcPenalty = 2;
+            state.log.push('Внезапная атака: враг застигнут врасплох, AC −2 до конца удара.');
+            showNotification('🕶️ Внезапная атака!');
+            resolveHeroAttacks(state);
+            tickCombatEffects(state);
+            if (state.enemyHp <= 0) return state.zeroTarget || state.victoryTarget;
+            return choice.nextTarget || state.nextTarget || choice.target;
+        }
+
+        state.log.push('Внезапность сорвана: враг заметил тебя.');
+        showNotification('👁️ Внезапность сорвана', 'warning');
+        return choice.nextTarget || state.nextTarget || choice.target;
+    }
+
     let heroDamage = 0;
     let enemyHeal = 0;
 
@@ -835,6 +854,9 @@ function renderCombatPanel(para) {
     const hint = (isCombatTestMode || isDebugMode) ? (data.hint || state.hint || '') : '';
     const image = data.image || state.image || '';
     const phaseLabel = state.phase > 1 ? ` · фаза ${state.phase}` : '';
+    const roundLabel = state.surpriseRound
+        ? 'Раунд внезапности'
+        : `Раунд ${state.round} / ${state.roundsTotal}`;
     const log = (isCombatTestMode || isDebugMode)
         ? (state.log || []).slice(-3)
             .map(entry => `<div>${escapeHtml(entry)}</div>`)
@@ -873,7 +895,7 @@ function renderCombatPanel(para) {
         <section class="combat-panel" aria-label="Бой">
             <div class="combat-top">
                 <div class="combat-title">${icon} <strong>${escapeHtml(state.enemyName)}</strong>${phaseLabel}</div>
-                <div class="combat-round">Раунд ${state.round} / ${state.roundsTotal}</div>
+                <div class="combat-round">${roundLabel}</div>
             </div>
             <div class="combat-bars">
                 <div class="combat-bar-row">
@@ -1146,6 +1168,7 @@ function formatCombatChoiceLabel(choice, baseText) {
     const parts = [];
     if (check.skill) parts.push(`${check.skill} DC ${check.dc}`);
     if (check.failHeroDamage) parts.push(`провал −${check.failHeroDamage} HP`);
+    if (check.surpriseAttack) parts.push('внезапная атака');
     if (check.heal) parts.push(`лечит ${check.heal}`);
     if (check.clearConditions) parts.push('снимает состояние');
     if (check.dispelBuff) parts.push('снимает бафф');
@@ -2885,7 +2908,13 @@ document.querySelectorAll('.mode-nav-btn[data-nav]').forEach(button => {
 });
 
 // Пишущий редактор доступен только через локальный scripts/dev-server.js (порт по умолчанию).
-const LOCAL_EDITOR_BASE = 'http://127.0.0.1:3000';
+const LOCAL_EDITOR_BASE = (() => {
+    const hostname = window.location.hostname;
+    if (hostname.endsWith('.ddev.site')) {
+        return `https://${hostname}:3001`;
+    }
+    return 'http://127.0.0.1:3000';
+})();
 const editCurrentButton = document.getElementById('edit-current-btn');
 if (editCurrentButton && pageMode === 'debug') {
     editCurrentButton.addEventListener('click', () => {

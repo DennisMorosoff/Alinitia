@@ -1,0 +1,5 @@
+# Keep only the project DDEV config in git.
+# Generated containers, certs, compose files and snapshots stay local.
+*
+!config.yaml
+!.gitignore

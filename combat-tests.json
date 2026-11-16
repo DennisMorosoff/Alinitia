@@ -4,35 +4,63 @@
     "characterSelectionTarget": "TEST-HUB"
   },
   "TEST-HUB": {
-    "text": "Выбери противника. После боя можно вернуться сюда и попробовать другого героя.\n\n<strong>Как читать бой:</strong> каждый раунд — два этапа. Сначала бьёт враг: ты выбираешь защиту, и проверка решает, получишь ли ты урон. Потом ты наносишь свой обычный удар — он описан в параграфе и проходит автоматически. Успех защиты — 0 урона тебе; провал — получаешь урон, но твой удар всё равно проходит.\n\nВ PF2E у героя 3 действия, поэтому обычный ход — 1–3 удара с multiple attack penalty (−5/−10; agile — −4/−8). В пилоте: Harsk — два выстрела из алхимического арбалета, Loui — спеллстрайк и рапира, Korakai — удар веры и раскат грома.\n\n<strong>Архетипы:</strong> контроллер — снимай контроль; баффер — снимай или прерывай усиления; дебаффер — стряхивай дебаффы; танк — переживи и бей точно.\n\nНа полигоне специально видны DC и цена провала — в реальной игре они будут скрыты, и ты увидишь только название действия.\n\nЕсли бой окажется слишком коротким или слишком длинным — это нормально для первого теста. Скажи, где было скучно, где страшно, а где не хватило вариантов.",
+    "text": "Выбери противника. После боя можно вернуться сюда и попробовать другого героя.\n\n<strong>Внезапность:</strong> варианты «🕶️ напасть неожиданно» проверяют Скрытность против индивидуального DC врага. Успех даёт бесплатный обычный удар при AC −2 до первого раунда; провал сразу начинает обычный бой.\n\n<strong>Как читать бой:</strong> каждый раунд — два этапа. Сначала бьёт враг: ты выбираешь защиту, и проверка решает, получишь ли ты урон. Потом ты наносишь свой обычный удар — он описан в параграфе и проходит автоматически. Успех защиты — 0 урона тебе; провал — получаешь урон, но твой удар всё равно проходит.\n\nВ PF2E у героя 3 действия, поэтому обычный ход — 1–3 удара с multiple attack penalty (−5/−10; agile — −4/−8). В пилоте: Harsk — два выстрела из алхимического арбалета, Loui — спеллстрайк и рапира, Korakai — удар веры и раскат грома.\n\n<strong>Архетипы:</strong> контроллер — снимай контроль; баффер — снимай или прерывай усиления; дебаффер — стряхивай дебаффы; танк — переживи и бей точно.\n\nНа полигоне специально видны DC и цена провала — в реальной игре они будут скрыты, и ты увидишь только название действия.\n\nЕсли бой окажется слишком коротким или слишком длинным — это нормально для первого теста. Скажи, где было скучно, где страшно, а где не хватило вариантов.",
     "choices": [
       {
         "text": "⚔️ Пилигрим 7-9 — экстремальная, до 10 раундов",
         "target": "TEST-PILGRIM-1"
       },
       {
+        "text": "🕶️ Пилигрим 7-9 — напасть неожиданно",
+        "target": "TEST-PILGRIM-SURPRISE"
+      },
+      {
         "text": "⚔️ Лирисса — контроллер, до 6 раундов",
         "target": "TEST-LIRISSA-1"
+      },
+      {
+        "text": "🕶️ Лирисса — напасть неожиданно",
+        "target": "TEST-LIRISSA-SURPRISE"
       },
       {
         "text": "⚔️ Бронг — танк, до 7 раундов",
         "target": "TEST-BRONG-1"
       },
       {
+        "text": "🕶️ Бронг — напасть неожиданно",
+        "target": "TEST-BRONG-SURPRISE"
+      },
+      {
         "text": "⚔️ Элиандра — баффер, до 7 раундов",
         "target": "TEST-ELIANRA-1"
+      },
+      {
+        "text": "🕶️ Элиандра — напасть неожиданно",
+        "target": "TEST-ELIANRA-SURPRISE"
       },
       {
         "text": "⚔️ Зар'Ак — дебаффер, до 7 раундов",
         "target": "TEST-ZARAK-1"
       },
       {
+        "text": "🕶️ Зар'Ак — напасть неожиданно",
+        "target": "TEST-ZARAK-SURPRISE"
+      },
+      {
         "text": "⚔️ Теневой дозор — скирмишер, до 7 раундов",
         "target": "TEST-DOZOR-1"
       },
       {
+        "text": "🕶️ Теневой дозор — напасть неожиданно",
+        "target": "TEST-DOZOR-SURPRISE"
+      },
+      {
         "text": "⚔️ Марилит — брут, до 6 раундов",
         "target": "TEST-MARILITH-1"
+      },
+      {
+        "text": "🕶️ Марилит — напасть неожиданно",
+        "target": "TEST-MARILITH-SURPRISE"
       },
       {
         "text": "🎭 Сменить героя",
@@ -61,7 +89,6 @@
       "icon": "🦾",
       "hint": "Провал — 34 HP. Два удара по AC 24.",
       "image": "images/Пилигрим 7-9.png",
-      "start": true,
       "zeroTarget": "TEST-PILGRIM-6"
     },
     "choices": [
@@ -789,6 +816,41 @@
       }
     ]
   },
+  "TEST-PILGRIM-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 0,
+      "roundsTotal": 10,
+      "attackDamage": 0,
+      "nextTarget": "TEST-PILGRIM-1",
+      "victoryTarget": "TEST-PILGRIM-WIN",
+      "defeatTarget": "TEST-PILGRIM-DEFEAT",
+      "timeoutTarget": "TEST-PILGRIM-TIMEOUT",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 30. Успех — бесплатный удар до первого раунда.",
+      "image": "images/Пилигрим 7-9.png",
+      "start": true,
+      "surpriseRound": true,
+      "zeroTarget": "TEST-PILGRIM-6"
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "TEST-PILGRIM-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 30,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
   "TEST-PILGRIM-WIN": {
     "text": "Пилигрим 7-9 замирает. Впервые за несколько лет его журнал не дописан: последняя строка обрывается на половине. Кристаллы гаснут, и Перекрёсток становится чуть тише.",
     "combatEnd": true,
@@ -856,8 +918,7 @@
         "label": "Испуг 1",
         "turns": 2,
         "attackPenalty": 1
-      },
-      "start": true
+      }
     },
     "choices": [
       {
@@ -1432,6 +1493,40 @@
       }
     ]
   },
+  "TEST-LIRISSA-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 65,
+      "enemyAc": 22,
+      "round": 0,
+      "roundsTotal": 6,
+      "attackDamage": 0,
+      "nextTarget": "TEST-LIRISSA-1",
+      "victoryTarget": "TEST-LIRISSA-WIN",
+      "defeatTarget": "TEST-LIRISSA-DEFEAT",
+      "timeoutTarget": "TEST-LIRISSA-TIMEOUT",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 22. Успех — бесплатный удар до первого раунда.",
+      "image": "images/Лирисса.png",
+      "start": true,
+      "surpriseRound": true
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "TEST-LIRISSA-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 22,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
   "TEST-LIRISSA-WIN": {
     "text": "Контроль срывается. Лирисса на миг теряет ритм — и этого хватает. Она падает, всё ещё пытаясь улыбнуться чужой болью.",
     "combatEnd": true,
@@ -1493,8 +1588,7 @@
       "action": "Кузнечный молот",
       "icon": "🔨",
       "hint": "Провал — 26 HP.",
-      "image": "images/Бронг.png",
-      "start": true
+      "image": "images/Бронг.png"
     },
     "choices": [
       {
@@ -2005,6 +2099,40 @@
       }
     ]
   },
+  "TEST-BRONG-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 0,
+      "roundsTotal": 7,
+      "attackDamage": 0,
+      "nextTarget": "TEST-BRONG-1",
+      "victoryTarget": "TEST-BRONG-WIN",
+      "defeatTarget": "TEST-BRONG-DEFEAT",
+      "timeoutTarget": "TEST-BRONG-TIMEOUT",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 24. Успех — бесплатный удар до первого раунда.",
+      "image": "images/Бронг.png",
+      "start": true,
+      "surpriseRound": true
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "TEST-BRONG-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 24,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
   "TEST-BRONG-WIN": {
     "text": "Бронг опускает молот. Жар в кузне гаснет, и он смотрит на вас без злобы — только с усталой оценкой металла, который всё-таки выдержал.",
     "combatEnd": true,
@@ -2072,8 +2200,7 @@
         "label": "Клятва света",
         "turns": 3,
         "acBonus": 2
-      },
-      "start": true
+      }
     },
     "choices": [
       {
@@ -2854,6 +2981,40 @@
       }
     ]
   },
+  "TEST-ELIANRA-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "elianra",
+      "enemyName": "Элиандра",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 0,
+      "roundsTotal": 7,
+      "attackDamage": 0,
+      "nextTarget": "TEST-ELIANRA-1",
+      "victoryTarget": "TEST-ELIANRA-WIN",
+      "defeatTarget": "TEST-ELIANRA-DEFEAT",
+      "timeoutTarget": "TEST-ELIANRA-TIMEOUT",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 26. Успех — бесплатный удар до первого раунда.",
+      "image": "images/Элиандра.png",
+      "start": true,
+      "surpriseRound": true
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "TEST-ELIANRA-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 26,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
   "TEST-ELIANRA-WIN": {
     "text": "Последний бафф гаснет вместе с ней. Элиандра опускается на колени, и свет вокруг становится просто светом.",
     "combatEnd": true,
@@ -2921,8 +3082,7 @@
         "label": "Ментальное эхо",
         "turns": 2,
         "attackPenalty": 2
-      },
-      "start": true
+      }
     },
     "choices": [
       {
@@ -3639,6 +3799,40 @@
       }
     ]
   },
+  "TEST-ZARAK-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "zarak",
+      "enemyName": "Зар'Ак",
+      "enemyHpMax": 65,
+      "enemyAc": 27,
+      "round": 0,
+      "roundsTotal": 7,
+      "attackDamage": 0,
+      "nextTarget": "TEST-ZARAK-1",
+      "victoryTarget": "TEST-ZARAK-WIN",
+      "defeatTarget": "TEST-ZARAK-DEFEAT",
+      "timeoutTarget": "TEST-ZARAK-TIMEOUT",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 27. Успех — бесплатный удар до первого раунда.",
+      "image": "images/ЗарАк.png",
+      "start": true,
+      "surpriseRound": true
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "TEST-ZARAK-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 27,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
   "TEST-ZARAK-WIN": {
     "text": "Эхо стихает. Зар'Ак опускает руки, и в тишине становится слышно, как рассыпаются его кристаллы.",
     "combatEnd": true,
@@ -3712,8 +3906,7 @@
         "label": "Тень между нотами",
         "turns": 2,
         "concealment": 0.2
-      },
-      "start": true
+      }
     },
     "choices": [
       {
@@ -4604,6 +4797,40 @@
       }
     ]
   },
+  "TEST-DOZOR-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "dozor",
+      "enemyName": "Теневой дозор",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 0,
+      "roundsTotal": 7,
+      "attackDamage": 0,
+      "nextTarget": "TEST-DOZOR-1",
+      "victoryTarget": "TEST-DOZOR-WIN",
+      "defeatTarget": "TEST-DOZOR-DEFEAT",
+      "timeoutTarget": "TEST-DOZOR-TIMEOUT",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 28. Успех — бесплатный удар до первого раунда.",
+      "image": "images/Лабиринт Теней.jpg",
+      "start": true,
+      "surpriseRound": true
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "TEST-DOZOR-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 28,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
   "TEST-DOZOR-WIN": {
     "text": "Ритм сбивается. Теневой дозор распадается на отдельные ноты и гаснет, не дождавшись финального аккорда.",
     "combatEnd": true,
@@ -4668,8 +4895,7 @@
       "image": "images/marilith.jpg",
       "weaknessType": "electricity",
       "weakness": 6,
-      "weaknessLabel": "электричество",
-      "start": true
+      "weaknessLabel": "электричество"
     },
     "choices": [
       {
@@ -5139,6 +5365,43 @@
           "skill": "Стойкость",
           "dc": 27,
           "failHeroDamage": 28
+        }
+      }
+    ]
+  },
+  "TEST-MARILITH-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "marilith",
+      "enemyName": "Марилит",
+      "enemyHpMax": 60,
+      "enemyAc": 23,
+      "round": 0,
+      "roundsTotal": 6,
+      "attackDamage": 0,
+      "nextTarget": "TEST-MARILITH-1",
+      "victoryTarget": "TEST-MARILITH-WIN",
+      "defeatTarget": "TEST-MARILITH-DEFEAT",
+      "timeoutTarget": "TEST-MARILITH-TIMEOUT",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 24. Успех — бесплатный удар до первого раунда.",
+      "image": "images/marilith.jpg",
+      "start": true,
+      "surpriseRound": true,
+      "weaknessType": "electricity",
+      "weakness": 6,
+      "weaknessLabel": "электричество"
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "TEST-MARILITH-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 24,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
         }
       }
     ]
