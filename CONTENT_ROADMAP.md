@@ -279,8 +279,10 @@
 - [x] Прод-деплой только статики: `.github/workflows/deploy-gamebook.yml` + `.htaccess`; `edit.html`, `debug.html`, `combat-test.html`, `scripts/` и `.ddev/` не деплоятся.
 - [x] Поддомен `alinitia.dennismorosoff.ru` создан; статика вручную залита в `/var/www/u2415359/data/www/alinitia.dennismorosoff.ru`; рабочий URL — `http://www.alinitia.dennismorosoff.ru/`.
 - [ ] Добавить в GitHub-репозиторий Alinitia секреты `SSH_HOST`, `SSH_USER`, `SSH_PORT`, `SSH_PRIVATE_KEY`, `GAMEBOOK_DEPLOY_PATH`.
-- [ ] Выпустить Let's Encrypt для `www.alinitia.dennismorosoff.ru` и `alinitia.dennismorosoff.ru`; проверить HTTPS.
-- [ ] Проверить после HTTPS: JSON MIME, регистр имён картинок, `localStorage`.
+- [x] Выпустить Let's Encrypt для `www.alinitia.dennismorosoff.ru` и `alinitia.dennismorosoff.ru`; проверить HTTPS.
+- [x] Проверить после HTTPS: `data.json` отдаётся как `application/json`, http → 301, кириллические имена картинок — 200, `localStorage` доступен в secure context.
+- [x] Линтер данных `scripts/check-data.js`: переходы, достижимость, теги, квесты, картинки, проверки навыков, боевые поля и инвариант поражения (`*-defeat` → `055-force`); флаги `-v`, `--strict`, `--json`.
+- [ ] CI: прогонять `node scripts/check-data.js --strict` в GitHub Actions перед деплоем.
 
 ## M31. Личные квесты планарных путешественников
 - Узлы: `005`/`086`/`087`/`088`/`089` + цепочки `*-personal*`, `orgy-pilgrim`
