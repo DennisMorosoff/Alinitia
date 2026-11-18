@@ -6,23 +6,86 @@
       "class": "Ranger",
       "dualClass": null,
       "level": 9,
+      "xp": 0,
       "ancestry": "Dwarf",
       "heritage": "Strong-Blooded Dwarf",
       "background": "Scout",
+      "alignment": "LN",
+      "gender": "Male",
+      "age": "Not set",
+      "deity": "Not set",
+      "size": 2,
+      "sizeName": "Medium",
       "keyability": "dex",
+      "languages": [
+        "None selected"
+      ],
+      "rituals": [],
+      "resistances": [],
+      "inventorMods": [],
       "abilities": {
         "str": 16,
         "dex": 19,
         "con": 16,
         "int": 10,
         "wis": 14,
-        "cha": 10
+        "cha": 10,
+        "breakdown": {
+          "ancestryFree": [
+            "Dex"
+          ],
+          "ancestryBoosts": [
+            "Con",
+            "Wis"
+          ],
+          "ancestryFlaws": [
+            "Cha"
+          ],
+          "backgroundBoosts": [
+            "Dex",
+            "Str"
+          ],
+          "classBoosts": [
+            "Dex"
+          ],
+          "mapLevelledBoosts": {
+            "1": [
+              "Str",
+              "Dex",
+              "Con",
+              "Wis"
+            ],
+            "5": [
+              "Dex",
+              "Str",
+              "Con",
+              "Cha"
+            ]
+          }
+        }
+      },
+      "attributes": {
+        "ancestryhp": 10,
+        "classhp": 10,
+        "bonushp": 0,
+        "bonushpPerLevel": 1,
+        "speed": 20,
+        "speedBonus": 0
       },
       "proficiencies": {
+        "classDC": 4,
         "perception": 6,
         "fortitude": 4,
         "reflex": 6,
         "will": 4,
+        "heavy": 0,
+        "medium": 2,
+        "light": 2,
+        "unarmored": 2,
+        "advanced": 0,
+        "martial": 4,
+        "simple": 4,
+        "unarmed": 4,
         "castingArcane": 2,
         "castingDivine": 0,
         "castingOccult": 0,
@@ -42,64 +105,356 @@
         "society": 0,
         "stealth": 6,
         "survival": 4,
-        "thievery": 0
+        "thievery": 0,
+        "piloting": 0,
+        "computers": 0
       },
       "mods": {},
+      "feats": [
+        [
+          "Forager",
+          null,
+          "Awarded Feat",
+          1
+        ],
+        [
+          "Strong-Blooded Dwarf",
+          null,
+          "Heritage",
+          1,
+          "Heritage Feat",
+          "standardChoice",
+          null
+        ],
+        [
+          "Crossbow Ace",
+          null,
+          "Class Feat",
+          1,
+          "Ranger Feat 1",
+          "standardChoice",
+          null
+        ],
+        [
+          "Dwarven Weapon Familiarity",
+          null,
+          "Ancestry Feat",
+          1,
+          "Dwarf Feat 1",
+          "standardChoice",
+          null
+        ],
+        [
+          "Assurance",
+          "Athletics",
+          "Skill Feat",
+          2,
+          "Skill Feat 2",
+          "standardChoice",
+          null
+        ],
+        [
+          "Quick Draw",
+          null,
+          "Class Feat",
+          2,
+          "Ranger Feat 2",
+          "standardChoice",
+          null
+        ],
+        [
+          "Diehard",
+          null,
+          "General Feat",
+          3,
+          "General Feat 3",
+          "standardChoice",
+          null
+        ],
+        [
+          "Terrain Expertise",
+          null,
+          "Skill Feat",
+          4,
+          "Skill Feat 4",
+          "standardChoice",
+          null
+        ],
+        [
+          "Favored Enemy",
+          null,
+          "Class Feat",
+          4,
+          "Ranger Feat 4",
+          "standardChoice",
+          null
+        ],
+        [
+          "Dwarven Weapon Cunning",
+          null,
+          "Ancestry Feat",
+          5,
+          "Dwarf Feat 5",
+          "standardChoice",
+          null
+        ],
+        [
+          "That's Not Natural!",
+          null,
+          "Skill Feat",
+          6,
+          "Skill Feat 6",
+          "standardChoice",
+          null
+        ],
+        [
+          "Skirmish Strike",
+          null,
+          "Class Feat",
+          6,
+          "Ranger Feat 6",
+          "standardChoice",
+          null
+        ],
+        [
+          "Toughness",
+          null,
+          "General Feat",
+          7,
+          "General Feat 7",
+          "standardChoice",
+          null
+        ],
+        [
+          "Assurance",
+          "Survival",
+          "Skill Feat",
+          8,
+          "Skill Feat 8",
+          "standardChoice",
+          null
+        ],
+        [
+          "Animal Companion",
+          null,
+          "Class Feat",
+          8,
+          "Ranger Feat 8",
+          "standardChoice",
+          null
+        ],
+        [
+          "Stonewalker",
+          null,
+          "Ancestry Feat",
+          9,
+          "Dwarf Feat 9",
+          "standardChoice",
+          null
+        ]
+      ],
+      "specials": [
+        "Hunt Prey",
+        "Hunter's Edge: Flurry",
+        "Darkvision",
+        "Iron Will",
+        "Forest",
+        "Weapon Expertise",
+        "Trackless Step",
+        "Evasion",
+        "Vigilant Senses",
+        "Weapon Specialization",
+        "Nature's Edge",
+        "Ranger Expertise",
+        "Strong-Blooded Dwarf"
+      ],
+      "lores": [
+        [
+          "One Terrain",
+          4
+        ]
+      ],
+      "equipmentContainers": {},
       "equipment": [],
+      "specificProficiencies": {
+        "trained": [],
+        "expert": [],
+        "master": [],
+        "legendary": []
+      },
       "weapons": [
         {
           "name": "Heavy Crossbow",
-          "display": "Heavy Crossbow",
           "qty": 1,
-          "attack": 17
+          "prof": "simple",
+          "die": "d10",
+          "pot": 0,
+          "str": "",
+          "mat": null,
+          "display": "Heavy Crossbow",
+          "runes": [],
+          "damageType": "P",
+          "attack": 17,
+          "damageBonus": 2,
+          "extraDamage": [],
+          "increasedDice": false,
+          "isInventor": false,
+          "grade": ""
         },
         {
           "name": "Dwarven War Axe",
-          "display": "Dwarven War Axe",
           "qty": 1,
-          "attack": 16
+          "prof": "martial",
+          "die": "d8",
+          "pot": 0,
+          "str": "",
+          "mat": null,
+          "display": "Dwarven War Axe",
+          "runes": [],
+          "damageType": "S",
+          "attack": 16,
+          "damageBonus": 5,
+          "extraDamage": [],
+          "increasedDice": false,
+          "isInventor": false,
+          "grade": ""
         },
         {
           "name": "Alchemical Crossbow",
-          "display": "Alchemical Crossbow",
           "qty": 1,
-          "attack": 17
+          "prof": "simple",
+          "die": "d8",
+          "pot": 0,
+          "str": "",
+          "mat": null,
+          "display": "Alchemical Crossbow",
+          "runes": [],
+          "damageType": "P",
+          "attack": 17,
+          "damageBonus": 2,
+          "extraDamage": [],
+          "increasedDice": false,
+          "isInventor": false,
+          "grade": ""
         },
         {
           "name": "Mace",
-          "display": "Mace",
           "qty": 1,
-          "attack": 16
+          "prof": "simple",
+          "die": "d6",
+          "pot": 0,
+          "str": "",
+          "mat": null,
+          "display": "Mace",
+          "runes": [],
+          "damageType": "B",
+          "attack": 16,
+          "damageBonus": 5,
+          "extraDamage": [],
+          "increasedDice": false,
+          "isInventor": false,
+          "grade": ""
         }
       ],
+      "money": {
+        "cp": 0,
+        "sp": 0,
+        "gp": 15,
+        "pp": 0
+      },
       "armor": [
         {
           "name": "Studded Leather Armor",
-          "display": "Studded Leather",
           "qty": 1,
-          "worn": true
+          "prof": "light",
+          "pot": 0,
+          "res": "",
+          "mat": null,
+          "display": "Studded Leather",
+          "worn": true,
+          "runes": [],
+          "grade": ""
         },
         {
           "name": "Studded Leather Armor",
-          "display": "Studded Leather",
           "qty": 1,
-          "worn": false
+          "prof": "light",
+          "pot": 0,
+          "res": "",
+          "mat": null,
+          "display": "Studded Leather",
+          "worn": false,
+          "runes": [],
+          "grade": ""
         }
       ],
       "spellCasters": [
         {
           "name": "Stonewalker",
           "magicTradition": "arcane",
+          "spellcastingType": "prepared",
           "ability": "cha",
           "proficiency": 2,
-          "innate": true
+          "focusPoints": 0,
+          "innate": true,
+          "perDay": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "spells": [
+            {
+              "spellLevel": 0,
+              "list": []
+            },
+            {
+              "spellLevel": 1,
+              "list": []
+            },
+            {
+              "spellLevel": 2,
+              "list": []
+            },
+            {
+              "spellLevel": 3,
+              "list": [
+                "Meld into Stone"
+              ]
+            }
+          ],
+          "prepared": [],
+          "blendedSpells": []
         }
       ],
+      "focusPoints": 0,
+      "focus": {},
+      "formula": [],
+      "acTotal": {
+        "acProfBonus": 11,
+        "acAbilityBonus": 3,
+        "acItemBonus": 2,
+        "acTotal": 26,
+        "shieldBonus": null
+      },
       "pets": [
         {
           "type": "Animal Companion",
           "name": "Young Badger",
-          "animal": "Badger"
+          "equipment": [],
+          "animal": "Badger",
+          "mature": false,
+          "incredible": false,
+          "incredibleType": "Nimble",
+          "specializations": [],
+          "armor": "Unarmored"
         }
       ],
       "familiars": []
@@ -112,23 +467,84 @@
       "class": "Magus",
       "dualClass": null,
       "level": 9,
+      "xp": 0,
       "ancestry": "Kitsune",
       "heritage": "Empty Sky Kitsune",
       "background": "Scholar (Arcana)",
+      "alignment": "N",
+      "gender": "Male",
+      "age": "20",
+      "deity": "Not set",
+      "size": 2,
+      "sizeName": "Medium",
       "keyability": "dex",
+      "languages": [
+        "Common",
+        "Kitsune"
+      ],
+      "rituals": [],
+      "resistances": [],
+      "inventorMods": [],
       "abilities": {
         "str": 12,
         "dex": 19,
         "con": 14,
         "int": 16,
         "wis": 12,
-        "cha": 12
+        "cha": 12,
+        "breakdown": {
+          "ancestryFree": [
+            "Dex"
+          ],
+          "ancestryBoosts": [
+            "Cha"
+          ],
+          "ancestryFlaws": [],
+          "backgroundBoosts": [
+            "Int",
+            "Dex"
+          ],
+          "classBoosts": [
+            "Dex"
+          ],
+          "mapLevelledBoosts": {
+            "1": [
+              "Dex",
+              "Wis",
+              "Int",
+              "Con"
+            ],
+            "5": [
+              "Dex",
+              "Int",
+              "Con",
+              "Str"
+            ]
+          }
+        }
+      },
+      "attributes": {
+        "ancestryhp": 8,
+        "classhp": 8,
+        "bonushp": 0,
+        "bonushpPerLevel": 1,
+        "speed": 25,
+        "speedBonus": 0
       },
       "proficiencies": {
+        "classDC": 2,
         "perception": 4,
         "fortitude": 4,
         "reflex": 4,
         "will": 6,
+        "heavy": 0,
+        "medium": 2,
+        "light": 2,
+        "unarmored": 2,
+        "advanced": 0,
+        "martial": 4,
+        "simple": 4,
+        "unarmed": 4,
         "castingArcane": 4,
         "castingDivine": 2,
         "castingOccult": 0,
@@ -148,54 +564,409 @@
         "society": 2,
         "stealth": 2,
         "survival": 0,
-        "thievery": 6
+        "thievery": 6,
+        "piloting": 0,
+        "computers": 0
       },
       "mods": {},
+      "feats": [
+        [
+          "Shield Block",
+          null,
+          "Awarded Feat",
+          1
+        ],
+        [
+          "Assurance",
+          "Arcana",
+          "Awarded Feat",
+          1
+        ],
+        [
+          "Kitsune Spell Familiarity",
+          null,
+          "Awarded Feat",
+          1
+        ],
+        [
+          "Empty Sky Kitsune",
+          null,
+          "Heritage",
+          1,
+          "Heritage Feat",
+          "standardChoice",
+          null
+        ],
+        [
+          "Kitsune Lore",
+          null,
+          "Ancestry Feat",
+          1,
+          "Kitsune Feat 1",
+          "standardChoice",
+          null
+        ],
+        [
+          "Quick Identification",
+          null,
+          "Skill Feat",
+          2,
+          "Skill Feat 2",
+          "standardChoice",
+          null
+        ],
+        [
+          "Spell Parry",
+          null,
+          "Class Feat",
+          2,
+          "Magus Feat 2",
+          "standardChoice",
+          null
+        ],
+        [
+          "Canny Acumen",
+          "Perception",
+          "General Feat",
+          3,
+          "General Feat 3",
+          "standardChoice",
+          null
+        ],
+        [
+          "Skill Training",
+          "Stealth",
+          "Skill Feat",
+          4,
+          "Skill Feat 4",
+          "standardChoice",
+          null
+        ],
+        [
+          "Emergency Targe",
+          null,
+          "Class Feat",
+          4,
+          "Magus Feat 4",
+          "standardChoice",
+          null
+        ],
+        [
+          "Myriad Forms",
+          null,
+          "Ancestry Feat",
+          5,
+          "Kitsune Feat 5",
+          "standardChoice",
+          null
+        ],
+        [
+          "Skill Training",
+          "Nature",
+          "Skill Feat",
+          6,
+          "Skill Feat 6",
+          "standardChoice",
+          null
+        ],
+        [
+          "Attack of Opportunity",
+          null,
+          "Class Feat",
+          6,
+          "Magus Feat 6",
+          "standardChoice",
+          null
+        ],
+        [
+          "Toughness",
+          null,
+          "General Feat",
+          7,
+          "General Feat 7",
+          "standardChoice",
+          null
+        ],
+        [
+          "Assurance",
+          "Stealth",
+          "Skill Feat",
+          8,
+          "Skill Feat 8",
+          "standardChoice",
+          null
+        ],
+        [
+          "Spell Swipe",
+          null,
+          "Class Feat",
+          8,
+          "Magus Feat 8",
+          "standardChoice",
+          null
+        ],
+        [
+          "Fox Trick",
+          null,
+          "Ancestry Feat",
+          9,
+          "Kitsune Feat 9",
+          "standardChoice",
+          null
+        ]
+      ],
+      "specials": [
+        "Spellstrike",
+        "Spellstrike Specifics",
+        "Arcane Cascade",
+        "Sparkling Targe",
+        "Conflux Spells",
+        "Spellbook",
+        "Low-Light Vision",
+        "Change Shape (Kitsune)",
+        "Lightning Reflexes",
+        "Weapon Expertise",
+        "Studious Spells",
+        "Weapon Specialization",
+        "Alertness",
+        "Expert Spellcaster",
+        "Resolve",
+        "Empty Sky Kitsune"
+      ],
+      "lores": [
+        [
+          "Academia",
+          2
+        ],
+        [
+          "Kitsune",
+          2
+        ]
+      ],
+      "equipmentContainers": {},
       "equipment": [],
+      "specificProficiencies": {
+        "trained": [],
+        "expert": [],
+        "master": [],
+        "legendary": []
+      },
       "weapons": [
         {
           "name": "Rapier",
-          "display": "Rapier",
           "qty": 1,
-          "attack": 17
+          "prof": "martial",
+          "die": "d6",
+          "pot": 0,
+          "str": "",
+          "mat": null,
+          "display": "Rapier",
+          "runes": [],
+          "damageType": "P",
+          "attack": 17,
+          "damageBonus": 3,
+          "extraDamage": [],
+          "increasedDice": false,
+          "isInventor": false,
+          "grade": ""
         },
         {
           "name": "Club",
-          "display": "Club",
           "qty": 1,
-          "attack": 14
+          "prof": "simple",
+          "die": "d6",
+          "pot": 0,
+          "str": "",
+          "mat": null,
+          "display": "Club",
+          "runes": [],
+          "damageType": "B",
+          "attack": 14,
+          "damageBonus": 3,
+          "extraDamage": [],
+          "increasedDice": false,
+          "isInventor": false,
+          "grade": ""
         },
         {
           "name": "Light Mace",
-          "display": "Light Mace",
           "qty": 1,
-          "attack": 17
+          "prof": "simple",
+          "die": "d4",
+          "pot": 0,
+          "str": "",
+          "mat": null,
+          "display": "Light Mace",
+          "runes": [],
+          "damageType": "B",
+          "attack": 17,
+          "damageBonus": 3,
+          "extraDamage": [],
+          "increasedDice": false,
+          "isInventor": false,
+          "grade": ""
         }
       ],
+      "money": {
+        "cp": 0,
+        "sp": 0,
+        "gp": 15,
+        "pp": 0
+      },
       "armor": [
         {
           "name": "Leather Armor",
-          "display": "+1 Leather",
           "qty": 1,
-          "worn": true
+          "prof": "light",
+          "pot": 1,
+          "res": "",
+          "mat": null,
+          "display": "+1 Leather",
+          "worn": true,
+          "runes": [],
+          "grade": ""
         }
       ],
       "spellCasters": [
         {
           "name": "Magus",
           "magicTradition": "arcane",
+          "spellcastingType": "prepared",
           "ability": "int",
           "proficiency": 4,
-          "innate": false
+          "focusPoints": 0,
+          "innate": false,
+          "perDay": [
+            5,
+            0,
+            2,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "spells": [
+            {
+              "spellLevel": 0,
+              "list": [
+                "Ray of Frost",
+                "Acid Splash",
+                "Detect Magic",
+                "Light",
+                "Daze",
+                "Shield"
+              ]
+            },
+            {
+              "spellLevel": 1,
+              "list": [
+                "Grease",
+                "Magic Weapon"
+              ]
+            }
+          ],
+          "prepared": [
+            {
+              "spellLevel": 0,
+              "list": [
+                "Shield",
+                "Ray of Frost",
+                "Light",
+                "Daze",
+                "Acid Splash"
+              ]
+            },
+            {
+              "spellLevel": 1,
+              "list": []
+            },
+            {
+              "spellLevel": 2,
+              "list": [
+                "True Strike",
+                "Resist Energy"
+              ]
+            },
+            {
+              "spellLevel": 3,
+              "list": []
+            },
+            {
+              "spellLevel": 4,
+              "list": [
+                "Haste",
+                "Mirror Image"
+              ]
+            },
+            {
+              "spellLevel": 5,
+              "list": [
+                "Quicken Time",
+                "Summon Dragon"
+              ]
+            }
+          ],
+          "blendedSpells": []
         },
         {
           "name": "Kitsune Spell Familiarity",
           "magicTradition": "divine",
+          "spellcastingType": "prepared",
           "ability": "cha",
           "proficiency": 2,
-          "innate": true
+          "focusPoints": 0,
+          "innate": true,
+          "perDay": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "spells": [
+            {
+              "spellLevel": 0,
+              "list": [
+                "Daze"
+              ]
+            }
+          ],
+          "prepared": [],
+          "blendedSpells": []
         }
       ],
+      "focusPoints": 1,
+      "focus": {
+        "arcane": {
+          "int": {
+            "abilityBonus": 3,
+            "proficiency": 4,
+            "itemBonus": 0,
+            "focusCantrips": [],
+            "focusSpells": [
+              "Shielding Strike"
+            ]
+          }
+        }
+      },
+      "formula": [],
+      "acTotal": {
+        "acProfBonus": 11,
+        "acAbilityBonus": 4,
+        "acItemBonus": 2,
+        "acTotal": 27,
+        "shieldBonus": null
+      },
       "pets": [],
       "familiars": []
     }

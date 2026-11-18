@@ -502,9 +502,11 @@ function getCheckDegree(roll, total, dc) {
     return degree;
 }
 
+// Резерв, если в characters.json нет attributes/acTotal. Основные значения
+// выводятся из листа Pathbuilder через PathbuilderAdapter.getCombatStats.
 const COMBAT_HERO_STATS = {
-    harsk: { hp: 107, ac: 27 },
-    'loui-xiv': { hp: 98, ac: 26 },
+    harsk: { hp: 136, ac: 26 },
+    'loui-xiv': { hp: 107, ac: 27 },
     korakai: { hp: 87, ac: 26 }
 };
 
@@ -539,7 +541,15 @@ const COMBAT_HERO_ROUTINES = {
 };
 
 function getCombatHeroStats(heroId) {
-    return COMBAT_HERO_STATS[heroId] || { hp: 100, ac: 25 };
+    const fallback = COMBAT_HERO_STATS[heroId] || { hp: 100, ac: 25 };
+    const character = characterBuilds[heroId] || getSelectedCharacter();
+    const derived = character ? PathbuilderAdapter.getCombatStats(character) : null;
+    return {
+        hp: derived?.hp || fallback.hp,
+        ac: derived?.ac || fallback.ac,
+        saves: derived?.saves || null,
+        resistances: derived?.resistances || []
+    };
 }
 
 function getCombatHeroRoutine(heroId) {

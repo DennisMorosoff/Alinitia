@@ -15,6 +15,7 @@
         'мастерство': { key: 'crafting', ability: 'int', modName: 'Crafting' },
         'обман': { key: 'deception', ability: 'cha', modName: 'Deception' },
         'дипломатия': { key: 'diplomacy', ability: 'cha', modName: 'Diplomacy' },
+        'убеждение': { key: 'diplomacy', ability: 'cha', modName: 'Diplomacy' },
         'запугивание': { key: 'intimidation', ability: 'cha', modName: 'Intimidation' },
         'медицина': { key: 'medicine', ability: 'wis', modName: 'Medicine' },
         'природа': { key: 'nature', ability: 'wis', modName: 'Nature' },
@@ -29,6 +30,7 @@
         'восприятие': { key: 'perception', ability: 'wis', modName: 'Perception' },
         'стойкость': { key: 'fortitude', ability: 'con', modName: 'Fortitude' },
         'рефлекс': { key: 'reflex', ability: 'dex', modName: 'Reflex' },
+        'реакция': { key: 'reflex', ability: 'dex', modName: 'Reflex' },
         'воля': { key: 'will', ability: 'wis', modName: 'Will' },
         'атака': { key: 'attack' }
     };
@@ -89,6 +91,45 @@
             getProficiencyModifier(character, 'castingPrimal', 'wis')
         ];
         return Math.max(...casterModifiers, ...fallbackModifiers);
+    }
+
+    function getMaxHp(character) {
+        const attributes = character.attributes;
+        if (!attributes || (!attributes.ancestryhp && !attributes.classhp)) return null;
+        const level = Number(character.level) || 1;
+        const constitution = abilityModifier(character.abilities?.con ?? 10);
+        const ancestryHp = Number(attributes.ancestryhp) || 0;
+        const classHp = Number(attributes.classhp) || 0;
+        const bonusHp = Number(attributes.bonushp) || 0;
+        const bonusPerLevel = Number(attributes.bonushpPerLevel) || 0;
+        return Math.max(1, ancestryHp + (classHp + constitution) * level + bonusHp + bonusPerLevel * level);
+    }
+
+    function getArmorClass(character) {
+        const ac = Number(character.acTotal?.acTotal);
+        return Number.isFinite(ac) && ac > 0 ? ac : null;
+    }
+
+    function getSavingThrows(character) {
+        return {
+            fortitude: getProficiencyModifier(character, 'fortitude', 'con', 'Fortitude'),
+            reflex: getProficiencyModifier(character, 'reflex', 'dex', 'Reflex'),
+            will: getProficiencyModifier(character, 'will', 'wis', 'Will')
+        };
+    }
+
+    function getResistances(character) {
+        return Array.isArray(character.resistances) ? character.resistances : [];
+    }
+
+    function getCombatStats(character) {
+        if (!character) return null;
+        return {
+            hp: getMaxHp(character),
+            ac: getArmorClass(character),
+            saves: getSavingThrows(character),
+            resistances: getResistances(character)
+        };
     }
 
     function getSingleSkillModifier(character, skillName) {
@@ -189,6 +230,7 @@
         createChoice,
         extractInventory,
         getAttackModifier,
+        getCombatStats,
         getMagicModifier,
         getProficiencyModifier,
         makeCharacterId,

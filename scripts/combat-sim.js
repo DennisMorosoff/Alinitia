@@ -33,30 +33,30 @@ function degree(roll, total, dc) {
     return deg;
 }
 
-// --- ГЕРОИ (заглушки из characters.json; TODO: заменить на полную карту персонажей) ---
-// AC/HP выведены из способностей, прота в броне и класса; сопротивлений нет.
+// --- ГЕРОИ (полные листы characters.json) ---
+// HP/AC/спасброски выведены из attributes, acTotal и proficiencies.
 const PARTY = [
     {
         name: 'Harsk',
         label: 'следопыт-карлик',
-        hp: 107, // 8 (карлик) + (8 класс + 3 CON) * 9
-        ac: 27, // 10 + 4 DEX + 11 (обуч. кожаная) + 2 предмет
+        hp: 136, // 10 (карлик) + (10 класс + 3 CON) * 9 + 1/уровень
+        ac: 26, // acTotal из листа: 10 + 11 prof + 3 DEX (броня) + 2 предмет
         saves: { fortitude: 16, reflex: 19, will: 15 },
         attacks: [{ name: 'тяжёлый арбалет', bonus: 17, dice: [2, 10], flat: 6 }]
     },
     {
         name: 'Loui XIV',
         label: 'маг-лисьиц',
-        hp: 98, // 8 (лисица) + (8 класс + 2 CON) * 9
-        ac: 26, // 10 + 4 DEX + 11 (обуч. кожа) + 1 (+1 кожа)
-        saves: { fortitude: 15, reflex: 17, will: 18 },
+        hp: 107, // 8 (лисица) + (8 класс + 2 CON) * 9 + 1/уровень
+        ac: 27, // acTotal из листа: 10 + 11 prof + 4 DEX + 2 предмет
+        saves: { fortitude: 15, reflex: 17, will: 16 },
         attacks: [{ name: 'рапира + спеллстрайк', bonus: 17, dice: [2, 6], flat: 5 }]
     },
     {
         name: 'Korakai',
         label: 'оракул-тэнгу',
         hp: 87, // 6 (тэнгу) + (8 класс + 1 CON) * 9
-        ac: 26, // из acTotal экспорта Pathbuilder
+        ac: 26, // acTotal из листа
         saves: { fortitude: 14, reflex: 14, will: 17 },
         attacks: [{ name: 'удар веры', bonus: 16, dice: [3, 6], flat: 4 }]
     }
