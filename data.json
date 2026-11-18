@@ -8243,6 +8243,14 @@
     ],
     "choices": [
       {
+        "text": "⚔️ Провести бой интерактивно",
+        "target": "005-combat-intro"
+      },
+      {
+        "text": "🕶️ Напасть неожиданно (интерактивно)",
+        "target": "005-combat-SURPRISE"
+      },
+      {
         "text": "💎 Забрать добычу",
         "target": "005-loot",
         "addItem": "Грифельная Доска Хаоса",
@@ -8292,7 +8300,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "005-personal-hint": {
     "text": "Вы смотрите на модрона не как на странность площади, а как на часы, забытые на одном и том же месте. Он бормочет одни и те же сводки, двигает клешнёй по одной и той же дуге, ставит метку на доске — и стирает её. Тот же самый расчёт, та же строчка, тот же щелчок.\n\nПилигрим 7-9 не замечает вас — он зациклен, как испорченное заклинание. Но если в его мир прямо теперь вносить события, которых в цикле нет… возможно, он заметит переменную.\n\n<q>Люблю переменные</q> — повторяет он, не поднимая глаза.",
@@ -8760,6 +8769,14 @@
     ],
     "choices": [
       {
+        "text": "⚔️ Провести бой интерактивно",
+        "target": "086-combat-intro"
+      },
+      {
+        "text": "🕶️ Напасть неожиданно (интерактивно)",
+        "target": "086-combat-SURPRISE"
+      },
+      {
         "text": "💎 Забрать добычу",
         "target": "086-loot",
         "addItem": "Кристалл Эха Мёртвого Мира",
@@ -8802,7 +8819,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "086-personal": {
     "text": "Зар'Ак поднимает один из трёх кристаллов, и в нём вспыхивает почти болезненное любопытство:\n\n<q>Эхо убитого лорда демонов лежит в криптах под Храмом Забвения, за ритуальной учёткой. Мальведра торгует забвением в розницу — она обменяет эхо только на «отчёт», на бумагу с чьим-то именем. Мне не нужна бумага. Мне нужно эхо</q>.\n\nОн слушает вас — гитераи всегда слушают, даже когда молчат:\n\n<q>Вы ходите по городу легко. Может быть, тишина отдаст вам чужую смерть. Принесите последние слова лорда — и я отдам резонатор, который настрою под ваш голос</q>.",
@@ -9144,6 +9162,14 @@
     ],
     "choices": [
       {
+        "text": "⚔️ Провести бой интерактивно",
+        "target": "087-combat-intro"
+      },
+      {
+        "text": "🕶️ Напасть неожиданно (интерактивно)",
+        "target": "087-combat-SURPRISE"
+      },
+      {
         "text": "💎 Забрать добычу",
         "target": "087-loot",
         "addItem": "Хлыст «Шёлковая Плеть»",
@@ -9185,7 +9211,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "087-personal": {
     "text": "Лирисса перебирает пирсинг на лице — и впервые на миг кажется недовольной:\n\n<q>Крючки сели. Я немею, когда вокруг — только гладкая безопасность. Край заточен, а подать его нечем</q>.\n\nОна смотрит на вас в упор:\n\n<q>Проведи меня по трём настоящим ранам города. Вера в Храме, желание в Лотосе, бунт на Складе. Дай мне коснуться каждого — и я снова запою. Иначе… крючки так и будут молчать</q>.",
@@ -9618,6 +9645,14 @@
     ],
     "choices": [
       {
+        "text": "⚔️ Провести бой интерактивно",
+        "target": "088-combat-intro"
+      },
+      {
+        "text": "🕶️ Напасть неожиданно (интерактивно)",
+        "target": "088-combat-SURPRISE"
+      },
+      {
         "text": "💎 Забрать добычу",
         "target": "088-loot",
         "addItem": "Слиток Полуночной Руды",
@@ -9659,7 +9694,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "088-personal": {
     "text": "Бронг потирает горящую бороду:\n\n<q>Жила Полуночной руды — в Галерее Каменных Пророчиц, под Лабиринтом. Капризная штука: берёт только Кирку Застывшего Времени и только когда теневой дозор не дирижирует. Два условия. Принесите и то, и другое — откую вам клинок, какого в Городе Латуни не видали</q>.",
@@ -10367,6 +10403,14 @@
     ],
     "choices": [
       {
+        "text": "⚔️ Провести бой интерактивно",
+        "target": "089-combat-intro"
+      },
+      {
+        "text": "🕶️ Напасть неожиданно (интерактивно)",
+        "target": "089-combat-SURPRISE"
+      },
+      {
         "text": "💎 Забрать добычу",
         "target": "089-loot",
         "addItem": "Осколок Вырванного Крыла",
@@ -10417,7 +10461,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "089-personal": {
     "text": "Элиандра отводит трубку от губ, и дым ложится между вами, как строчка:\n\n<q>Утром в архив Храма упал свиток. Меня в нём нет — пока в нём есть чужая, показательная строчка: запись о том, как Падшую Звезду «извлекли» из Небес, как блудницу и отступницу. Дэв-аудитор уже в пути — он проверит, что в городе с именем, которого быть не должно</q>.\n\nОна поправляет повязку, и в голосе прорезается сталь:\n\n<q>Я не прошу спасать. Я прошу: когда моё имя окажется в архиве — помогите мне оказаться вычеркнутой. Своим способом, не пылью</q>.",
@@ -12321,7 +12366,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "086-defeat": {
     "text": "Кристаллы вспыхивают все разом, и воздух наполняется эхом вашего собственного последнего удара — оно возвращается к вам чужим голосом и чужими словами. Зар'Ак стоит над вами, и на его лице впервые появляется довольство: не торжество победителя, а тихая радость коллекционера, наконец получившего недостающий экспонат.\n\n<q>Последнее слово принято,</q> — говорит он. — <q>Оно будет звучать долго.</q>\n\nОн поворачивается к кристаллам, и они гасят его самого — мягко, как свечу. Гитзерай исчезает между гранями, оставляя после себя только эхо. Вы падаете, и тени Храма смыкаются над вами раньше, чем пол становится холодным: Алинития не позволяет актёрам уходить со сцены без разрешения.\n\nВы просыпаетесь уже в другом сне.",
@@ -12342,7 +12388,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "087-defeat": {
     "text": "Хлыст щёлкает в последний раз, и Лирисса аплодирует вашей крови — искренне, как зритель, которому наконец показали что-то настоящее. Её лицо светится довольством: она получила ровно ту эмоцию, за которой пришла.\n\n<q>Вот это я заберу,</q> — говорит она, касаясь вашей крови кончиком пальца. — <q>Остальное оставьте себе.</q>\n\nОна отступает за бархатную ложу, и занавес смыкается на пустом месте — шаддар-кай больше нет на сцене. Вы падаете, а тени Лотоса подхватывают тело раньше, чем оно касается ковра: Алинития не позволяет актёрам уходить со сцены без разрешения.\n\nВы просыпаетесь уже в другом сне.",
@@ -12363,7 +12410,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "088-defeat": {
     "text": "Молот опускается, и жар кузницы на миг становится тишиной. Бронг стоит над вами, и в его глазах нет злобы — только довольство мастера, который наконец увидел, как металл сопротивляется правильно.\n\n<q>Хорошая работа,</q> — говорит он, вытирая молот. — <q>Из такого и выходит клинок.</q>\n\nОн поворачивается к горну, и пламя принимает его так же просто, как принимало руду: азер перестаёт быть на сцене. Вы падаете. Тени Лабиринта подхватывают тело раньше, чем оно касается камня: Алинития не позволяет актёрам уходить со сцены без разрешения.\n\nВы просыпаетесь уже в другом сне.",
@@ -12384,7 +12432,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "089-defeat": {
     "text": "Клинок заканчивает фразу, которую начал. Элиандра стоит над вами, и шрамы на её спине горят холодным светом отсутствующих крыльев. На её лице — довольство, почти благодарность: вы дали ей бой, в котором не нужно было притворяться.\n\n<q>Спасибо,</q> — говорит она тихо. — <q>Я давно не падала по-настоящему.</q>\n\nОна отступает к окну, и свет Башни забирает её фигуру — сначала крылья, потом плечи, потом последний блик на клинке. Вы падаете. Тени Башни подхватывают тело раньше, чем оно касается мрамора: Алинития не позволяет актёрам уходить со сцены без разрешения.\n\nВы просыпаетесь уже в другом сне.",
@@ -12405,7 +12454,8 @@
       "fromStates": [
         "выдан"
       ]
-    }
+    },
+    "combatEnd": true
   },
   "055-force": {
     "text": "<strong>Ночь, которую выбрали за вас</strong>\n\nПоследний удар обрывает бой — и Алинития не даёт вам умереть. Тени смыкаются, подхватывают тело раньше, чем оно касается камня, и несут туда, где Богиня сама решает, чем станет провал: к порогу сна.\n\n<q>Актёр упал раньше финала, — говорит Маска без злости. — Но пьеса ещё идёт. Покажи мне, что ты сделаешь с даром, который дали не за победу.</q>\n\nКаждый видит свой сон. Дары Ноктикулы устраивают экзамен — и на этот раз время выбирают не вы.",
@@ -12444,6 +12494,3657 @@
         "requires": [
           "Я прошёл ночь перед аудиенцией"
         ]
+      }
+    ]
+  },
+  "005-combat-1": {
+    "text": "Пилигрим разворачивает клешню. Он бьёт дважды, как метроном, и каждый удар сопровождается сухим щелчком счётчика.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 1,
+      "roundsTotal": 10,
+      "attackDamage": 34,
+      "nextTarget": "005-combat-2",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Клешня-молот",
+      "icon": "🦾",
+      "hint": "Провал — 34 HP. Два удара по AC 24.",
+      "image": "images/Пилигрим 7-9.png",
+      "zeroTarget": "005-combat-6"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в шарнир",
+        "target": "005-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "✨ Спеллстрайк в паузу",
+        "target": "005-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "⚡ Дуга в сустав",
+        "target": "005-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 28,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-combat-2",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-combat-2",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🏹 Козырь: Последний болт",
+        "target": "005-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 20,
+          "failHeroDamage": 34,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🪞 Козырь: Зеркальная ловушка",
+        "target": "005-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 20,
+          "failHeroDamage": 34,
+          "guard": true,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🌩️ Козырь: Глас Грозы",
+        "target": "005-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 34,
+          "heal": 15,
+          "ace": true,
+          "autoSuccess": true
+        }
+      }
+    ]
+  },
+  "005-combat-2": {
+    "text": "Куб с граффити на груди вспыхивает. Силовой конус идёт низом, выбивая пыль из камней и сбивая дыхание.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 2,
+      "roundsTotal": 10,
+      "attackDamage": 36,
+      "nextTarget": "005-combat-3",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Импульс хаоса",
+      "icon": "🌀",
+      "hint": "Провал — 36 HP и «неуклюжесть 1».",
+      "image": "images/Пилигрим 7-9.png",
+      "zeroTarget": "005-combat-6"
+    },
+    "choices": [
+      {
+        "text": "🪨 Дварфийская стойкость",
+        "target": "005-combat-3",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 28,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🔮 Щит-руна",
+        "target": "005-combat-3",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🌪️ Слово бури",
+        "target": "005-combat-3",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-combat-3",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-combat-3",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 36
+        }
+      }
+    ]
+  },
+  "005-combat-3": {
+    "text": "Пилигрим начинает читать вслух. Не угрозы — числа. Вероятность вашей смерти, вероятность промаха, вероятность того, что вы уже мертвы.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 3,
+      "roundsTotal": 10,
+      "attackDamage": 20,
+      "nextTarget": "005-combat-4",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Статистика смерти",
+      "icon": "📉",
+      "hint": "Провал — 20 HP и испуг 2.",
+      "image": "images/Пилигрим 7-9.png",
+      "zeroTarget": "005-combat-6"
+    },
+    "choices": [
+      {
+        "text": "🧠 Не слушать",
+        "target": "005-combat-4",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 28,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "🎭 Не верить цифрам",
+        "target": "005-combat-4",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 30,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "📖 Ответить проповедью",
+        "target": "005-combat-4",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 30,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-combat-4",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-combat-4",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 20
+        }
+      }
+    ]
+  },
+  "005-combat-4": {
+    "text": "Кристалл на груди вспыхивает и находит вас взглядом. Теперь он видит не партию, а одну цель — и все его удары пойдут по ней.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 4,
+      "roundsTotal": 10,
+      "attackDamage": 28,
+      "nextTarget": "005-combat-5",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Протокол наблюдения",
+      "icon": "👁️",
+      "hint": "Провал — 28 HP. Он помечает одного героя.",
+      "image": "images/Пилигрим 7-9.png",
+      "zeroTarget": "005-combat-6"
+    },
+    "choices": [
+      {
+        "text": "🎯 Сбить метку",
+        "target": "005-combat-5",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🪞 Лисья подмена",
+        "target": "005-combat-5",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 30,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🌬️ Ветер под крылом",
+        "target": "005-combat-5",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-combat-5",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-combat-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 28
+        }
+      }
+    ]
+  },
+  "005-combat-5": {
+    "text": "Он сбрасывает граффити в клешню и бьёт им, как печатью. Воздух становится тяжёлым, будто сама площадь запоминает удар.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 5,
+      "roundsTotal": 10,
+      "attackDamage": 38,
+      "nextTarget": "005-combat-6",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Клешня и граффити",
+      "icon": "🦾",
+      "hint": "Провал — 38 HP.",
+      "image": "images/Пилигрим 7-9.png",
+      "zeroTarget": "005-combat-6"
+    },
+    "choices": [
+      {
+        "text": "🌫️ Засада охотника",
+        "target": "005-combat-6",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 30,
+          "failHeroDamage": 38
+        }
+      },
+      {
+        "text": "🖐️ Кража компонента",
+        "target": "005-combat-6",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 30,
+          "failHeroDamage": 38
+        }
+      },
+      {
+        "text": "⚡ Громовой хлыст",
+        "target": "005-combat-6",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 30,
+          "failHeroDamage": 38
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-combat-6",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 38
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-combat-6",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 38
+        }
+      }
+    ]
+  },
+  "005-combat-6": {
+    "text": "Корпус пересобирается с сухим треском. Пилигрим поднимает голову и повторяет ваш последний приём — почти правильно, почти насмешливо.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 6,
+      "roundsTotal": 10,
+      "attackDamage": 36,
+      "nextTarget": "005-combat-7",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Сбор данных",
+      "icon": "🧮",
+      "hint": "Новая выборка. Он копирует ваш прошлый приём.",
+      "image": "images/Пилигрим 7-9.png",
+      "resetEnemyHp": true,
+      "phase": 2
+    },
+    "choices": [
+      {
+        "text": "🔀 Сменить тактику",
+        "target": "005-combat-7",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Выживание",
+          "dc": 29,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🪄 Подменить данные",
+        "target": "005-combat-7",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🥁 Сбить с ритма",
+        "target": "005-combat-7",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-combat-7",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 36
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-combat-7",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 36
+        }
+      }
+    ]
+  },
+  "005-combat-7": {
+    "text": "Куб вероятностей вращается в его руке. Один из ваших удачных моментов уже вычеркнут из списка возможных.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 7,
+      "roundsTotal": 10,
+      "attackDamage": 34,
+      "nextTarget": "005-combat-8",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Куб вероятностей",
+      "icon": "🎲",
+      "hint": "Провал — 34 HP. Он отменяет крит. успех.",
+      "image": "images/Пилигрим 7-9.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в куб",
+        "target": "005-combat-8",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🖐️ Украсть грань",
+        "target": "005-combat-8",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 30,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "⚡ Молния в куб",
+        "target": "005-combat-8",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 30,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-combat-8",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 34
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-combat-8",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 34
+        }
+      }
+    ]
+  },
+  "005-combat-8": {
+    "text": "Он раскрывает журнал на странице, где ещё нет ваших имён. Тени вокруг сжимаются в кольцо, и воздух начинает считать ваши вдохи.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 8,
+      "roundsTotal": 10,
+      "attackDamage": 35,
+      "nextTarget": "005-combat-9",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Закрытие выборки",
+      "icon": "🕳️",
+      "hint": "Провал — 35 HP.",
+      "image": "images/Пилигрим 7-9.png"
+    },
+    "choices": [
+      {
+        "text": "🪨 Дварфийская стойкость",
+        "target": "005-combat-9",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 28,
+          "failHeroDamage": 35
+        }
+      },
+      {
+        "text": "🪞 Зеркальная ловушка",
+        "target": "005-combat-9",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 30,
+          "failHeroDamage": 35
+        }
+      },
+      {
+        "text": "🌩️ Глас Грозы",
+        "target": "005-combat-9",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 30,
+          "failHeroDamage": 35
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-combat-9",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 35
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-combat-9",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 35
+        }
+      }
+    ]
+  },
+  "005-combat-9": {
+    "text": "Он больше не считает. Клешня и силовой импульс идут одновременно — грубо, быстро, без прежней аккуратности.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 9,
+      "roundsTotal": 10,
+      "attackDamage": 40,
+      "nextTarget": "005-combat-10",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Клешня + импульс",
+      "icon": "🌪️",
+      "hint": "Провал — 40 HP.",
+      "image": "images/Пилигрим 7-9.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в корпус",
+        "target": "005-combat-10",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 40
+        }
+      },
+      {
+        "text": "🤺 Рапира в щель",
+        "target": "005-combat-10",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 40
+        }
+      },
+      {
+        "text": "⚡ Громовой хлыст",
+        "target": "005-combat-10",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 30,
+          "failHeroDamage": 40
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-combat-10",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 40
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-combat-10",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 40
+        }
+      }
+    ]
+  },
+  "005-combat-10": {
+    "text": "Пилигрим закрывает журнал. Впервые за бой он смотрит не на страницу, а прямо на вас. Последний расчёт должен быть точным.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 10,
+      "roundsTotal": 10,
+      "attackDamage": 42,
+      "nextTarget": "005-defeat",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Последний расчёт",
+      "icon": "💀",
+      "hint": "Провал — 42 HP. Финальный раунд.",
+      "image": "images/Пилигрим 7-9.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Добить в щель",
+        "target": "005-defeat",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 24,
+          "failHeroDamage": 42
+        }
+      },
+      {
+        "text": "📕 Разбить журнал",
+        "target": "005-defeat",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 30,
+          "failHeroDamage": 42
+        }
+      },
+      {
+        "text": "⚡ Молния в граффити",
+        "target": "005-defeat",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 30,
+          "failHeroDamage": 42
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "005-defeat",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 30,
+          "failHeroDamage": 42
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "005-defeat",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 31,
+          "failHeroDamage": 42
+        }
+      }
+    ]
+  },
+  "005-combat-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "pilgrim",
+      "enemyName": "Пилигрим 7-9",
+      "enemyHpMax": 65,
+      "enemyAc": 24,
+      "round": 0,
+      "roundsTotal": 10,
+      "attackDamage": 0,
+      "nextTarget": "005-combat-1",
+      "victoryTarget": "005-loot",
+      "defeatTarget": "005-defeat",
+      "timeoutTarget": "005-defeat",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 30. Успех — бесплатный удар до первого раунда.",
+      "image": "images/Пилигрим 7-9.png",
+      "start": true,
+      "surpriseRound": true,
+      "zeroTarget": "005-combat-6"
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "005-combat-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 30,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
+  "005-combat-intro": {
+    "text": "<strong>Интерактивный бой: Пилигрим 7-9</strong>\n\nЭто тестовая интерактивная версия боя для одного героя. Раунды и варианты защиты взяты с боевого полигона; параметры врага сокращены под короткий тест, поэтому они могут отличаться от полного статблока в текстовом варианте выше.\n\nТекстовый бой остаётся доступен: вернитесь назад и выберите ручной исход. После победы вы получите ту же добычу, после поражения попадёте в ту же принудительную ночь Даров.",
+    "choices": [
+      {
+        "text": "⚔️ Начать интерактивный бой",
+        "target": "005-combat-1"
+      },
+      {
+        "text": "↩️ Вернуться к текстовому бою",
+        "target": "005-fight"
+      }
+    ]
+  },
+  "086-combat-1": {
+    "text": "Он не бьёт — он произносит ваше имя чужим голосом. В голове звенит, и рука идёт мимо.",
+    "combat": {
+      "fightId": "zarak",
+      "enemyName": "Зар'Ак",
+      "enemyHpMax": 65,
+      "enemyAc": 27,
+      "round": 1,
+      "roundsTotal": 7,
+      "attackDamage": 22,
+      "nextTarget": "086-combat-2",
+      "victoryTarget": "086-loot",
+      "defeatTarget": "086-defeat",
+      "timeoutTarget": "086-defeat",
+      "action": "Ментальное эхо",
+      "icon": "🔊",
+      "hint": "Он накладывает эхо: −2 к атаке. Провал — 22 HP.",
+      "image": "images/ЗарАк.png",
+      "debuffEffect": {
+        "id": "echo",
+        "label": "Ментальное эхо",
+        "turns": 2,
+        "attackPenalty": 2
+      }
+    },
+    "choices": [
+      {
+        "text": "🧠 Сбить концентрацию",
+        "target": "086-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 27,
+          "failHeroDamage": 22,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🎭 Подменить голос",
+        "target": "086-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "086-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🧠 Стряхнуть",
+        "target": "086-combat-2",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🌩️ Ответить бурей",
+        "target": "086-combat-2",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "086-combat-2",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 22
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "086-combat-2",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 22
+        }
+      },
+      {
+        "text": "🏹 Козырь: Последний болт",
+        "target": "086-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 20,
+          "failHeroDamage": 22,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🪞 Козырь: Зеркальная ловушка",
+        "target": "086-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 20,
+          "failHeroDamage": 22,
+          "guard": true,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🌩️ Козырь: Глас Грозы",
+        "target": "086-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 22,
+          "heal": 15,
+          "ace": true,
+          "autoSuccess": true
+        }
+      }
+    ]
+  },
+  "086-combat-2": {
+    "text": "Он ловит ваш взгляд и гасит его. Мир не исчезает — он просто перестаёт быть чётким.",
+    "combat": {
+      "fightId": "zarak",
+      "enemyName": "Зар'Ак",
+      "enemyHpMax": 65,
+      "enemyAc": 27,
+      "round": 2,
+      "roundsTotal": 7,
+      "attackDamage": 24,
+      "nextTarget": "086-combat-3",
+      "victoryTarget": "086-loot",
+      "defeatTarget": "086-defeat",
+      "timeoutTarget": "086-defeat",
+      "action": "Слепота",
+      "icon": "🌑",
+      "hint": "Он накладывает слепоту: −4 к атаке, 25% промаха. Провал — 24 HP.",
+      "image": "images/ЗарАк.png",
+      "debuffEffect": {
+        "id": "blind",
+        "label": "Слепота",
+        "turns": 2,
+        "attackPenalty": 4,
+        "missChance": 0.25
+      }
+    },
+    "choices": [
+      {
+        "text": "👁️ Сбить концентрацию",
+        "target": "086-combat-3",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 27,
+          "failHeroDamage": 24,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🪞 Лисья подмена",
+        "target": "086-combat-3",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 25,
+          "failHeroDamage": 24,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "086-combat-3",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "👁️ Проморгаться",
+        "target": "086-combat-3",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 25,
+          "failHeroDamage": 24,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🌩️ Ответить бурей",
+        "target": "086-combat-3",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "086-combat-3",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "086-combat-3",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 24
+        }
+      }
+    ]
+  },
+  "086-combat-3": {
+    "text": "Он хлопает в ладоши, и мысль обрывается на середине. Тело помнит, что нужно бить, но не помнит зачем.",
+    "combat": {
+      "fightId": "zarak",
+      "enemyName": "Зар'Ак",
+      "enemyHpMax": 65,
+      "enemyAc": 27,
+      "round": 3,
+      "roundsTotal": 7,
+      "attackDamage": 20,
+      "nextTarget": "086-combat-4",
+      "victoryTarget": "086-loot",
+      "defeatTarget": "086-defeat",
+      "timeoutTarget": "086-defeat",
+      "action": "Ступор",
+      "icon": "💫",
+      "hint": "Он накладывает ступор: пропуск удара. Провал — 20 HP.",
+      "image": "images/ЗарАк.png",
+      "debuffEffect": {
+        "id": "stun",
+        "label": "Ступор",
+        "turns": 1,
+        "skipAttack": true
+      }
+    },
+    "choices": [
+      {
+        "text": "🧠 Сбить концентрацию",
+        "target": "086-combat-4",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 27,
+          "failHeroDamage": 20,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🪞 Подменить голос",
+        "target": "086-combat-4",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 25,
+          "failHeroDamage": 20,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "086-combat-4",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 20,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "💫 Тряхнуть головой",
+        "target": "086-combat-4",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 25,
+          "failHeroDamage": 20,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🌩️ Ответить бурей",
+        "target": "086-combat-4",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 20,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "086-combat-4",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "086-combat-4",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 20
+        }
+      }
+    ]
+  },
+  "086-combat-4": {
+    "text": "Он забирает часть силы вместе с выдохом. Оружие кажется тяжелее, чем было.",
+    "combat": {
+      "fightId": "zarak",
+      "enemyName": "Зар'Ак",
+      "enemyHpMax": 65,
+      "enemyAc": 27,
+      "round": 4,
+      "roundsTotal": 7,
+      "attackDamage": 22,
+      "nextTarget": "086-combat-5",
+      "victoryTarget": "086-loot",
+      "defeatTarget": "086-defeat",
+      "timeoutTarget": "086-defeat",
+      "action": "Слабость",
+      "icon": "🩸",
+      "hint": "Он накладывает слабость: −2 к атаке. Провал — 22 HP.",
+      "image": "images/ЗарАк.png",
+      "debuffEffect": {
+        "id": "weakness",
+        "label": "Слабость",
+        "turns": 2,
+        "attackPenalty": 2
+      }
+    },
+    "choices": [
+      {
+        "text": "🧠 Сбить концентрацию",
+        "target": "086-combat-5",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 27,
+          "failHeroDamage": 22,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🪞 Подменить голос",
+        "target": "086-combat-5",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 25,
+          "failHeroDamage": 22,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "086-combat-5",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "💪 Напрячься",
+        "target": "086-combat-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 22,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🌩️ Ответить бурей",
+        "target": "086-combat-5",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "086-combat-5",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 22
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "086-combat-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 22
+        }
+      }
+    ]
+  },
+  "086-combat-5": {
+    "text": "Он спрашивает, зачем вы вообще бьёте. Голос звучит разумно, и рука на миг замирает.",
+    "combat": {
+      "fightId": "zarak",
+      "enemyName": "Зар'Ак",
+      "enemyHpMax": 65,
+      "enemyAc": 27,
+      "round": 5,
+      "roundsTotal": 7,
+      "attackDamage": 24,
+      "nextTarget": "086-combat-6",
+      "victoryTarget": "086-loot",
+      "defeatTarget": "086-defeat",
+      "timeoutTarget": "086-defeat",
+      "action": "Сомнение",
+      "icon": "❓",
+      "hint": "Он накладывает сомнение: −3 к атаке. Провал — 24 HP.",
+      "image": "images/ЗарАк.png",
+      "debuffEffect": {
+        "id": "doubt",
+        "label": "Сомнение",
+        "turns": 2,
+        "attackPenalty": 3
+      }
+    },
+    "choices": [
+      {
+        "text": "🧠 Сбить концентрацию",
+        "target": "086-combat-6",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 27,
+          "failHeroDamage": 24,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🪞 Подменить голос",
+        "target": "086-combat-6",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 25,
+          "failHeroDamage": 24,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "086-combat-6",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🧠 Вспомнить, зачем",
+        "target": "086-combat-6",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 25,
+          "failHeroDamage": 24,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🌩️ Ответить бурей",
+        "target": "086-combat-6",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "086-combat-6",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "086-combat-6",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 24
+        }
+      }
+    ]
+  },
+  "086-combat-6": {
+    "text": "Кристаллы вспыхивают, и в голове звучит чужая смерть. Ваша рука снова идёт мимо.",
+    "combat": {
+      "fightId": "zarak",
+      "enemyName": "Зар'Ак",
+      "enemyHpMax": 65,
+      "enemyAc": 27,
+      "round": 6,
+      "roundsTotal": 7,
+      "attackDamage": 26,
+      "nextTarget": "086-combat-7",
+      "victoryTarget": "086-loot",
+      "defeatTarget": "086-defeat",
+      "timeoutTarget": "086-defeat",
+      "action": "Расколотое эхо",
+      "icon": "💥",
+      "hint": "Он накладывает эхо: −4 к атаке, 20% промаха. Провал — 26 HP.",
+      "image": "images/ЗарАк.png",
+      "debuffEffect": {
+        "id": "shattered-echo",
+        "label": "Расколотое эхо",
+        "turns": 2,
+        "attackPenalty": 4,
+        "missChance": 0.2
+      }
+    },
+    "choices": [
+      {
+        "text": "🧠 Сбить концентрацию",
+        "target": "086-combat-7",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 27,
+          "failHeroDamage": 26,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🪞 Подменить голос",
+        "target": "086-combat-7",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 25,
+          "failHeroDamage": 26,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "086-combat-7",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 26,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🧠 Заглушить эхо",
+        "target": "086-combat-7",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 25,
+          "failHeroDamage": 26,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🌩️ Ответить бурей",
+        "target": "086-combat-7",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 26,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "086-combat-7",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "086-combat-7",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 26
+        }
+      }
+    ]
+  },
+  "086-combat-7": {
+    "text": "Он начинает перечислять имена. Ваше имя звучит последним, и на нём голос останавливается.",
+    "combat": {
+      "fightId": "zarak",
+      "enemyName": "Зар'Ак",
+      "enemyHpMax": 65,
+      "enemyAc": 27,
+      "round": 7,
+      "roundsTotal": 7,
+      "attackDamage": 28,
+      "nextTarget": "086-defeat",
+      "victoryTarget": "086-loot",
+      "defeatTarget": "086-defeat",
+      "timeoutTarget": "086-defeat",
+      "action": "Реквием",
+      "icon": "🕯️",
+      "hint": "Он накладывает реквием: пропуск удара. Провал — 28 HP.",
+      "image": "images/ЗарАк.png",
+      "debuffEffect": {
+        "id": "requiem",
+        "label": "Реквием",
+        "turns": 1,
+        "skipAttack": true
+      }
+    },
+    "choices": [
+      {
+        "text": "🧠 Сбить концентрацию",
+        "target": "086-defeat",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 27,
+          "failHeroDamage": 28,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🪞 Подменить голос",
+        "target": "086-defeat",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 25,
+          "failHeroDamage": 28,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "086-defeat",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 28,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🕯️ Не слушать имя",
+        "target": "086-defeat",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 25,
+          "failHeroDamage": 28,
+          "clearConditions": true
+        }
+      },
+      {
+        "text": "🌩️ Ответить бурей",
+        "target": "086-defeat",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 28,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "086-defeat",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "086-defeat",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 28
+        }
+      }
+    ]
+  },
+  "086-combat-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "zarak",
+      "enemyName": "Зар'Ак",
+      "enemyHpMax": 65,
+      "enemyAc": 27,
+      "round": 0,
+      "roundsTotal": 7,
+      "attackDamage": 0,
+      "nextTarget": "086-combat-1",
+      "victoryTarget": "086-loot",
+      "defeatTarget": "086-defeat",
+      "timeoutTarget": "086-defeat",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 27. Успех — бесплатный удар до первого раунда.",
+      "image": "images/ЗарАк.png",
+      "start": true,
+      "surpriseRound": true
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "086-combat-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 27,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
+  "086-combat-intro": {
+    "text": "<strong>Интерактивный бой: Зар'Ак</strong>\n\nЭто тестовая интерактивная версия боя для одного героя. Раунды и варианты защиты взяты с боевого полигона; параметры врага сокращены под короткий тест, поэтому они могут отличаться от полного статблока в текстовом варианте выше.\n\nТекстовый бой остаётся доступен: вернитесь назад и выберите ручной исход. После победы вы получите ту же добычу, после поражения попадёте в ту же принудительную ночь Даров.",
+    "choices": [
+      {
+        "text": "⚔️ Начать интерактивный бой",
+        "target": "086-combat-1"
+      },
+      {
+        "text": "↩️ Вернуться к текстовому бою",
+        "target": "086-fight"
+      }
+    ]
+  },
+  "087-combat-1": {
+    "text": "Плеть описывает ленивую дугу. Первый удар почти не ранит — он должен выбить из вас уверенность.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 65,
+      "enemyAc": 22,
+      "round": 1,
+      "roundsTotal": 6,
+      "attackDamage": 14,
+      "nextTarget": "087-combat-2",
+      "victoryTarget": "087-loot",
+      "defeatTarget": "087-defeat",
+      "timeoutTarget": "087-defeat",
+      "action": "Шёлковая плеть",
+      "icon": "🪢",
+      "hint": "Провал — 14 HP и испуг 1: −1 к атаке.",
+      "image": "images/Лирисса.png",
+      "controlEffect": {
+        "id": "frightened",
+        "label": "Испуг 1",
+        "turns": 2,
+        "attackPenalty": 1
+      }
+    },
+    "choices": [
+      {
+        "text": "🧠 Не слушать",
+        "target": "087-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 19,
+          "failHeroDamage": 14,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🎭 Не верить",
+        "target": "087-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 20,
+          "failHeroDamage": 14,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "📖 Ответить проповедью",
+        "target": "087-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 14,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🧠 Стиснуть зубы",
+        "target": "087-combat-2",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 20,
+          "failHeroDamage": 14,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "087-combat-2",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 20,
+          "failHeroDamage": 14
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "087-combat-2",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 21,
+          "failHeroDamage": 14
+        }
+      },
+      {
+        "text": "🏹 Козырь: Последний болт",
+        "target": "087-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 20,
+          "failHeroDamage": 14,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🪞 Козырь: Зеркальная ловушка",
+        "target": "087-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 20,
+          "failHeroDamage": 14,
+          "guard": true,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🌩️ Козырь: Глас Грозы",
+        "target": "087-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 14,
+          "heal": 15,
+          "ace": true,
+          "autoSuccess": true
+        }
+      }
+    ]
+  },
+  "087-combat-2": {
+    "text": "Крик режет по глазам, а не по ушам. Мир расплывается, и Лирисса становится лишь силуэтом в дымке.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 65,
+      "enemyAc": 22,
+      "round": 2,
+      "roundsTotal": 6,
+      "attackDamage": 16,
+      "nextTarget": "087-combat-3",
+      "victoryTarget": "087-loot",
+      "defeatTarget": "087-defeat",
+      "timeoutTarget": "087-defeat",
+      "action": "Пробный крик",
+      "icon": "📢",
+      "hint": "Провал — 16 HP и слепота: −4 к атаке, 35% промаха.",
+      "image": "images/Лирисса.png",
+      "controlEffect": {
+        "id": "blinded",
+        "label": "Слепота",
+        "turns": 2,
+        "attackPenalty": 4,
+        "missChance": 0.35
+      }
+    },
+    "choices": [
+      {
+        "text": "👁️ Сбить пелену",
+        "target": "087-combat-3",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Реакция",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🪞 Лисья подмена",
+        "target": "087-combat-3",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🌬️ Ветер под крылом",
+        "target": "087-combat-3",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "👁️ Проморгаться",
+        "target": "087-combat-3",
+        "combatCheck": {
+          "skill": "Реакция",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "087-combat-3",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 20,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "087-combat-3",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 21,
+          "failHeroDamage": 16
+        }
+      }
+    ]
+  },
+  "087-combat-3": {
+    "text": "Она берёт ноту, от которой закладывает уши. Звук не громкий — он просто не даёт думать.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 65,
+      "enemyAc": 22,
+      "round": 3,
+      "roundsTotal": 6,
+      "attackDamage": 16,
+      "nextTarget": "087-combat-4",
+      "victoryTarget": "087-loot",
+      "defeatTarget": "087-defeat",
+      "timeoutTarget": "087-defeat",
+      "action": "Режущая нота",
+      "icon": "🎵",
+      "hint": "Провал — 16 HP и оглушение: −2 к атаке.",
+      "image": "images/Лирисса.png",
+      "controlEffect": {
+        "id": "deafened",
+        "label": "Оглушение",
+        "turns": 2,
+        "attackPenalty": 2
+      }
+    },
+    "choices": [
+      {
+        "text": "🪨 Дварфийская глухота",
+        "target": "087-combat-4",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 19,
+          "failHeroDamage": 16,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🖐️ Заткнуть уши",
+        "target": "087-combat-4",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "087-combat-4",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🎵 Тряхнуть головой",
+        "target": "087-combat-4",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 20,
+          "failHeroDamage": 16,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "087-combat-4",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 20,
+          "failHeroDamage": 16
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "087-combat-4",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 21,
+          "failHeroDamage": 16
+        }
+      }
+    ]
+  },
+  "087-combat-4": {
+    "text": "Три быстрых укола в ритм вашего пульса. На третьем тело перестаёт слушаться — на один короткий, очень длинный миг.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 65,
+      "enemyAc": 22,
+      "round": 4,
+      "roundsTotal": 6,
+      "attackDamage": 18,
+      "nextTarget": "087-combat-5",
+      "victoryTarget": "087-loot",
+      "defeatTarget": "087-defeat",
+      "timeoutTarget": "087-defeat",
+      "action": "Три укола",
+      "icon": "🗡️",
+      "hint": "Провал — 18 HP и паралич: пропуск удара.",
+      "image": "images/Лирисса.png",
+      "controlEffect": {
+        "id": "paralyzed",
+        "label": "Паралич",
+        "turns": 1,
+        "skipAttack": true
+      }
+    },
+    "choices": [
+      {
+        "text": "💪 Напрячь мышцы",
+        "target": "087-combat-5",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 20,
+          "failHeroDamage": 18,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Выскользнуть",
+        "target": "087-combat-5",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 20,
+          "failHeroDamage": 18,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🌩️ Глас Грозы",
+        "target": "087-combat-5",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 18,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "💪 Разорвать хватку",
+        "target": "087-combat-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 20,
+          "failHeroDamage": 18,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "087-combat-5",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 20,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "087-combat-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 21,
+          "failHeroDamage": 18
+        }
+      }
+    ]
+  },
+  "087-combat-5": {
+    "text": "Она поёт тихо, почти нежно. Веки тяжелеют, и мир снова уходит в дымку — теперь уже с колыбельной.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 65,
+      "enemyAc": 22,
+      "round": 5,
+      "roundsTotal": 6,
+      "attackDamage": 18,
+      "nextTarget": "087-combat-6",
+      "victoryTarget": "087-loot",
+      "defeatTarget": "087-defeat",
+      "timeoutTarget": "087-defeat",
+      "action": "Колыбельная",
+      "icon": "🌙",
+      "hint": "Провал — 18 HP и слепота: −4 к атаке, 35% промаха.",
+      "image": "images/Лирисса.png",
+      "controlEffect": {
+        "id": "blinded",
+        "label": "Слепота",
+        "turns": 2,
+        "attackPenalty": 4,
+        "missChance": 0.35
+      }
+    },
+    "choices": [
+      {
+        "text": "👁️ Сбить пелену",
+        "target": "087-combat-6",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Реакция",
+          "dc": 21,
+          "failHeroDamage": 18,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🪞 Лисья подмена",
+        "target": "087-combat-6",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 21,
+          "failHeroDamage": 18,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🌬️ Ветер под крылом",
+        "target": "087-combat-6",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 21,
+          "failHeroDamage": 18,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "👁️ Проморгаться",
+        "target": "087-combat-6",
+        "combatCheck": {
+          "skill": "Реакция",
+          "dc": 21,
+          "failHeroDamage": 18,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "087-combat-6",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 21,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "087-combat-6",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 22,
+          "failHeroDamage": 18
+        }
+      }
+    ]
+  },
+  "087-combat-6": {
+    "text": "Последний крик не пытается быть красивым. Он просто хочет, чтобы вы перестали двигаться.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 65,
+      "enemyAc": 22,
+      "round": 6,
+      "roundsTotal": 6,
+      "attackDamage": 20,
+      "nextTarget": "087-defeat",
+      "victoryTarget": "087-loot",
+      "defeatTarget": "087-defeat",
+      "timeoutTarget": "087-defeat",
+      "action": "Крик в кость",
+      "icon": "💀",
+      "hint": "Провал — 20 HP и паралич: пропуск удара.",
+      "image": "images/Лирисса.png",
+      "controlEffect": {
+        "id": "paralyzed",
+        "label": "Паралич",
+        "turns": 1,
+        "skipAttack": true
+      }
+    },
+    "choices": [
+      {
+        "text": "💪 Напрячь мышцы",
+        "target": "087-defeat",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 21,
+          "failHeroDamage": 20,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Выскользнуть",
+        "target": "087-defeat",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 21,
+          "failHeroDamage": 20,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🌩️ Глас Грозы",
+        "target": "087-defeat",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 21,
+          "failHeroDamage": 20,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "💪 Разорвать хватку",
+        "target": "087-defeat",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 21,
+          "failHeroDamage": 20,
+          "clearConditions": true,
+          "expose": 2
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "087-defeat",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 21,
+          "failHeroDamage": 20
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "087-defeat",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 22,
+          "failHeroDamage": 20
+        }
+      }
+    ]
+  },
+  "087-combat-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "lirissa",
+      "enemyName": "Лирисса",
+      "enemyHpMax": 65,
+      "enemyAc": 22,
+      "round": 0,
+      "roundsTotal": 6,
+      "attackDamage": 0,
+      "nextTarget": "087-combat-1",
+      "victoryTarget": "087-loot",
+      "defeatTarget": "087-defeat",
+      "timeoutTarget": "087-defeat",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 22. Успех — бесплатный удар до первого раунда.",
+      "image": "images/Лирисса.png",
+      "start": true,
+      "surpriseRound": true
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "087-combat-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 22,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
+  "087-combat-intro": {
+    "text": "<strong>Интерактивный бой: Лирисса</strong>\n\nЭто тестовая интерактивная версия боя для одного героя. Раунды и варианты защиты взяты с боевого полигона; параметры врага сокращены под короткий тест, поэтому они могут отличаться от полного статблока в текстовом варианте выше.\n\nТекстовый бой остаётся доступен: вернитесь назад и выберите ручной исход. После победы вы получите ту же добычу, после поражения попадёте в ту же принудительную ночь Даров.",
+    "choices": [
+      {
+        "text": "⚔️ Начать интерактивный бой",
+        "target": "087-combat-1"
+      },
+      {
+        "text": "↩️ Вернуться к текстовому бою",
+        "target": "087-fight"
+      }
+    ]
+  },
+  "088-combat-1": {
+    "text": "Бронг поднимает молот обеими руками. Удар идёт сверху, как при ковке: без ярости, с точным расчётом на то, что металл не выдержит.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 1,
+      "roundsTotal": 7,
+      "attackDamage": 26,
+      "nextTarget": "088-combat-2",
+      "victoryTarget": "088-loot",
+      "defeatTarget": "088-defeat",
+      "timeoutTarget": "088-defeat",
+      "action": "Кузнечный молот",
+      "icon": "🔨",
+      "hint": "Провал — 26 HP.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в заклёпку",
+        "target": "088-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🤸 Скользнуть под молот",
+        "target": "088-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "⚡ Ветер в горн",
+        "target": "088-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 25,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "088-combat-2",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "088-combat-2",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🏹 Козырь: Последний болт",
+        "target": "088-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 20,
+          "failHeroDamage": 26,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🪞 Козырь: Зеркальная ловушка",
+        "target": "088-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 20,
+          "failHeroDamage": 26,
+          "guard": true,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🌩️ Козырь: Глас Грозы",
+        "target": "088-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 26,
+          "heal": 15,
+          "ace": true,
+          "autoSuccess": true
+        }
+      }
+    ]
+  },
+  "088-combat-2": {
+    "text": "Жар идёт от наковальни волнами. Воздух дрожит, и каждый вдох обжигает изнутри.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 2,
+      "roundsTotal": 7,
+      "attackDamage": 18,
+      "nextTarget": "088-combat-3",
+      "victoryTarget": "088-loot",
+      "defeatTarget": "088-defeat",
+      "timeoutTarget": "088-defeat",
+      "action": "Жар кузницы",
+      "icon": "🔥",
+      "hint": "Провал — 18 HP. Аура действует до конца боя.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🌡️ Прочитать жар",
+        "target": "088-combat-3",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Выживание",
+          "dc": 24,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "❄️ Остудить металл",
+        "target": "088-combat-3",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 25,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🪨 Закалить себя",
+        "target": "088-combat-3",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "088-combat-3",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 18
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "088-combat-3",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 18
+        }
+      }
+    ]
+  },
+  "088-combat-3": {
+    "text": "Он идёт вперёд плечом, как таран. За его спиной наковальня, впереди — вы, и отступать ему некуда.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 3,
+      "roundsTotal": 7,
+      "attackDamage": 28,
+      "nextTarget": "088-combat-4",
+      "victoryTarget": "088-loot",
+      "defeatTarget": "088-defeat",
+      "timeoutTarget": "088-defeat",
+      "action": "Натиск наковальни",
+      "icon": "🪨",
+      "hint": "Провал — 28 HP и сбит с ног.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🛡️ Устоять",
+        "target": "088-combat-4",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🪞 Лисья подмена",
+        "target": "088-combat-4",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Обман",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🌬️ Штормовой шаг",
+        "target": "088-combat-4",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "088-combat-4",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "088-combat-4",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 28
+        }
+      }
+    ]
+  },
+  "088-combat-4": {
+    "text": "Он бьёт по раскалённой заготовке, и искры летят в вас. Мелочь, но каждая оставляет ожог.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 4,
+      "roundsTotal": 7,
+      "attackDamage": 24,
+      "nextTarget": "088-combat-5",
+      "victoryTarget": "088-loot",
+      "defeatTarget": "088-defeat",
+      "timeoutTarget": "088-defeat",
+      "action": "Раскалённая искра",
+      "icon": "✨",
+      "hint": "Провал — 24 HP и горение.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Сбить искру",
+        "target": "088-combat-5",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🔮 Щит-руна",
+        "target": "088-combat-5",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "⚡ Громовой хлыст",
+        "target": "088-combat-5",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "088-combat-5",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "088-combat-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 24
+        }
+      }
+    ]
+  },
+  "088-combat-5": {
+    "text": "Он раздувает горн, и пламя становится белым. Кузня просыпается целиком, и жар начинает давить на кости.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 5,
+      "roundsTotal": 7,
+      "attackDamage": 30,
+      "nextTarget": "088-combat-6",
+      "victoryTarget": "088-loot",
+      "defeatTarget": "088-defeat",
+      "timeoutTarget": "088-defeat",
+      "action": "Пробуждение горна",
+      "icon": "🌋",
+      "hint": "Провал — 30 HP. Легендарное действие.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в горн",
+        "target": "088-combat-6",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🖐️ Разбить наковальню",
+        "target": "088-combat-6",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "📖 Слово бури",
+        "target": "088-combat-6",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "088-combat-6",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "088-combat-6",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 30
+        }
+      }
+    ]
+  },
+  "088-combat-6": {
+    "text": "Он ловит вас клещами и поднимает молот. В кузне нет злости — только следующая операция.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 6,
+      "roundsTotal": 7,
+      "attackDamage": 30,
+      "nextTarget": "088-combat-7",
+      "victoryTarget": "088-loot",
+      "defeatTarget": "088-defeat",
+      "timeoutTarget": "088-defeat",
+      "action": "Молот и клещи",
+      "icon": "🗜️",
+      "hint": "Провал — 30 HP и захват.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Отсечь клещи",
+        "target": "088-combat-7",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🤸 Выскользнуть",
+        "target": "088-combat-7",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "⚡ Громовой хлыст",
+        "target": "088-combat-7",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Магия",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "088-combat-7",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "088-combat-7",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 30
+        }
+      }
+    ]
+  },
+  "088-combat-7": {
+    "text": "Он ставит вас на наковальню — не буквально, но взглядом. Последний удар должен показать, из чего вы сделаны.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 7,
+      "roundsTotal": 7,
+      "attackDamage": 32,
+      "nextTarget": "088-defeat",
+      "victoryTarget": "088-loot",
+      "defeatTarget": "088-defeat",
+      "timeoutTarget": "088-defeat",
+      "action": "Последняя ковка",
+      "icon": "⚒️",
+      "hint": "Провал — 32 HP. Финальный раунд.",
+      "image": "images/Бронг.png"
+    },
+    "choices": [
+      {
+        "text": "🏹 Добить в щель",
+        "target": "088-defeat",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 28,
+          "failHeroDamage": 32
+        }
+      },
+      {
+        "text": "🖐️ Разбить заготовку",
+        "target": "088-defeat",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 25,
+          "failHeroDamage": 32
+        }
+      },
+      {
+        "text": "🎼 Песня кузнеца",
+        "target": "088-defeat",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Исполнение",
+          "dc": 25,
+          "failHeroDamage": 32
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "088-defeat",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 25,
+          "failHeroDamage": 32
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "088-defeat",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 26,
+          "failHeroDamage": 32
+        }
+      }
+    ]
+  },
+  "088-combat-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "brong",
+      "enemyName": "Бронг",
+      "enemyHpMax": 55,
+      "enemyAc": 28,
+      "round": 0,
+      "roundsTotal": 7,
+      "attackDamage": 0,
+      "nextTarget": "088-combat-1",
+      "victoryTarget": "088-loot",
+      "defeatTarget": "088-defeat",
+      "timeoutTarget": "088-defeat",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 24. Успех — бесплатный удар до первого раунда.",
+      "image": "images/Бронг.png",
+      "start": true,
+      "surpriseRound": true
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "088-combat-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 24,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
+  "088-combat-intro": {
+    "text": "<strong>Интерактивный бой: Бронг</strong>\n\nЭто тестовая интерактивная версия боя для одного героя. Раунды и варианты защиты взяты с боевого полигона; параметры врага сокращены под короткий тест, поэтому они могут отличаться от полного статблока в текстовом варианте выше.\n\nТекстовый бой остаётся доступен: вернитесь назад и выберите ручной исход. После победы вы получите ту же добычу, после поражения попадёте в ту же принудительную ночь Даров.",
+    "choices": [
+      {
+        "text": "⚔️ Начать интерактивный бой",
+        "target": "088-combat-1"
+      },
+      {
+        "text": "↩️ Вернуться к текстовому бою",
+        "target": "088-fight"
+      }
+    ]
+  },
+  "089-combat-1": {
+    "text": "Она поднимает клинок, и на нём вспыхивает клятва. Свет ложится на доспех, как вторая кожа.",
+    "combat": {
+      "fightId": "elianra",
+      "enemyName": "Элиандра",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 1,
+      "roundsTotal": 7,
+      "attackDamage": 22,
+      "nextTarget": "089-combat-2",
+      "victoryTarget": "089-loot",
+      "defeatTarget": "089-defeat",
+      "timeoutTarget": "089-defeat",
+      "action": "Клятва света",
+      "icon": "✨",
+      "hint": "Она усиливается: +2 AC. Провал — 22 HP.",
+      "image": "images/Элиандра.png",
+      "buffEffect": {
+        "id": "oath",
+        "label": "Клятва света",
+        "turns": 3,
+        "acBonus": 2
+      }
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в руну",
+        "target": "089-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 26,
+          "failHeroDamage": 22,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🖐️ Украсть компонент",
+        "target": "089-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "📖 Контрзаклинание",
+        "target": "089-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🪄 Снять усиление",
+        "target": "089-combat-2",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🛠️ Разобрать обряд",
+        "target": "089-combat-2",
+        "combatCheck": {
+          "skill": "Мастерство",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "✋ Прервать каст",
+        "target": "089-combat-2",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "089-combat-2",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 24,
+          "failHeroDamage": 22
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "089-combat-2",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 22
+        }
+      },
+      {
+        "text": "🏹 Козырь: Последний болт",
+        "target": "089-combat-2",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 20,
+          "failHeroDamage": 22,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🪞 Козырь: Зеркальная ловушка",
+        "target": "089-combat-2",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 20,
+          "failHeroDamage": 22,
+          "guard": true,
+          "ace": true,
+          "autoSuccess": true
+        }
+      },
+      {
+        "text": "🌩️ Козырь: Глас Грозы",
+        "target": "089-combat-2",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 20,
+          "failHeroDamage": 22,
+          "heal": 15,
+          "ace": true,
+          "autoSuccess": true
+        }
+      }
+    ]
+  },
+  "089-combat-2": {
+    "text": "Она чертит в воздухе знак, и перед ней встаёт полупрозрачный щит. Он дрожит, но держит.",
+    "combat": {
+      "fightId": "elianra",
+      "enemyName": "Элиандра",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 2,
+      "roundsTotal": 7,
+      "attackDamage": 24,
+      "nextTarget": "089-combat-3",
+      "victoryTarget": "089-loot",
+      "defeatTarget": "089-defeat",
+      "timeoutTarget": "089-defeat",
+      "action": "Щит веры",
+      "icon": "🛡️",
+      "hint": "Она усиливается: +2 AC и 20% промаха. Провал — 24 HP.",
+      "image": "images/Элиандра.png",
+      "buffEffect": {
+        "id": "shield",
+        "label": "Щит веры",
+        "turns": 2,
+        "acBonus": 2,
+        "concealment": 0.2
+      }
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в руну",
+        "target": "089-combat-3",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 26,
+          "failHeroDamage": 24,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🖐️ Украсть компонент",
+        "target": "089-combat-3",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "📖 Контрзаклинание",
+        "target": "089-combat-3",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🪄 Снять усиление",
+        "target": "089-combat-3",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🛠️ Разобрать обряд",
+        "target": "089-combat-3",
+        "combatCheck": {
+          "skill": "Мастерство",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "✋ Прервать каст",
+        "target": "089-combat-3",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "089-combat-3",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 24,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "089-combat-3",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      }
+    ]
+  },
+  "089-combat-3": {
+    "text": "Она двигается быстрее, чем должна. Свет тянется за клинком, и рана на её плече закрывается сама.",
+    "combat": {
+      "fightId": "elianra",
+      "enemyName": "Элиандра",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 3,
+      "roundsTotal": 7,
+      "attackDamage": 22,
+      "nextTarget": "089-combat-4",
+      "victoryTarget": "089-loot",
+      "defeatTarget": "089-defeat",
+      "timeoutTarget": "089-defeat",
+      "action": "Ускорение",
+      "icon": "🌬️",
+      "hint": "Она усиливается: +1 AC и лечится на 4. Провал — 22 HP.",
+      "image": "images/Элиандра.png",
+      "buffEffect": {
+        "id": "haste",
+        "label": "Ускорение",
+        "turns": 2,
+        "acBonus": 1,
+        "healPerRound": 4
+      }
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в руну",
+        "target": "089-combat-4",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 26,
+          "failHeroDamage": 22,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🖐️ Украсть компонент",
+        "target": "089-combat-4",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "📖 Контрзаклинание",
+        "target": "089-combat-4",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🪄 Снять усиление",
+        "target": "089-combat-4",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🛠️ Разобрать обряд",
+        "target": "089-combat-4",
+        "combatCheck": {
+          "skill": "Мастерство",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "✋ Прервать каст",
+        "target": "089-combat-4",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 22,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "089-combat-4",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 24,
+          "failHeroDamage": 22
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "089-combat-4",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 22
+        }
+      }
+    ]
+  },
+  "089-combat-4": {
+    "text": "Свет становится плотным. Он не слепит — он просто прячет её за собой, как занавес.",
+    "combat": {
+      "fightId": "elianra",
+      "enemyName": "Элиандра",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 4,
+      "roundsTotal": 7,
+      "attackDamage": 26,
+      "nextTarget": "089-combat-5",
+      "victoryTarget": "089-loot",
+      "defeatTarget": "089-defeat",
+      "timeoutTarget": "089-defeat",
+      "action": "Сияние",
+      "icon": "🌟",
+      "hint": "Она усиливается: 30% промаха. Провал — 26 HP.",
+      "image": "images/Элиандра.png",
+      "buffEffect": {
+        "id": "radiance",
+        "label": "Сияние",
+        "turns": 2,
+        "concealment": 0.3
+      }
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в руну",
+        "target": "089-combat-5",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 26,
+          "failHeroDamage": 26,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🖐️ Украсть компонент",
+        "target": "089-combat-5",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 24,
+          "failHeroDamage": 26,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "📖 Контрзаклинание",
+        "target": "089-combat-5",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 24,
+          "failHeroDamage": 26,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🪄 Снять усиление",
+        "target": "089-combat-5",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 24,
+          "failHeroDamage": 26,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🛠️ Разобрать обряд",
+        "target": "089-combat-5",
+        "combatCheck": {
+          "skill": "Мастерство",
+          "dc": 24,
+          "failHeroDamage": 26,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "✋ Прервать каст",
+        "target": "089-combat-5",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 26,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "089-combat-5",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 24,
+          "failHeroDamage": 26
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "089-combat-5",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 26
+        }
+      }
+    ]
+  },
+  "089-combat-5": {
+    "text": "Она опускает руку на грудь, и свет входит в рану. Это не лечение — это отказ признавать урон.",
+    "combat": {
+      "fightId": "elianra",
+      "enemyName": "Элиандра",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 5,
+      "roundsTotal": 7,
+      "attackDamage": 24,
+      "nextTarget": "089-combat-6",
+      "victoryTarget": "089-loot",
+      "defeatTarget": "089-defeat",
+      "timeoutTarget": "089-defeat",
+      "action": "Исцеляющий свет",
+      "icon": "💚",
+      "hint": "Она усиливается: лечится на 6 каждый раунд. Провал — 24 HP.",
+      "image": "images/Элиандра.png",
+      "buffEffect": {
+        "id": "regen",
+        "label": "Исцеляющий свет",
+        "turns": 3,
+        "healPerRound": 6
+      }
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в руну",
+        "target": "089-combat-6",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 26,
+          "failHeroDamage": 24,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🖐️ Украсть компонент",
+        "target": "089-combat-6",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "📖 Контрзаклинание",
+        "target": "089-combat-6",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🪄 Снять усиление",
+        "target": "089-combat-6",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🛠️ Разобрать обряд",
+        "target": "089-combat-6",
+        "combatCheck": {
+          "skill": "Мастерство",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "✋ Прервать каст",
+        "target": "089-combat-6",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 24,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "089-combat-6",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 24,
+          "failHeroDamage": 24
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "089-combat-6",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 24
+        }
+      }
+    ]
+  },
+  "089-combat-6": {
+    "text": "Она режет ладонь и проводит ею по клинку. Свет становится красным, а доспех — тяжелее.",
+    "combat": {
+      "fightId": "elianra",
+      "enemyName": "Элиандра",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 6,
+      "roundsTotal": 7,
+      "attackDamage": 28,
+      "nextTarget": "089-combat-7",
+      "victoryTarget": "089-loot",
+      "defeatTarget": "089-defeat",
+      "timeoutTarget": "089-defeat",
+      "action": "Клятва крови",
+      "icon": "🩸",
+      "hint": "Она усиливается: +2 AC. Провал — 28 HP.",
+      "image": "images/Элиандра.png",
+      "buffEffect": {
+        "id": "blood-oath",
+        "label": "Клятва крови",
+        "turns": 2,
+        "acBonus": 2
+      }
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в руну",
+        "target": "089-combat-7",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 26,
+          "failHeroDamage": 28,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🖐️ Украсть компонент",
+        "target": "089-combat-7",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 24,
+          "failHeroDamage": 28,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "📖 Контрзаклинание",
+        "target": "089-combat-7",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 24,
+          "failHeroDamage": 28,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🪄 Снять усиление",
+        "target": "089-combat-7",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 24,
+          "failHeroDamage": 28,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🛠️ Разобрать обряд",
+        "target": "089-combat-7",
+        "combatCheck": {
+          "skill": "Мастерство",
+          "dc": 24,
+          "failHeroDamage": 28,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "✋ Прервать каст",
+        "target": "089-combat-7",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 28,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "089-combat-7",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 24,
+          "failHeroDamage": 28
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "089-combat-7",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 28
+        }
+      }
+    ]
+  },
+  "089-combat-7": {
+    "text": "Последний бафф ложится на неё целиком. Теперь она — не паладин, а дверь, которую нужно выломать.",
+    "combat": {
+      "fightId": "elianra",
+      "enemyName": "Элиандра",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 7,
+      "roundsTotal": 7,
+      "attackDamage": 30,
+      "nextTarget": "089-defeat",
+      "victoryTarget": "089-loot",
+      "defeatTarget": "089-defeat",
+      "timeoutTarget": "089-defeat",
+      "action": "Небесный доспех",
+      "icon": "☀️",
+      "hint": "Она усиливается: +3 AC и 20% промаха. Провал — 30 HP.",
+      "image": "images/Элиандра.png",
+      "buffEffect": {
+        "id": "heavenly-armor",
+        "label": "Небесный доспех",
+        "turns": 2,
+        "acBonus": 3,
+        "concealment": 0.2
+      }
+    },
+    "choices": [
+      {
+        "text": "🏹 Выстрел в руну",
+        "target": "089-defeat",
+        "requiresHero": "harsk",
+        "combatCheck": {
+          "skill": "Атака",
+          "dc": 26,
+          "failHeroDamage": 30,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🖐️ Украсть компонент",
+        "target": "089-defeat",
+        "requiresHero": "loui-xiv",
+        "combatCheck": {
+          "skill": "Воровство",
+          "dc": 24,
+          "failHeroDamage": 30,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "📖 Контрзаклинание",
+        "target": "089-defeat",
+        "requiresHero": "korakai",
+        "combatCheck": {
+          "skill": "Религия",
+          "dc": 24,
+          "failHeroDamage": 30,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🪄 Снять усиление",
+        "target": "089-defeat",
+        "combatCheck": {
+          "skill": "Аркана",
+          "dc": 24,
+          "failHeroDamage": 30,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "🛠️ Разобрать обряд",
+        "target": "089-defeat",
+        "combatCheck": {
+          "skill": "Мастерство",
+          "dc": 24,
+          "failHeroDamage": 30,
+          "dispelBuff": true
+        }
+      },
+      {
+        "text": "✋ Прервать каст",
+        "target": "089-defeat",
+        "combatCheck": {
+          "skill": "Воля",
+          "dc": 24,
+          "failHeroDamage": 30,
+          "interruptBuff": true
+        }
+      },
+      {
+        "text": "🤸 Уклониться и ответить",
+        "target": "089-defeat",
+        "combatCheck": {
+          "skill": "Акробатика",
+          "dc": 24,
+          "failHeroDamage": 30
+        }
+      },
+      {
+        "text": "🛡️ Принять удар",
+        "target": "089-defeat",
+        "combatCheck": {
+          "skill": "Стойкость",
+          "dc": 25,
+          "failHeroDamage": 30
+        }
+      }
+    ]
+  },
+  "089-combat-SURPRISE": {
+    "text": "Ты обходишь противника тенью и выбираешь момент. Если он не заметит — твой удар придёт до первого раунда.",
+    "combat": {
+      "fightId": "elianra",
+      "enemyName": "Элиандра",
+      "enemyHpMax": 70,
+      "enemyAc": 26,
+      "round": 0,
+      "roundsTotal": 7,
+      "attackDamage": 0,
+      "nextTarget": "089-combat-1",
+      "victoryTarget": "089-loot",
+      "defeatTarget": "089-defeat",
+      "timeoutTarget": "089-defeat",
+      "action": "Внезапная атака",
+      "icon": "🕶️",
+      "hint": "Скрытность DC 26. Успех — бесплатный удар до первого раунда.",
+      "image": "images/Элиандра.png",
+      "start": true,
+      "surpriseRound": true
+    },
+    "choices": [
+      {
+        "text": "🕶️ Ударить из тени",
+        "target": "089-combat-1",
+        "combatCheck": {
+          "skill": "Скрытность",
+          "dc": 26,
+          "failHeroDamage": 0,
+          "surpriseAttack": true
+        }
+      }
+    ]
+  },
+  "089-combat-intro": {
+    "text": "<strong>Интерактивный бой: Элиандра</strong>\n\nЭто тестовая интерактивная версия боя для одного героя. Раунды и варианты защиты взяты с боевого полигона; параметры врага сокращены под короткий тест, поэтому они могут отличаться от полного статблока в текстовом варианте выше.\n\nТекстовый бой остаётся доступен: вернитесь назад и выберите ручной исход. После победы вы получите ту же добычу, после поражения попадёте в ту же принудительную ночь Даров.",
+    "choices": [
+      {
+        "text": "⚔️ Начать интерактивный бой",
+        "target": "089-combat-1"
+      },
+      {
+        "text": "↩️ Вернуться к текстовому бою",
+        "target": "089-fight"
       }
     ]
   }
