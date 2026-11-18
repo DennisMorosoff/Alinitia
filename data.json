@@ -4902,10 +4902,12 @@
       {
         "text": "⛏️ Высвободить кирку из вечной стужи",
         "target": "088-personal-pick",
-        "requiresQuest": {
-          "id": "brong-personal-quest",
-          "state": "выдан"
-        },
+        "requiresQuest": [
+          {
+            "id": "brong-personal-quest",
+            "state": "выдан"
+          }
+        ],
         "requiresNot": [
           "Бронг: Кирка добыта"
         ],
@@ -4915,10 +4917,12 @@
       {
         "text": "🌑 Разобраться с теневым дозором у подхода к жиле",
         "target": "088-personal-shadows",
-        "requiresQuest": {
-          "id": "brong-personal-quest",
-          "state": "выдан"
-        },
+        "requiresQuest": [
+          {
+            "id": "brong-personal-quest",
+            "state": "выдан"
+          }
+        ],
         "requiresNot": [
           "Тени Лабиринта расположены",
           "Тени Лабиринта напуганы",

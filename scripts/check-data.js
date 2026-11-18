@@ -336,6 +336,12 @@ function lintDocument(doc, label, startId) {
             for (const tag of checkTagList(choice.addTags, choiceWhere, 'addTags')) grantedTags.add(tag);
             checkTagList(choice.removeTags, choiceWhere, 'removeTags');
 
+            for (const field of ['requiresQuest', 'requiresQuestNot']) {
+                if (choice[field] != null && !Array.isArray(choice[field])) {
+                    relabel('квесты', `${choiceWhere}: ${field} должен быть массивом`);
+                }
+            }
+
             if (choice.requiresQuest || choice.requiresQuestNot) {
                 checkQuestRefs(choice.requiresQuest, choiceWhere, 'requiresQuest');
                 checkQuestRefs(choice.requiresQuestNot, choiceWhere, 'requiresQuestNot');

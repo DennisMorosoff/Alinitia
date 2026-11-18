@@ -979,7 +979,7 @@ h1 {
     }
     #status-bar { justify-content: center; }
     .inventory-tabs { overflow-x: auto; }
-    .tab-btn { min-width: 120px; padding: 12px 10px; }
+    .tab-btn { min-width: 0; padding: 12px 6px; font-size: 0.9em; }
     .quest { padding-right: 0; }
     .quest-state {
         position: static;
