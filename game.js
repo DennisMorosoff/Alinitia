@@ -181,26 +181,6 @@ const tagRenames = {
     'Эстетика Хаоса': 'Я устроил эстетичный хаос'
 };
 
-// Старые сохранения: если путешественник уже ушёл со сцены (победа или поражение),
-// его личный квест не должен висеть в состоянии «выдан».
-const travelerQuestByStageTag = {
-    'Пилигрим 7-9 мёртв': 'pilgrim-personal-quest',
-    'Пилигрим 7-9 покинул сцену': 'pilgrim-personal-quest',
-    'Я проиграл Пилигрима 7-9': 'pilgrim-personal-quest',
-    "Зар'Ак мёртв": 'zarak-personal-quest',
-    "Зар'Ак покинул сцену": 'zarak-personal-quest',
-    "Я проиграл Зар'Ака": 'zarak-personal-quest',
-    'Лирисса мертва': 'lyrissa-personal-quest',
-    'Лирисса покинула сцену': 'lyrissa-personal-quest',
-    'Я проиграл Лириссу': 'lyrissa-personal-quest',
-    'Бронг мёртв': 'brong-personal-quest',
-    'Бронг покинул сцену': 'brong-personal-quest',
-    'Я проиграл Бронга': 'brong-personal-quest',
-    'Элиандра мертва': 'eliandra-personal-quest',
-    'Элиандра покинула сцену': 'eliandra-personal-quest',
-    'Я проиграл Элиандру': 'eliandra-personal-quest'
-};
-
 function normalizeTagName(tag) {
     return tagRenames[tag] || tag;
 }
@@ -226,21 +206,6 @@ function migrateSavedTags() {
         gameState.tags = uniqueTags;
     }
 
-    return changed;
-}
-
-function migrateDefeatedTravelerQuests() {
-    let changed = false;
-    for (const [tag, questId] of Object.entries(travelerQuestByStageTag)) {
-        if (!gameState.tags.includes(tag)) continue;
-        if (getQuestState(questId) !== 'выдан') continue;
-        changed = setQuest({
-            id: questId,
-            state: 'провален',
-            fromStates: ['выдан'],
-            silent: true
-        }) || changed;
-    }
     return changed;
 }
 
@@ -417,8 +382,7 @@ function loadGame() {
             const inventoryChanged = migrateInventoryTranslations();
             const tagsChanged = migrateSavedTags();
             const questsChanged = migrateLucenciaDealTagToQuest();
-            const defeatedQuestChanged = migrateDefeatedTravelerQuests();
-            if (shapeChanged || inventoryChanged || tagsChanged || questsChanged || defeatedQuestChanged) saveGame();
+            if (shapeChanged || inventoryChanged || tagsChanged || questsChanged) saveGame();
         } catch(e) {
             resetGame(true);
         }
