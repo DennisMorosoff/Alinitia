@@ -1155,6 +1155,122 @@ function renderParagraphText(text, className = '') {
     return text.split('\n\n').map(p => `<p${classAttr}>${p}</p>`).join('');
 }
 
+const ENDING_TOKEN_LABELS = [
+    ['У меня есть жетон Печать Заслуги', 'Печать Заслуги'],
+    ['У меня есть наряд для аудиенции', 'Наряд для Аудиенции'],
+    ['У меня есть жетон Знак Порога', 'Знак Порога'],
+    ['У меня есть жетон Осколок Признания', 'Осколок Признания'],
+    ['У меня есть приглашение-дар', 'Приглашение-Дар']
+];
+
+const ENDING_PATRONAGE_LABELS = [
+    ['Я получил поручительство культа', 'Культ'],
+    ['Я получил поручительство повстанцев', 'Повстанцы'],
+    ['Я получил поручительство Люценции', 'Люценция'],
+    ['Я получил поручительство Сарэля', 'Сарель'],
+    ['Я стал узурпатором', 'Печать силой']
+];
+
+const ENDING_DEATH_LABELS = {
+    'Мальведра мертва': 'Мальведра',
+    'Эвелия мертва': 'Эвелия',
+    'Корвин мёртв': 'Корвин',
+    'Люценция мертва': 'Люценция',
+    'Мираэль мёртв': 'Мираэль',
+    'Нимвелас мёртв': 'Нимвелас',
+    'Лейтенант Повстанцев мёртв': 'Лейтенант',
+    'Сарель мёртв': 'Сарель',
+    'Лазвек мёртв': 'Лазвек',
+    'Марилит мёртв': 'Марилит',
+    'Пилигрим 7-9 мёртв': 'Пилигрим 7-9',
+    "Зар'Ак мёртв": "Зар'Ак",
+    'Лирисса мертва': 'Лирисса',
+    'Бронг мёртв': 'Бронг',
+    'Элиандра мертва': 'Элиандра'
+};
+
+const ENDING_GONE_LABELS = {
+    'Пилигрим 7-9 покинул сцену': 'Пилигрим 7-9',
+    "Зар'Ак покинул сцену": "Зар'Ак",
+    'Лирисса покинула сцену': 'Лирисса',
+    'Бронг покинул сцену': 'Бронг',
+    'Элиандра покинула сцену': 'Элиандра'
+};
+
+function renderEndingSummary() {
+    const tone = [];
+    if (gameState.tags.includes('Ноктикула довольна')) tone.push('Ноктикула довольна');
+    if (gameState.tags.includes('Сопротивление Ноктикуле')) tone.push('Сопротивление Ноктикуле');
+
+    const quests = Object.entries(gameState.quests)
+        .filter(([, quest]) => quest && quest.state && quest.state !== 'не выдан')
+        .map(([id, quest]) => ({
+            title: quest.title || getQuestTitle(id),
+            state: quest.state
+        }));
+    const completed = quests.filter(quest => quest.state === 'выполнен');
+    const failed = quests.filter(quest => quest.state === 'провален');
+    const active = quests.filter(quest => quest.state === 'выдан');
+
+    const dead = Object.entries(ENDING_DEATH_LABELS)
+        .filter(([tag]) => gameState.tags.includes(tag))
+        .map(([, label]) => label);
+    const gone = Object.entries(ENDING_GONE_LABELS)
+        .filter(([tag]) => gameState.tags.includes(tag))
+        .map(([, label]) => label);
+
+    const tokens = ENDING_TOKEN_LABELS.filter(([tag]) => gameState.tags.includes(tag)).map(([, label]) => label);
+    const patronage = ENDING_PATRONAGE_LABELS.filter(([tag]) => gameState.tags.includes(tag)).map(([, label]) => label);
+
+    const gifts = gameState.tags
+        .filter(tag => tag.startsWith('Я получил дар: '))
+        .map(tag => tag.slice('Я получил дар: '.length));
+    const labyrinth = [];
+    if (gameState.tags.includes('Я прошёл Лабиринт насквозь')) labyrinth.push('пройден насквозь');
+    if (gameState.tags.includes('Я запомнил нити Лабиринта')) labyrinth.push('нити запомнены');
+    if (gameState.tags.includes('На мне метка зеркала')) labyrinth.push('метка зеркала');
+    if (gameState.tags.includes('Я истекаю') || gameState.tags.includes('Я истёк кровью в Лабиринте')) labyrinth.push('кровь на ступенях');
+
+    const orgyGuests = gameState.tags.filter(tag => tag.startsWith('Приглашён на оргию: ')).length;
+
+    const list = (items, empty, className = '') => items.length
+        ? `<ul class="ending-summary-list">${items.map(item => `<li class="${className}">${escapeHtml(item)}</li>`).join('')}</ul>`
+        : `<p class="ending-summary-empty">${escapeHtml(empty)}</p>`;
+
+    return `
+        <section class="ending-summary" aria-label="Итог прохождения">
+            <h3>Итог</h3>
+            <p class="ending-summary-tone">Тон: <strong>${escapeHtml(tone.length ? tone.join(' · ') : 'не определён')}</strong></p>
+            <div class="ending-summary-grid">
+                <div>
+                    <h4>Квесты</h4>
+                    ${list(completed.map(quest => `${quest.title} — выполнен`), 'Нет выполненных квестов', 'summary-good')}
+                    ${list(failed.map(quest => `${quest.title} — провален`), '', 'summary-bad')}
+                    ${list(active.map(quest => `${quest.title} — остался активным`), '', 'summary-active')}
+                </div>
+                <div>
+                    <h4>Судьбы</h4>
+                    ${list(dead, 'Никто из именованных не погиб')}
+                    ${list(gone.map(name => `${name} — покинул(а) сцену`), '')}
+                </div>
+                <div>
+                    <h4>Жетоны и поручительство</h4>
+                    <p class="ending-summary-note">Жетоны: <strong>${tokens.length}/5</strong></p>
+                    ${list(tokens, 'Жетонов нет')}
+                    ${list(patronage, 'Поручительства нет')}
+                </div>
+                <div>
+                    <h4>Ночь, Лабиринт, оргия</h4>
+                    ${list(gifts.map(gift => `Дар: ${gift}`), 'Дары не испытаны')}
+                    ${list(labyrinth, 'Лабиринт не пройден')}
+                    ${list(orgyGuests ? [`Оргия: ${orgyGuests} гостей`] : [], 'Оргия не организована')}
+                    ${gameState.tags.includes('Я проиграл бой') ? '<p class="ending-summary-note summary-bad">Были поражения в боях.</p>' : ''}
+                </div>
+            </div>
+        </section>
+    `;
+}
+
 function conditionalTextMatches(block) {
     const hasAll = hasTags(block.requires || []);
     const hasAny = !block.requiresAny
@@ -1654,6 +1770,10 @@ function displayParagraph(id, options = {}) {
         }
     }
 
+    if (para.endingSummary) {
+        textHtml += renderEndingSummary();
+    }
+
     document.getElementById('story-text').innerHTML = textHtml;
 
     const choicesDiv = document.getElementById('choices');
@@ -1885,6 +2005,22 @@ function updateQuestDisplay() {
         li.appendChild(title);
         li.appendChild(state);
         if (description.textContent) li.appendChild(description);
+
+        const definition = getQuestDefinition(id);
+        if (Array.isArray(definition.stages) && definition.stages.length) {
+            const stages = document.createElement('ul');
+            stages.className = 'quest-stages';
+            definition.stages.forEach(stage => {
+                if (!stage || !stage.text) return;
+                const done = evaluateChoice(stage).isAvailable;
+                const stageItem = document.createElement('li');
+                stageItem.className = `quest-stage${done ? ' done' : ''}`;
+                stageItem.textContent = `${done ? '✓' : '○'} ${stage.text}`;
+                stages.appendChild(stageItem);
+            });
+            li.appendChild(stages);
+        }
+
         list.appendChild(li);
     });
 }

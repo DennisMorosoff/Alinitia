@@ -958,6 +958,97 @@ h1 {
     border-color: rgba(255, 159, 159, 0.35);
 }
 
+.quest-stages {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 3px;
+}
+
+.quest-stage {
+    color: #8f7da6;
+    font-size: 0.82em;
+    line-height: 1.4;
+}
+
+.quest-stage.done {
+    color: #8ee6a8;
+}
+
+.ending-summary {
+    margin: 26px 0;
+    padding: 18px;
+    background: rgba(35, 12, 62, 0.72);
+    border: 1px solid rgba(186, 85, 211, 0.35);
+    border-radius: 10px;
+}
+
+.ending-summary h3 {
+    margin-bottom: 10px;
+    color: #d896ff;
+    font-size: 1.1em;
+    letter-spacing: 0.04em;
+}
+
+.ending-summary-tone {
+    margin-bottom: 14px;
+    color: #e0d5f0;
+}
+
+.ending-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.ending-summary h4 {
+    margin-bottom: 6px;
+    color: #a998b8;
+    font-size: 0.78em;
+    font-weight: normal;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.ending-summary-list {
+    list-style: none;
+    margin: 0 0 8px;
+    padding: 0;
+}
+
+.ending-summary-list li {
+    padding: 2px 0;
+    color: #cbb9df;
+    font-size: 0.88em;
+    line-height: 1.45;
+}
+
+.ending-summary-list .summary-good {
+    color: #8ee6a8;
+}
+
+.ending-summary-list .summary-bad {
+    color: #ff9f9f;
+}
+
+.ending-summary-list .summary-active {
+    color: #ffd27a;
+}
+
+.ending-summary-empty {
+    margin-bottom: 8px;
+    color: #6a5a7a;
+    font-size: 0.85em;
+    font-style: italic;
+}
+
+.ending-summary-note {
+    margin-bottom: 6px;
+    color: #cbb9df;
+    font-size: 0.88em;
+}
+
 #empty-inv,
 #empty-party-inv,
 #empty-quests {
@@ -980,6 +1071,8 @@ h1 {
     #status-bar { justify-content: center; }
     .inventory-tabs { overflow-x: auto; }
     .tab-btn { min-width: 0; padding: 12px 6px; font-size: 0.9em; }
+    .ending-summary { padding: 14px; }
+    .ending-summary-grid { grid-template-columns: 1fr; }
     .quest { padding-right: 0; }
     .quest-state {
         position: static;
