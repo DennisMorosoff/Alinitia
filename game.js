@@ -962,8 +962,7 @@ function resolveSkillCheck(choice) {
     const character = getSelectedCharacter();
     const resolvedSkill = resolveCharacterSkillCheck(check.skill);
     const hasCharacterModifier = Boolean(character && resolvedSkill);
-    const isCombatCheck = Boolean(choice.combatCheck);
-    const hideCombatNumbers = isCombatCheck && !isCombatTestMode && !isDebugMode;
+    const hideCheckNumbers = !isDebugMode && !isCombatTestMode;
 
     return new Promise(resolve => {
         let rolledResult = null;
@@ -971,7 +970,7 @@ function resolveSkillCheck(choice) {
 
         title.textContent = `Проверка: ${check.label || check.skill}`;
         if (hasCharacterModifier) {
-            details.textContent = hideCombatNumbers
+            details.textContent = hideCheckNumbers
                 ? `${character.name} · ${resolvedSkill.skill} ${formatModifier(resolvedSkill.modifier)}`
                 : `${character.name} · ${resolvedSkill.skill} ${formatModifier(resolvedSkill.modifier)} · DC ${check.dc}`;
             modifierInput.value = String(resolvedSkill.modifier);
@@ -982,7 +981,7 @@ function resolveSkillCheck(choice) {
                     : `Модификатор персонажа (${character.name})`;
             }
         } else {
-            const difficultyText = hideCombatNumbers ? 'Сложность скрыта.' : `Сложность DC ${check.dc}.`;
+            const difficultyText = hideCheckNumbers ? 'Сложность скрыта.' : `Сложность DC ${check.dc}.`;
             details.textContent = character
                 ? `${difficultyText} Для «${check.skill}» нет автомодификатора — введите вручную.`
                 : `${difficultyText} Персонаж не выбран — введите модификатор вручную.`;
@@ -1038,7 +1037,7 @@ function resolveSkillCheck(choice) {
             const skillNote = hasCharacterModifier && resolvedSkill.skill !== check.skill
                 ? ` (${resolvedSkill.skill})`
                 : '';
-            const totalText = hideCombatNumbers
+            const totalText = hideCheckNumbers
                 ? ''
                 : `; итог: ${total} против DC ${check.dc}`;
             result.textContent = `d20: ${roll}; модификатор: ${formatModifier(modifier)}${skillNote}${totalText}. Результат: ${degreeLabels[degree]}.`;
@@ -1304,6 +1303,19 @@ function formatCombatChoiceLabel(choice, baseText) {
     return parts.length ? `${baseText} — ${parts.join(' · ')}` : baseText;
 }
 
+function stripCheckDc(text) {
+    return String(text)
+        .replace(/\s*\(([^()]*)\)/g, (match, inner) => {
+            if (!/\bDC\s*\d+/i.test(inner)) return match;
+            const cleaned = inner.replace(/\s*\bDC\s*\d+/gi, '').replace(/\s{2,}/g, ' ').trim();
+            return cleaned ? ` (${cleaned})` : '';
+        })
+        .replace(/\s*\bDC\s*\d+/gi, '')
+        .replace(/\s{2,}/g, ' ')
+        .replace(/\s+([.,;:!?)])/g, '$1')
+        .trim();
+}
+
 function resolveChoiceLabel(choice) {
     const variants = Array.isArray(choice.labelVariants) ? choice.labelVariants : [];
     const matchedIndex = variants.findIndex(conditionalTextMatches);
@@ -1514,7 +1526,7 @@ function renderConditionDebug(results, mode) {
             ? 'requiresAny'
             : 'requiresNot';
     const lines = results.map(result => {
-        const passed = mode === 'requiresNot' ? !result.has : result.has;
+        const passed = mode === 'requiresNot' || mode === 'forbidden' ? !result.has : result.has;
         const normalized = result.normalizedName !== result.name
             ? ` → <code>${escapeHtml(result.normalizedName)}</code>`
             : '';
@@ -1631,10 +1643,39 @@ function renderChoiceDebug(choice, index, evaluation) {
         details.push(`setQuest: ${formatDebugList((Array.isArray(choice.setQuest) ? choice.setQuest : [choice.setQuest]).map(update => `${getQuestTitle(update.id)} → ${update.state}`))}`);
     }
     if (choice.skillCheck) {
-        details.push(`skillCheck: <code>${escapeHtml(choice.skillCheck.skill)}</code> DC ${escapeHtml(choice.skillCheck.dc)}, failTarget: <code>${escapeHtml(choice.skillCheck.failTarget)}</code>`);
+        const check = choice.skillCheck;
+        const criticalTargets = [
+            check.criticalSuccessTarget ? `criticalSuccessTarget: <code>${escapeHtml(check.criticalSuccessTarget)}</code>` : '',
+            check.criticalFailureTarget ? `criticalFailureTarget: <code>${escapeHtml(check.criticalFailureTarget)}</code>` : ''
+        ].filter(Boolean).join(' · ');
+        details.push(`skillCheck: <code>${escapeHtml(check.skill)}</code> DC ${escapeHtml(check.dc)}, failTarget: <code>${escapeHtml(check.failTarget)}</code>${criticalTargets ? ` · ${criticalTargets}` : ''}`);
     }
-    if (choice.requiresGold) {
-        details.push(`requiresGold: ${escapeHtml(choice.requiresGold)} · removeGold: ${escapeHtml(choice.removeGold || 0)}`);
+    if (choice.combatCheck) {
+        const check = choice.combatCheck;
+        const checkParts = [];
+        if (check.skill) checkParts.push(`<code>${escapeHtml(check.skill)}</code>`);
+        if (check.dc != null) checkParts.push(`DC ${escapeHtml(check.dc)}`);
+        if (check.failHeroDamage != null) checkParts.push(`failHeroDamage ${escapeHtml(check.failHeroDamage)}`);
+        if (check.enemyHeal != null) checkParts.push(`enemyHeal ${escapeHtml(check.enemyHeal)}`);
+        if (check.heal != null) checkParts.push(`heal ${escapeHtml(check.heal)}`);
+        if (check.expose != null) checkParts.push(`expose ${escapeHtml(check.expose)}`);
+        ['autoSuccess', 'ace', 'guard', 'clearConditions', 'dispelBuff', 'interruptBuff', 'surpriseAttack'].forEach(flag => {
+            if (check[flag]) checkParts.push(flag);
+        });
+        details.push(`combatCheck: ${checkParts.join(' · ')}`);
+    }
+    if (choice.requiresHero) {
+        const hero = characterBuilds[choice.requiresHero];
+        details.push(`requiresHero: <code>${escapeHtml(choice.requiresHero)}</code> (${escapeHtml(hero?.name || '?')})`);
+    }
+    if (choice.requiresGold || choice.removeGold || choice.addGold) {
+        details.push(`requiresGold: ${escapeHtml(choice.requiresGold || 0)} · removeGold: ${escapeHtml(choice.removeGold || 0)} · addGold: ${escapeHtml(choice.addGold || 0)}`);
+    }
+    if (choice.showWhenLocked) {
+        details.push(`showWhenLocked: <code>${escapeHtml(JSON.stringify(choice.showWhenLocked))}</code> · сейчас: <span class="${shouldShowLockedChoice(choice) ? 'debug-true' : 'debug-false'}">${shouldShowLockedChoice(choice)}</span>`);
+    }
+    if (choice.lockReason) {
+        details.push(`lockReason: ${escapeHtml(choice.lockReason)}`);
     }
     if (choice.resetGame) {
         details.push('action: <code>resetGame</code>');
@@ -1749,9 +1790,21 @@ function displayParagraph(id, options = {}) {
             if (applyEffects && block.addTags) block.addTags.forEach(addTag);
             if (applyEffects && block.setQuest) applyQuestUpdates(block.setQuest);
         } else if (isDebugMode) {
+            const conditionDetails = [
+                renderConditionDebug(evaluateRequirements(block.requires || []), 'required'),
+                renderConditionDebug(evaluateRequirements(block.requiresAny || []), 'requiresAny'),
+                renderConditionDebug(evaluateRequirements(block.requiresNot || []), 'forbidden')
+            ].filter(Boolean);
+            const effectDetails = [];
+            if (block.addTags) effectDetails.push(`addTags: ${formatDebugList(block.addTags.map(normalizeTagName))}`);
+            if (block.setQuest) {
+                effectDetails.push(`setQuest: ${formatDebugList((Array.isArray(block.setQuest) ? block.setQuest : [block.setQuest]).map(update => `${getQuestTitle(update.id)} → ${update.state}`))}`);
+            }
             textHtml += `
                 <section class="debug-hidden-block">
                     <div class="debug-hidden-title">Скрытый условный фрагмент · visible: <span class="debug-false">false</span></div>
+                    ${conditionDetails.length ? `<div class="debug-choice-meta">${conditionDetails.join('<br>')}</div>` : ''}
+                    ${effectDetails.length ? `<div class="debug-choice-meta">${effectDetails.join(' · ')}</div>` : ''}
                     ${renderParagraphText(block.text)}
                 </section>
             `;
@@ -1783,17 +1836,18 @@ function displayParagraph(id, options = {}) {
     (para.choices || []).forEach((choice, index) => {
         const evaluation = evaluateChoice(choice);
         const resolvedLabel = resolveChoiceLabel(choice);
-        const showLocked = shouldShowLockedChoice(choice);
+        const showMechanics = isDebugMode || isCombatTestMode;
 
-        if (!isDebugMode && !evaluation.isAvailable && !showLocked) {
+        if (!isDebugMode && !evaluation.isAvailable) {
             return;
         }
 
+        const displayLabel = showMechanics ? resolvedLabel.text : stripCheckDc(resolvedLabel.text);
         const btn = document.createElement('button');
         btn.className = `choice-btn${isDebugMode && !evaluation.isAvailable ? ' debug-unavailable-choice' : ''}${!evaluation.isAvailable ? ' locked' : ''}`;
-        btn.textContent = (isCombatTestMode || isDebugMode) && choice.combatCheck
-            ? formatCombatChoiceLabel(choice, resolvedLabel.text)
-            : resolvedLabel.text;
+        btn.textContent = showMechanics && choice.combatCheck
+            ? formatCombatChoiceLabel(choice, displayLabel)
+            : displayLabel;
         btn.disabled = !evaluation.isAvailable && !isDebugMode;
         if (!evaluation.isAvailable) {
             const reason = getChoiceLockReason(evaluation, choice);
