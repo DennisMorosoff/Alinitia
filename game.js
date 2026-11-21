@@ -121,7 +121,8 @@ const questStates = ['не выдан', 'выдан', 'выполнен', 'пр�
 let contentEditorController = null;
 const hiddenKnowledgeTagPrefixes = [
     'Я знаком с ',
-    'Я знаю название: '
+    'Я знаю название: ',
+    'Проверка: '
 ];
 
 const tagRenames = {
