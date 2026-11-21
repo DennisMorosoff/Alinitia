@@ -22,6 +22,7 @@ const RETRY_TEXT = /Попробовать\s+(иначе|снова|ещё|ещ�
 
 const asArray = value => value == null ? [] : (Array.isArray(value) ? value : [value]);
 const has = (list, value) => asArray(list).includes(value);
+const findChoice = (nodeId, predicate) => (ps[nodeId]?.choices || []).find(predicate);
 
 function attemptTagFor(nodeId, choice) {
     if (EXCEPTION_NODES.has(nodeId)) return null;
@@ -102,6 +103,139 @@ for (const [nodeId, node] of Object.entries(ps)) {
     if (nodeChecks.length) groups.set(nodeId, nodeChecks);
 }
 
+// Бесплатные выборы на параграфе проверки, ведущие к тому же успеху, должны
+// закрываться той же меткой попытки. Это главный критерий, который пропустил
+// случай «Эха»: проверка была закрыта, а бесплатный обход — нет.
+for (const [nodeId, node] of Object.entries(ps)) {
+    if (nodeId === '_quests' || !node || typeof node !== 'object') continue;
+    if (EXCEPTION_NODES.has(nodeId) || HEALING_NODES.has(nodeId)) continue;
+    const checks = (node.choices || []).filter(choice => choice.skillCheck);
+    if (checks.length === 0) continue;
+    const tags = [...new Set(checks.map(choice => attemptTagFor(nodeId, choice)).filter(Boolean))];
+    if (tags.length === 0) continue;
+    const successTargets = new Set(checks.map(choice => choice.target).filter(Boolean));
+    for (const choice of node.choices || []) {
+        if (choice.skillCheck || !choice.target || !successTargets.has(choice.target)) continue;
+        for (const tag of tags) {
+            assert(has(choice.requiresNot, tag),
+                `${nodeId}: бесплатный выбор «${choice.text}» ведёт к тому же успеху без ${tag}`);
+        }
+    }
+}
+
+// Точечные бесплатные обходы, ведущие в другой узел, но дающие тот же результат.
+const manualBypassGates = [
+    ['089-trust', '089-friend-bureau', 'Проверка: 089-trust'],
+    ['088-personal-shadows', '088-personal-fight', 'Проверка: 088-personal-shadows'],
+    ['orgy-nimvelas', 'orgy-nimvelas-accept', 'Проверка: orgy-nimvelas'],
+    ['036', '036b', 'Проверка: 036'],
+    ['016', '018', 'Проверка: 016'],
+    ['021', '023', 'Проверка: 021'],
+    ['021', '024', 'Проверка: 021']
+];
+for (const [nodeId, targetId, tag] of manualBypassGates) {
+    const choice = findChoice(nodeId, item => item.target === targetId);
+    assert(choice, `${nodeId}: нет выбора ${targetId}`);
+    assert(has(choice.requiresNot, tag), `${nodeId}: обход ${targetId} не закрыт меткой ${tag}`);
+}
+
+// Входы в закрытые сцены: после попытки хаб не должен снова вести в ту же сцену.
+const entryGates = [
+    ['005', '005-personal-sermon', 'Проверка: 005-personal-sermon'],
+    ['005', '005-personal-duet', 'Проверка: 005-personal-duet'],
+    ['005', '005-personal-director', 'Проверка: 005-personal-director'],
+    ['087-personal-hub', '087-personal-temple', 'Проверка: 087-personal-temple'],
+    ['087-personal-hub', '087-personal-lotus', 'Проверка: 087-personal-lotus'],
+    ['087-personal-hub', '087-personal-rebels', 'Проверка: 087-personal-rebels'],
+    ['088-personal', '088-personal-pick', 'Проверка: 088-personal-pick'],
+    ['076', '088-personal-pick', 'Проверка: 088-personal-pick'],
+    ['088-personal', '088-personal-shadows', 'Проверка: 088-personal-shadows'],
+    ['076', '088-personal-shadows', 'Проверка: 088-personal-shadows'],
+    ['089-personal', '089-personal-archive', 'Проверка: 089-personal-archive'],
+    ['089', '089-trust', 'Проверка: 089-trust'],
+    ['H03', '028', 'Проверка: 028'],
+    ['030', '028', 'Проверка: 028'],
+    ['H06', '070', 'Проверка: 070'],
+    ['H04', '054', 'Проверка: 054'],
+    ['015', '016', 'Проверка: 016'],
+    ['020', '021', 'Проверка: 021'],
+    ['035', '036', 'Проверка: 036'],
+    ['015-desk', '036', 'Проверка: 036'],
+    ['015-reveal', '036', 'Проверка: 036'],
+    ['087', 'orgy-lyrissa', 'Проверка: orgy-lyrissa'],
+    ['013', 'orgy-malvedra', 'Проверка: orgy-malvedra'],
+    ['030', 'orgy-evelia', 'Проверка: orgy-evelia'],
+    ['089', 'orgy-eliandra', 'Проверка: orgy-eliandra'],
+    ['086', 'orgy-zarak', 'Проверка: orgy-zarak'],
+    ['088', 'orgy-brong', 'Проверка: orgy-brong'],
+    ['029-orgy', 'orgy-lieutenant', 'Проверка: orgy-lieutenant'],
+    ['005', 'orgy-pilgrim', 'Проверка: orgy-pilgrim'],
+    ['012', 'orgy-nimvelas', 'Проверка: orgy-nimvelas'],
+    ['015-desk', 'orgy-orven', 'Проверка: orgy-orven']
+];
+for (const [sourceId, targetId, tag] of entryGates) {
+    const choices = (ps[sourceId]?.choices || []).filter(choice => choice.target === targetId);
+    assert(choices.length > 0, `${sourceId}: нет входа в ${targetId}`);
+    for (const choice of choices) {
+        assert(has(choice.requiresNot, tag), `${sourceId} -> ${targetId}: вход не закрыт меткой ${tag}`);
+    }
+}
+
+// Обязательные личные квесты: провал шага закрывает квест.
+const personalFailures = [
+    ['005-personal-sermon-fail', 'pilgrim-personal-quest', "Я провалил личный квест Пилигрима"],
+    ['005-personal-duet-fail', 'pilgrim-personal-quest', "Я провалил личный квест Пилигрима"],
+    ['005-personal-director-fail', 'pilgrim-personal-quest', "Я провалил личный квест Пилигрима"],
+    ['087-personal-temple-fail', 'lyrissa-personal-quest', "Я провалил личный квест Лириссы"],
+    ['087-personal-lotus-fail', 'lyrissa-personal-quest', "Я провалил личный квест Лириссы"],
+    ['087-personal-rebels-fail', 'lyrissa-personal-quest', "Я провалил личный квест Лириссы"],
+    ['089-personal-swap-fail', 'eliandra-personal-quest', "Я провалил личный квест Элиандры"],
+    ['089-personal-burn-fail', 'eliandra-personal-quest', "Я провалил личный квест Элиандры"]
+];
+for (const [nodeId, questId, failTag] of personalFailures) {
+    const failNode = ps[nodeId];
+    assert(failNode, `${nodeId} отсутствует`);
+    assert(JSON.stringify(failNode.setQuest || '').includes(questId), `${nodeId}: не закрывает ${questId}`);
+    assert(JSON.stringify(failNode.setQuest || '').includes('провален'), `${nodeId}: ${questId} не провален`);
+    assert(has(failNode.addTags, failTag), `${nodeId}: нет тега ${failTag}`);
+}
+
+// Бронг сохраняет обход через 080: провал под-задачи не валит квест,
+// но запирает сцену и не даёт добыть жилу без нейтрализованного дозора.
+for (const nodeId of ['088-personal-deal-fail', '088-personal-intimidate-fail']) {
+    assert(!(ps[nodeId].choices || []).some(choice => choice.target === '088-personal-shadows'),
+        `${nodeId}: возвращает в ту же сцену дозора`);
+}
+for (const nodeId of ['089-personal-swap-fail', '089-personal-burn-fail']) {
+    assert(!(ps[nodeId].choices || []).some(choice => choice.target === '089-personal-archive'),
+        `${nodeId}: возвращает в ту же сцену архива`);
+}
+const veinChoice = findChoice('088-personal-shadows', choice => choice.target === '088-personal-vein');
+assert(veinChoice, '088-personal-shadows: нет выбора «Добыть жилу»');
+assert(veinChoice.requiresAtLeast?.count >= 1, '088-personal-shadows: жила доступна без состояния дозора');
+assert((veinChoice.requiresAtLeast?.requirements || []).includes('Тени Лабиринта расположены')
+    && (veinChoice.requiresAtLeast?.requirements || []).includes('Тени Лабиринта напуганы'),
+    '088-personal-shadows: жила не требует нейтрализованный дозор');
+
+// Пилигрим: завершение требует все три переменные.
+const pilgrimDone = findChoice('005', choice => choice.target === '005-personal-done');
+assert(pilgrimDone, '005: нет завершения квеста Пилигрима');
+assert(pilgrimDone.requiresAtLeast?.count === 3, '005: завершение Пилигрима не требует три переменные');
+for (const variable of ['Пилигрим: переменная проповеди', 'Пилигрим: переменная дуэта', 'Пилигрим: переменная режиссёра']) {
+    assert(has(pilgrimDone.requiresAtLeast?.requirements, variable), `005: завершение Пилигрима без ${variable}`);
+}
+
+// После провала личного квеста его хаб-входы закрыты.
+for (const [sourceId, targetId, tag] of [
+    ['087', '087-personal', "Я провалил личный квест Лириссы"],
+    ['089', '089-personal', "Я провалил личный квест Элиандры"],
+    ['086', '086-personal', "Я провалил личный квест Зар'Ака"]
+]) {
+    const choices = (ps[sourceId]?.choices || []).filter(choice => choice.target === targetId);
+    assert(choices.length > 0, `${sourceId}: нет входа в ${targetId}`);
+    for (const choice of choices) assert(has(choice.requiresNot, tag), `${sourceId} -> ${targetId}: нет ${tag}`);
+}
+
 // «Эхо убитого лорда»: провал любой проверки закрывает крипты целиком,
 // включая бесплатный обход, и проваливает личный квест.
 const cryptsFreeChoice = (ps['086-personal-crypts'].choices || [])
@@ -142,4 +276,4 @@ const gameSource = fs.readFileSync(path.join(__dirname, '..', 'game.js'), 'utf8'
 assert(/hiddenKnowledgeTagPrefixes\s*=\s*\[[^\]]*'Проверка: '/s.test(gameSource),
     "game.js: в hiddenKnowledgeTagPrefixes нет 'Проверка: '");
 
-console.log(`OK: skillCheck — ${total} проверок, ${social} социальных, ${groups.size} узлов с проверками; повторные попытки закрыты, провалы двигают сюжет.`);
+console.log(`OK: skillCheck — ${total} проверок, ${social} социальных, ${groups.size} узлов с проверками; повторные попытки и бесплатные обходы закрыты, провалы двигают сюжет.`);

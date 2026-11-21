@@ -32,6 +32,18 @@ function addChoiceRequiresNot(choice, tags) {
     choice.requiresNot = unique([...asArray(choice.requiresNot), ...tags]);
 }
 
+function addChoiceRequiresAtLeast(choice, count, requirements) {
+    if (!choice.requiresAtLeast) {
+        choice.requiresAtLeast = { count, requirements: unique(requirements) };
+        return;
+    }
+    choice.requiresAtLeast.count = Math.max(Number(choice.requiresAtLeast.count) || 1, count);
+    choice.requiresAtLeast.requirements = unique([
+        ...asArray(choice.requiresAtLeast.requirements),
+        ...requirements
+    ]);
+}
+
 function addNodeTags(nodeId, tags) {
     const node = requireNode(nodeId);
     node.addTags = unique([...asArray(node.addTags), ...tags]);
@@ -229,6 +241,188 @@ for (const nodeId of ['086-personal-deal-fail', '086-personal-stealth-fail', '08
 
 const cryptsEntry = findChoice('086-personal', choice => choice.target === '086-personal-crypts');
 addChoiceRequiresNot(cryptsEntry, ["Я провалил личный квест Зар'Ака"]);
+
+// 10. Общий критерий: на параграфе проверки любой бесплатный выбор, ведущий
+// к тому же успеху, закрывается той же меткой попытки. Иначе после провала
+// проверку можно обойти без броска (именно так был пропущен случай «Эха»).
+for (const [nodeId, node] of Object.entries(ps)) {
+    if (nodeId === '_quests' || !node || typeof node !== 'object') continue;
+    if (EXCEPTION_NODES.has(nodeId) || HEALING_NODES.has(nodeId)) continue;
+    const nodeChecks = (node.choices || []).filter(choice => choice.skillCheck);
+    if (nodeChecks.length === 0) continue;
+    const tags = unique(nodeChecks.map(choice => attemptTagFor(nodeId, choice)).filter(Boolean));
+    if (tags.length === 0) continue;
+    const successTargets = new Set(nodeChecks.map(choice => choice.target).filter(Boolean));
+    for (const choice of node.choices || []) {
+        if (choice.skillCheck || !choice.target) continue;
+        if (successTargets.has(choice.target)) {
+            addChoiceRequiresNot(choice, tags);
+        }
+    }
+}
+
+// 11. Точечные обходы, где бесплатный выбор ведёт в другой узел, но даёт тот же
+// социальный/квестовый результат.
+addChoiceRequiresNot(
+    findChoice('089-trust', choice => choice.target === '089-friend-bureau'),
+    ['Проверка: 089-trust']
+);
+addChoiceRequiresNot(
+    findChoice('088-personal-shadows', choice => choice.target === '088-personal-fight'),
+    ['Проверка: 088-personal-shadows']
+);
+addChoiceRequiresNot(
+    findChoice('orgy-nimvelas', choice => choice.target === 'orgy-nimvelas-accept'),
+    ['Проверка: orgy-nimvelas']
+);
+addChoiceRequiresNot(
+    findChoice('036', choice => choice.target === '036b'),
+    ['Проверка: 036']
+);
+addChoiceRequiresNot(
+    findChoice('016', choice => choice.target === '018'),
+    ['Проверка: 016']
+);
+for (const targetId of ['023', '024']) {
+    addChoiceRequiresNot(
+        findChoice('021', choice => choice.target === targetId),
+        ['Проверка: 021']
+    );
+}
+
+// 12. Входы в сцены: после попытки проверки хаб больше не предлагает зайти
+// в ту же закрытую сцену. Это убирает «мёртвые» повторные заходы.
+const entryGates = [
+    ['005', '005-personal-sermon', 'Проверка: 005-personal-sermon'],
+    ['005', '005-personal-duet', 'Проверка: 005-personal-duet'],
+    ['005', '005-personal-director', 'Проверка: 005-personal-director'],
+    ['087-personal-hub', '087-personal-temple', 'Проверка: 087-personal-temple'],
+    ['087-personal-hub', '087-personal-lotus', 'Проверка: 087-personal-lotus'],
+    ['087-personal-hub', '087-personal-rebels', 'Проверка: 087-personal-rebels'],
+    ['088-personal', '088-personal-pick', 'Проверка: 088-personal-pick'],
+    ['076', '088-personal-pick', 'Проверка: 088-personal-pick'],
+    ['088-personal', '088-personal-shadows', 'Проверка: 088-personal-shadows'],
+    ['076', '088-personal-shadows', 'Проверка: 088-personal-shadows'],
+    ['089-personal', '089-personal-archive', 'Проверка: 089-personal-archive'],
+    ['089', '089-trust', 'Проверка: 089-trust'],
+    ['H03', '028', 'Проверка: 028'],
+    ['030', '028', 'Проверка: 028'],
+    ['H06', '070', 'Проверка: 070'],
+    ['H04', '054', 'Проверка: 054'],
+    ['015', '016', 'Проверка: 016'],
+    ['020', '021', 'Проверка: 021'],
+    ['035', '036', 'Проверка: 036'],
+    ['015-desk', '036', 'Проверка: 036'],
+    ['015-reveal', '036', 'Проверка: 036'],
+    ['087', 'orgy-lyrissa', 'Проверка: orgy-lyrissa'],
+    ['013', 'orgy-malvedra', 'Проверка: orgy-malvedra'],
+    ['030', 'orgy-evelia', 'Проверка: orgy-evelia'],
+    ['089', 'orgy-eliandra', 'Проверка: orgy-eliandra'],
+    ['086', 'orgy-zarak', 'Проверка: orgy-zarak'],
+    ['088', 'orgy-brong', 'Проверка: orgy-brong'],
+    ['029-orgy', 'orgy-lieutenant', 'Проверка: orgy-lieutenant'],
+    ['005', 'orgy-pilgrim', 'Проверка: orgy-pilgrim'],
+    ['012', 'orgy-nimvelas', 'Проверка: orgy-nimvelas'],
+    ['015-desk', 'orgy-orven', 'Проверка: orgy-orven']
+];
+for (const [sourceId, targetId, tag] of entryGates) {
+    const source = requireNode(sourceId);
+    for (const choice of source.choices || []) {
+        if (choice.target === targetId) addChoiceRequiresNot(choice, [tag]);
+    }
+}
+
+// 13. Личные квесты: если обязательный шаг провален, квест закрывается.
+function failPersonalQuest(nodeId, questId, failTag, textSuffix) {
+    const node = requireNode(nodeId);
+    if (!String(node.text).includes(textSuffix)) {
+        node.text = `${node.text}\n\n${textSuffix}`;
+    }
+    addNodeTags(nodeId, [failTag]);
+    addQuestUpdate(nodeId, { id: questId, state: 'провален', fromStates: ['выдан'] });
+}
+
+for (const nodeId of ['005-personal-sermon-fail', '005-personal-duet-fail', '005-personal-director-fail']) {
+    failPersonalQuest(
+        nodeId,
+        'pilgrim-personal-quest',
+        "Я провалил личный квест Пилигрима",
+        'Пилигрим возвращается к прежним цифрам. Переменная потеряна — расчёт не будет завершён.'
+    );
+}
+
+for (const nodeId of ['087-personal-temple-fail', '087-personal-lotus-fail', '087-personal-rebels-fail']) {
+    failPersonalQuest(
+        nodeId,
+        'lyrissa-personal-quest',
+        "Я провалил личный квест Лириссы",
+        'Лирисса отворачивается: ещё один укол не сложился. Три укола не собрать — личное дело провалено.'
+    );
+}
+
+for (const nodeId of ['089-personal-swap-fail', '089-personal-burn-fail']) {
+    failPersonalQuest(
+        nodeId,
+        'eliandra-personal-quest',
+        "Я провалил личный квест Элиандры",
+        'Архив закрывается перед вами. Имя Элиандры останется в связке — личное дело провалено.'
+    );
+    requireNode(nodeId).choices = [
+        { text: '➤ Вернуться к Элиандре', target: '089' },
+        { text: '🚪 Вернуться в Башню', target: 'H05' }
+    ];
+}
+
+// Провал теневого дозора у Бронга не валит квест: остаётся взрыв в 080.
+for (const nodeId of ['088-personal-deal-fail', '088-personal-intimidate-fail']) {
+    requireNode(nodeId).choices = [
+        { text: '➤ Вернуться к Бронгу', target: '088' },
+        { text: '🚪 Вернуться в Галерею', target: '076' }
+    ];
+}
+
+// 14. Закрываем обходы личных квестов, которые не были проверками.
+const pilgrimFailTag = "Я провалил личный квест Пилигрима";
+for (const targetId of ['005-personal-sermon', '005-personal-duet', '005-personal-director', '005-personal-done']) {
+    for (const choice of requireNode('005').choices || []) {
+        if (choice.target === targetId) addChoiceRequiresNot(choice, [pilgrimFailTag]);
+    }
+}
+const pilgrimDoneChoice = findChoice('005', choice => choice.target === '005-personal-done');
+addChoiceRequiresAtLeast(pilgrimDoneChoice, 3, [
+    'Пилигрим: переменная проповеди',
+    'Пилигрим: переменная дуэта',
+    'Пилигрим: переменная режиссёра'
+]);
+
+const lyrissaFailTag = "Я провалил личный квест Лириссы";
+for (const targetId of ['087-personal-temple', '087-personal-lotus', '087-personal-rebels', '087-personal-final']) {
+    for (const choice of requireNode('087-personal-hub').choices || []) {
+        if (choice.target === targetId) addChoiceRequiresNot(choice, [lyrissaFailTag]);
+    }
+}
+for (const choice of requireNode('087').choices || []) {
+    if (choice.target === '087-personal') addChoiceRequiresNot(choice, [lyrissaFailTag]);
+}
+
+const eliandraFailTag = "Я провалил личный квест Элиандры";
+for (const choice of requireNode('089').choices || []) {
+    if (choice.target === '089-personal') addChoiceRequiresNot(choice, [eliandraFailTag]);
+}
+for (const choice of requireNode('089-personal').choices || []) {
+    if (choice.target === '089-personal-archive') addChoiceRequiresNot(choice, [eliandraFailTag]);
+}
+
+for (const choice of requireNode('086').choices || []) {
+    if (choice.target === '086-personal') addChoiceRequiresNot(choice, ["Я провалил личный квест Зар'Ака"]);
+}
+
+// 15. «Добыть жилу» требует нейтрализованный дозор, а не только кирку.
+const veinChoice = findChoice('088-personal-shadows', choice => choice.target === '088-personal-vein');
+addChoiceRequiresAtLeast(veinChoice, 1, [
+    'Тени Лабиринта расположены',
+    'Тени Лабиринта напуганы'
+]);
 
 fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), 'utf8');
 console.log('Готово: skillCheck переведены на одноразовые попытки с fail-forward.');
