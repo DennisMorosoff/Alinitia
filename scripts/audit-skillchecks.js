@@ -102,6 +102,29 @@ for (const [nodeId, node] of Object.entries(ps)) {
     if (nodeChecks.length) groups.set(nodeId, nodeChecks);
 }
 
+// «Эхо убитого лорда»: провал любой проверки закрывает крипты целиком,
+// включая бесплатный обход, и проваливает личный квест.
+const cryptsFreeChoice = (ps['086-personal-crypts'].choices || [])
+    .find(choice => String(choice.text).includes('Сослаться на службу Культу'));
+assert(cryptsFreeChoice, '086-personal-crypts: нет бесплатного обхода');
+assert(has(cryptsFreeChoice.requiresNot, 'Проверка: 086-personal-crypts'),
+    '086-personal-crypts: бесплатный обход не закрывается после провала');
+for (const nodeId of ['086-personal-deal-fail', '086-personal-stealth-fail', '086-personal-deceive-fail']) {
+    const failNode = ps[nodeId];
+    assert(failNode, `${nodeId} отсутствует`);
+    assert(!(failNode.choices || []).some(choice => choice.target === '086-personal-crypts'),
+        `${nodeId}: возвращает в ту же сцену крипт`);
+    assert(JSON.stringify(failNode.setQuest || '').includes('провален'),
+        `${nodeId}: не проваливает zarak-personal-quest`);
+    assert(has(failNode.addTags, "Я провалил личный квест Зар'Ака"),
+        `${nodeId}: нет тега провала личного квеста`);
+}
+const cryptsEntry = (ps['086-personal'].choices || [])
+    .find(choice => choice.target === '086-personal-crypts');
+assert(cryptsEntry, '086-personal: нет входа в крипты');
+assert(has(cryptsEntry.requiresNot, "Я провалил личный квест Зар'Ака"),
+    '086-personal: вход в крипты не закрыт после провала');
+
 // 028-fail раньше вёл в успех 029. Проверяем, что провал больше не считается успехом.
 const fail028 = ps['028-fail'];
 assert(fail028, '028-fail отсутствует');

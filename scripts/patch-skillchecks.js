@@ -208,5 +208,27 @@ addQuestUpdate('062-stealth-fail', { id: 'tower-quest', state: 'провален
 const stained = requireNode('037-stained');
 stained.text = 'Ткань впитывает кровь быстрее, чем вы успеваете отвести ладонь. Шёлк темнеет, золотая нить тускнеет. Это уже не костюм роли — это улика. Церемониймейстер такой тряпки не примет. Нужен заказ у костюмера: с трупа такой наряд больше не снять.';
 
+// 9. Личный квест Зар'Ака «Эхо убитого лорда»: провал любой проверки закрывает
+// крипты целиком, включая бесплатный обход, проваливает квест и уводит к Зар'Аку.
+// Иначе игрок возвращался в ту же сцену и добирал эхо без проверки.
+const cryptsFreeChoice = findChoice('086-personal-crypts', choice => String(choice.text).includes('Сослаться на службу Культу'));
+addChoiceRequiresNot(cryptsFreeChoice, ['Проверка: 086-personal-crypts']);
+
+for (const nodeId of ['086-personal-deal-fail', '086-personal-stealth-fail', '086-personal-deceive-fail']) {
+    const node = requireNode(nodeId);
+    if (!String(node.text).includes('Эхо остаётся за печатью')) {
+        node.text = `${node.text}\n\nСтража выставляет вас из крипт. Эхо остаётся за печатью, а Зар'Ак так и не услышит голос лорда.`;
+    }
+    addNodeTags(nodeId, ["Я провалил личный квест Зар'Ака"]);
+    addQuestUpdate(nodeId, { id: 'zarak-personal-quest', state: 'провален', fromStates: ['выдан'] });
+    node.choices = [
+        { text: '➤ Вернуться к Зар\'Аку', target: '086' },
+        { text: '🚪 Вернуться во двор', target: 'H02' }
+    ];
+}
+
+const cryptsEntry = findChoice('086-personal', choice => choice.target === '086-personal-crypts');
+addChoiceRequiresNot(cryptsEntry, ["Я провалил личный квест Зар'Ака"]);
+
 fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), 'utf8');
 console.log('Готово: skillCheck переведены на одноразовые попытки с fail-forward.');
